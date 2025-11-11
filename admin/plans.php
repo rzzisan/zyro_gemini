@@ -51,7 +51,7 @@ if (isset($_SESSION['flash_message'])) {
         <p class="text-gray-600">No plans found. Create one above!</p>
     <?php else: ?>
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <table class="min-w-full divide-y divide-gray-200 hidden md:table">
                 <thead class="bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
@@ -82,6 +82,30 @@ if (isset($_SESSION['flash_message'])) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            <div class="grid grid-cols-1 gap-4 md:hidden">
+                <?php foreach ($plans as $plan): ?>
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($plan['name']); ?></div>
+                            <div class="text-sm text-gray-500">Price: <?php echo htmlspecialchars($plan['price']); ?></div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-500">
+                            Courier Limit: <?php echo htmlspecialchars($plan['daily_courier_limit']); ?>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-500">
+                            SMS Bonus: <?php echo htmlspecialchars($plan['sms_credit_bonus']); ?>
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <a href="<?php echo APP_URL; ?>/admin/edit_plan.php?id=<?php echo htmlspecialchars($plan['id']); ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
+                            <form method="POST" action="<?php echo APP_URL; ?>/controllers/adminController.php" onsubmit="return confirm('Are you sure you want to delete this plan?');" class="inline-block">
+                                <input type="hidden" name="action" value="delete_plan">
+                                <input type="hidden" name="plan_id" value="<?php echo htmlspecialchars($plan['id']); ?>">
+                                <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     <?php endif; ?>
 </div>

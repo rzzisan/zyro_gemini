@@ -16,7 +16,7 @@ $users = $userModel->findAll();
 <div class="bg-white shadow-md rounded-lg p-6">
     <h2 class="text-xl font-semibold text-gray-700 mb-4">All Users</h2>
     <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
+        <table class="min-w-full divide-y divide-gray-200 hidden md:table">
             <thead class="bg-gray-50">
                 <tr>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
@@ -56,6 +56,38 @@ $users = $userModel->findAll();
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <div class="grid grid-cols-1 gap-4 md:hidden">
+            <?php foreach ($users as $user): ?>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($user['name']); ?></div>
+                        <div class="text-sm text-gray-500"><?php echo htmlspecialchars($user['email']); ?></div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-500">
+                        Plan: <?php echo htmlspecialchars($user['plan_name'] ?? 'N/A'); ?>
+                    </div>
+                    <div class="mt-2 flex justify-between items-center">
+                        <div class="text-sm text-gray-500">SMS: <?php echo htmlspecialchars($user['sms_balance'] ?? '0'); ?></div>
+                        <div class="text-sm text-gray-500">Courier Limit: <?php echo htmlspecialchars($user['daily_courier_limit'] ?? '0'); ?></div>
+                        <div class="text-sm text-gray-500">
+                            <a href="#" class="text-blue-500 hover:text-blue-700" onclick="showWebsites(<?php echo $user['id']; ?>)">Websites: <?php echo $user['website_count']; ?></a>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-500">
+                        Registered: <?php echo htmlspecialchars($user['created_at']); ?>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <a href="edit_user.php?id=<?php echo $user['id']; ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
+                        <a href="add_website.php?user_id=<?php echo $user['id']; ?>" class="text-green-600 hover:text-green-900 mr-4">Add Website</a>
+                        <form method="POST" action="<?php echo APP_URL; ?>/controllers/adminController.php" class="inline-block">
+                            <input type="hidden" name="action" value="delete_user">
+                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                            <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>
 

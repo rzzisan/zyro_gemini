@@ -31,7 +31,7 @@ $websites = $websiteModel->findByUser($user_id);
     <h2 class="text-xl font-semibold text-gray-700 mb-4">Existing Websites</h2>
     <?php if ($websites): ?>
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <table class="min-w-full divide-y divide-gray-200 hidden md:table">
                 <thead class="bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Domain</th>
@@ -60,6 +60,26 @@ $websites = $websiteModel->findByUser($user_id);
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            <div class="grid grid-cols-1 gap-4 md:hidden">
+                <?php foreach ($websites as $website): ?>
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($website['domain']); ?></div>
+                            <form method="POST" action="../../controllers/websiteController.php" onsubmit="return confirm('Are you sure you want to delete this website and its API key?');" class="inline-block">
+                                <input type="hidden" name="action" value="delete_website">
+                                <input type="hidden" name="website_id" value="<?php echo $website['id']; ?>">
+                                <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                            </form>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-500">
+                            <?php
+                            $key = $apiTokenModel->findByWebsite($website['id']);
+                            echo htmlspecialchars($key ?: 'N/A');
+                            ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     <?php else: ?>
         <p class="text-gray-600">No websites added yet.</p>

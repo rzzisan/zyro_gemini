@@ -58,34 +58,55 @@ $total_rows = $smsHistoryModel->getTotalSmsHistoryCountByUser($user_id, $search_
         </div>
     </form>
     <div class="mt-6">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SMS Count</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit Deducted</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                <?php foreach ($sms_history as $index => $history): ?>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 hidden md:table">
+                <thead class="bg-gray-50">
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo $offset + $index + 1; ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo htmlspecialchars($history['created_at']); ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo htmlspecialchars($history['to_number']); ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="cursor-pointer" x-on:click="open = true; message = '<?php echo addslashes(htmlspecialchars($history['message'])); ?>'">
-                                <?php echo htmlspecialchars(substr($history['message'], 0, 20)); ?>...
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo htmlspecialchars($history['sms_count']); ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?php echo htmlspecialchars($history['credit_deducted']); ?></td>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SMS Count</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit Deducted</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <?php foreach ($sms_history as $index => $history): ?>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap"><?php echo $offset + $index + 1; ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?php echo htmlspecialchars($history['created_at']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?php echo htmlspecialchars($history['to_number']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="cursor-pointer" x-on:click="open = true; message = '<?php echo addslashes(htmlspecialchars($history['message'])); ?>'">
+                                    <?php echo htmlspecialchars(substr($history['message'], 0, 20)); ?>...
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?php echo htmlspecialchars($history['sms_count']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?php echo htmlspecialchars($history['credit_deducted']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="grid grid-cols-1 gap-4 md:hidden">
+            <?php foreach ($sms_history as $history): ?>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($history['to_number']); ?></div>
+                        <div class="text-sm text-gray-500"><?php echo htmlspecialchars($history['created_at']); ?></div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-500">
+                        <span class="cursor-pointer" x-on:click="open = true; message = '<?php echo addslashes(htmlspecialchars($history['message'])); ?>'">
+                            <?php echo htmlspecialchars(substr($history['message'], 0, 100)); ?>...
+                        </span>
+                    </div>
+                    <div class="mt-2 flex justify-between items-center">
+                        <div class="text-sm text-gray-500">SMS: <?php echo htmlspecialchars($history['sms_count']); ?></div>
+                        <div class="text-sm text-gray-500">Credit: <?php echo htmlspecialchars($history['credit_deducted']); ?></div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <div class="mt-4 flex justify-between items-center">

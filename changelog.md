@@ -2,6 +2,21 @@
 
 ## Tuesday, November 11, 2025
 
+### Feature: Mobile Responsive Design
+*   **What:** Made the entire project's design mobile responsive.
+*   **Why:** To improve the user experience on mobile devices.
+*   **Where:**
+    *   Modified `views/layouts/header.php` to add a functional mobile menu.
+    *   Modified `views/layouts/admin_header.php` to add a functional mobile menu.
+    *   Modified `views/dashboard/websites.php` to make the table responsive.
+    *   Modified `views/dashboard/sms_history.php` to make the table responsive.
+    *   Modified `admin/users.php` to make the table responsive.
+    *   Modified `admin/plans.php` to make the table responsive.
+*   **Changes:**
+    *   Added a functional mobile menu to the main and admin headers.
+    *   Made the tables on the `websites.php`, `sms_history.php`, `users.php`, and `plans.php` pages responsive by displaying them as cards on smaller screens.
+    *   Checked that the other pages have responsive layouts.
+
 ### Feature: Redesigned SMS History Filter
 *   **What:** Redesigned the filtering and search box on the SMS history page.
 *   **Why:** The previous design was cluttered and not user-friendly.
