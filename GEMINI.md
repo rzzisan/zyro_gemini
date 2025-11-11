@@ -1,0 +1,1 @@
+Before starting each work, check the changelog.md file, so you can know what has been done in the past. And after finishing the work, keep a detailed log of what you did, why you did it, and what changes and modifications you made to which files.
