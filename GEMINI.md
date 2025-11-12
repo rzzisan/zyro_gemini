@@ -14,3 +14,4 @@
 - I have pulled the latest updates from GitHub and discarded all local changes.
 - I have fixed the bug in the user's fraud checker page where it was returning an error due to incorrect CourierHistory model instantiation.
 - I have re-applied the changes to `fraud_checker.php` and `changelog.md` after an accidental revert.
+- I have pulled the latest updates from GitHub and discarded all local changes.
