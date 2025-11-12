@@ -5,6 +5,7 @@ require_once ROOT_PATH . '/models/User.php';
 require_once ROOT_PATH . '/models/Plan.php';
 require_once ROOT_PATH . '/models/Subscription.php';
 require_once ROOT_PATH . '/models/SmsCredit.php';
+require_once ROOT_PATH . '/models/AuthToken.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     
@@ -12,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'admin_login':
             $email = $_POST['email'] ?? null;
             $password = $_POST['password'] ?? null;
+            $remember_me = isset($_POST['remember_me']);
 
             if (!$email || !$password) {
                 // Optional: Set a flash message
@@ -30,6 +32,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $_SESSION['admin_id'] = $user['id'];
                 $_SESSION['admin_name'] = $user['name'];
                 $_SESSION['is_admin'] = true;
+
+                if ($remember_me) {
+                    $token = bin2hex(random_bytes(32));
+                    $expires_at = date('Y-m-d H:i:s', strtotime('+30 days'));
+                    
+                    $authTokenModel = new AuthToken($db);
+                    $authTokenModel->create($user['id'], $token, $expires_at);
+
+                    setcookie('remember_me', $token, [
+                        'expires' => strtotime('+30 days'),
+                        'path' => '/',
+                        'domain' => '',
+                        'secure' => isset($_SERVER['HTTPS']),
+                        'httponly' => true,
+                        'samesite' => 'Lax'
+                    ]);
+                }
 
                 redirect('/admin/index.php');
             } else {
@@ -88,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'login':
             $email = $_POST['email'] ?? null;
             $password = $_POST['password'] ?? null;
+            $remember_me = isset($_POST['remember_me']);
 
             if (!$email || !$password) {
                 set_message('Email and password are required.', 'danger');
@@ -101,6 +121,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if ($user && password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
+
+                if ($remember_me) {
+                    $token = bin2hex(random_bytes(32));
+                    $expires_at = date('Y-m-d H:i:s', strtotime('+30 days'));
+                    
+                    $authTokenModel = new AuthToken($db);
+                    $authTokenModel->create($user['id'], $token, $expires_at);
+
+                    setcookie('remember_me', $token, [
+                        'expires' => strtotime('+30 days'),
+                        'path' => '/',
+                        'domain' => '',
+                        'secure' => isset($_SERVER['HTTPS']),
+                        'httponly' => true,
+                        'samesite' => 'Lax'
+                    ]);
+                }
+
                 redirect('/views/dashboard/index.php');
             } else {
                 set_message('Invalid credentials.', 'danger');

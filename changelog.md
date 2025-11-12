@@ -1,6 +1,85 @@
 # Changelog
 
+## Wednesday, November 12, 2025
+
+### Feature: Remember Me
+*   **What:** Implemented a "Remember Me" functionality to keep users logged in across browser sessions.
+*   **Why:** To prevent users from having to log in repeatedly after closing their browser.
+*   **Where:**
+    *   Created `auth_tokens.sql` to define the `auth_tokens` table schema.
+    *   Created `models/AuthToken.php` to manage authentication tokens.
+    *   Modified `admin/login.php` and `views/auth/login.php` to add a "Remember Me" checkbox.
+    *   Modified `controllers/authController.php` to handle the "Remember Me" functionality during login.
+    *   Created `core/remember_me_guard.php` to automatically log in users based on the "Remember Me" cookie.
+    *   Modified `core/config.php` to include the `remember_me_guard.php`.
+    *   Modified `logout.php` and `admin/logout.php` to delete the token and cookie upon logout.
+*   **Changes:**
+    *   Users can now choose to stay logged in by checking the "Remember Me" box during login.
+    *   A long-lived cookie is used to store a secure token for automatic authentication.
+    *   The token is invalidated upon logout.
+
 ## Tuesday, November 11, 2025
+
+### Feature: Modernized User SMS History Table
+*   **What:** Improved the design of the user SMS history page.
+*   **Why:** To give the page a more modern look and feel, consistent with the admin SMS history page.
+*   **Where:**
+    *   Modified `views/dashboard/sms_history.php`.
+*   **Changes:**
+    *   Added a hover effect to the table rows.
+    *   Added a hover effect and a border to the mobile view cards.
+    *   Removed the default table dividers and added a border to the table rows.
+    *   Added a subtle box shadow to the table.
+
+### Feature: Modernized Admin SMS History Table
+*   **What:** Improved the design of the admin SMS history page.
+*   **Why:** To give the page a more modern look and feel.
+*   **Where:**
+    *   Modified `admin/sms_history.php`.
+*   **Changes:**
+    *   Added a hover effect to the table rows.
+    *   Added a hover effect and a border to the mobile view cards.
+    *   Removed the default table dividers and added a border to the table rows.
+    *   Added a subtle box shadow to the table.
+
+### Bug Fix: Admin SMS History Target Phone
+*   **What:** Fixed an issue where the target phone number was not showing in the admin panel's SMS history.
+*   **Why:** The code was using the wrong array key (`target_phone`) to access the target phone number. The correct key is `to_number`.
+*   **Where:**
+    *   Modified `admin/sms_history.php`.
+*   **Changes:**
+    *   Replaced `target_phone` with `to_number` in both the desktop and mobile views.
+    *   The target phone number is now displayed correctly.
+
+### Bug Fix: Admin SMS History Modal
+*   **What:** Fixed an issue where the JavaScript popup to view the complete message in the admin panel's SMS history was not working correctly.
+*   **Why:** The modal was not implemented using Alpine.js, which is the standard in the project.
+*   **Where:**
+    *   Modified `admin/sms_history.php`.
+*   **Changes:**
+    *   Replaced the simple JavaScript modal with the Alpine.js modal from the user panel.
+    *   The modal now works as expected.
+
+### Bug Fix: User SMS History Modal
+*   **What:** Fixed an issue where the JavaScript popup to view the complete message in the user panel's SMS history was not working.
+*   **Why:** The issue was caused by special characters in the message breaking the JavaScript when the message was directly embedded in the `x-on:click` handler.
+*   **Where:**
+    *   Modified `views/dashboard/sms_history.php`.
+*   **Changes:**
+    *   Updated the `x-on:click` handler to retrieve the full message from a `data-message` attribute instead of directly embedding it in the JavaScript.
+    *   This change was applied to both the desktop and mobile views.
+
+### Feature: Admin SMS History
+*   **What:** Added a new page in the admin panel to display the SMS history of all users.
+*   **Why:** To allow administrators to monitor the SMS usage of all users in one place.
+*   **Where:**
+    *   Created `admin/sms_history.php`.
+    *   Modified `views/layouts/admin_header.php` to add a link to the new page.
+    *   Modified `models/SmsHistory.php` to add `getSmsHistoryPaginated()` and `getTotalSmsHistoryCount()` methods.
+*   **Changes:**
+    *   Admins can now view a paginated and filterable table of all SMS messages sent by users.
+    *   The table includes the user, date and time, target phone number, message, SMS count, and credit deducted.
+    *   The page is responsive and includes filtering by user, search term, and date range.
 
 ### Feature: Mobile Responsive Design
 *   **What:** Made the entire project's design mobile responsive.
@@ -164,7 +243,7 @@
 ### Send SMS Feature
 
 *   **What:** Moved the "Send SMS" functionality from the dashboard to a new, dedicated page.
-*   **Why:** To improve the user experience by separating the "Send SMS" functionality from the main dashboard, making the interface cleaner and more intuitive.
+*   **Why:** To improve the user experience by separating the "Send SMS" functionality from the main dashboard, making the interface cleaner and more.
 *   **Where:**
     *   Created a new file `views/dashboard/send_sms.php` to house the HTML form for sending SMS messages.
     *   Created a new file `send_sms.php` in the project root to handle the form submission and call the `smsController`.

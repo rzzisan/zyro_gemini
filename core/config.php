@@ -9,6 +9,9 @@ define('DB_NAME', 'zyrotechbd_db');
 define('DB_USER', 'zyrotechbd_db_user');
 define('DB_PASS', 'Zareen@54221');
 
+require_once ROOT_PATH . '/core/remember_me_guard.php';
+check_remember_me();
+
 // Application settings
 define('APP_URL', 'https://saas.zyrotechbd.com/');
 define('APP_NAME', 'ZyroSaaS');

@@ -1,6 +1,15 @@
 <?php
 require_once __DIR__ . '/../core/config.php';
 require_once ROOT_PATH . '/core/functions.php';
+require_once ROOT_PATH . '/models/AuthToken.php';
+
+if (isset($_COOKIE['remember_me'])) {
+    $token = $_COOKIE['remember_me'];
+    $db = getDb();
+    $authTokenModel = new AuthToken($db);
+    $authTokenModel->delete($token);
+    setcookie('remember_me', '', time() - 3600, '/');
+}
 
 // Unset all of the session variables.
 $_SESSION = array();

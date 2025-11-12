@@ -28,6 +28,13 @@ if (is_logged_in()) {
                     <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
                     <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" name="password" required>
                 </div>
+                <div class="flex items-center justify-between mb-6">
+                    <label for="remember_me" class="flex items-center">
+                        <input type="checkbox" name="remember_me" id="remember_me" class="mr-2">
+                        <span class="text-sm text-gray-700">Remember me</span>
+                    </label>
+                    <a href="#" class="text-sm text-blue-500 hover:text-blue-800">Forgot password?</a>
+                </div>
                 <div class="flex items-center justify-between">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                         Login

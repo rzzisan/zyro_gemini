@@ -28,6 +28,12 @@ if (isAdmin()) {
                     <label for="password" class="sr-only">Password</label>
                     <input type="password" name="password" id="password" placeholder="Password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
                 </div>
+                <div class="flex items-center justify-between mb-6">
+                    <label for="remember_me" class="flex items-center">
+                        <input type="checkbox" name="remember_me" id="remember_me" class="mr-2">
+                        <span class="text-sm text-gray-700">Remember me</span>
+                    </label>
+                </div>
                 <input type="hidden" name="action" value="admin_login">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
                     Login
