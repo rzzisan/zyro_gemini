@@ -2,6 +2,19 @@
 
 ## Wednesday, November 12, 2025
 
+### Feature: Re-implemented Admin SMS History
+*   **What:** Re-implemented the admin SMS history page, which was lost after a git reset.
+*   **Why:** To restore the functionality for administrators to monitor the SMS usage of all users.
+*   **Where:**
+    *   Created `admin/sms_history.php` to display the SMS history for all users.
+    *   Modified `models/SmsHistory.php` to add `getSmsHistoryPaginated()` and `getTotalSmsHistoryCount()` methods for fetching all SMS records with pagination and filtering.
+    *   Modified `views/layouts/admin_header.php` to add a link to the new page in the admin menu.
+*   **Changes:**
+    *   Admins can now view a paginated and filterable table of all SMS messages sent by users.
+    *   The table is responsive and includes filtering by user, search term, and date range.
+    *   A modal, powered by Alpine.js, allows for viewing the full text of long messages.
+    *   The page design is consistent with the rest of the admin panel, including hover effects and a mobile-friendly layout.
+
 ### Feature: Remember Me
 *   **What:** Implemented a "Remember Me" functionality to keep users logged in across browser sessions.
 *   **Why:** To prevent users from having to log in repeatedly after closing their browser.

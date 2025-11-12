@@ -83,4 +83,79 @@ class SmsHistory {
         $stmt->execute();
         return $stmt->fetchColumn();
     }
+
+    public function getSmsHistoryPaginated($limit, $offset, $user_id = '', $search_term = '', $start_date = '', $end_date = '') {
+        $sql = "SELECT sh.*, u.name as user_name FROM sms_history sh JOIN users u ON sh.user_id = u.id WHERE 1=1";
+        $params = [];
+
+        if (!empty($user_id)) {
+            $sql .= " AND sh.user_id = :user_id";
+            $params[':user_id'] = $user_id;
+        }
+
+        if (!empty($search_term)) {
+            $sql .= " AND (sh.to_number LIKE :search_term1 OR sh.message LIKE :search_term2)";
+            $params[':search_term1'] = "%$search_term%";
+            $params[':search_term2'] = "%$search_term%";
+        }
+
+        if (!empty($start_date)) {
+            $sql .= " AND sh.created_at >= :start_date";
+            $params[':start_date'] = $start_date;
+        }
+
+        if (!empty($end_date)) {
+            $sql .= " AND sh.created_at < :end_date";
+            $params[':end_date'] = date('Y-m-d', strtotime($end_date . ' +1 day'));
+        }
+
+        $sql .= " ORDER BY sh.created_at DESC LIMIT :limit OFFSET :offset";
+        
+        $stmt = $this->db->prepare($sql);
+        
+        foreach ($params as $key => &$val) {
+            $stmt->bindParam($key, $val);
+        }
+        
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalSmsHistoryCount($user_id = '', $search_term = '', $start_date = '', $end_date = '') {
+        $sql = "SELECT COUNT(*) FROM sms_history sh WHERE 1=1";
+        $params = [];
+
+        if (!empty($user_id)) {
+            $sql .= " AND sh.user_id = :user_id";
+            $params[':user_id'] = $user_id;
+        }
+
+        if (!empty($search_term)) {
+            $sql .= " AND (sh.to_number LIKE :search_term1 OR sh.message LIKE :search_term2)";
+            $params[':search_term1'] = "%$search_term%";
+            $params[':search_term2'] = "%$search_term%";
+        }
+
+        if (!empty($start_date)) {
+            $sql .= " AND sh.created_at >= :start_date";
+            $params[':start_date'] = $start_date;
+        }
+
+        if (!empty($end_date)) {
+            $sql .= " AND sh.created_at < :end_date";
+            $params[':end_date'] = date('Y-m-d', strtotime($end_date . ' +1 day'));
+        }
+
+        $stmt = $this->db->prepare($sql);
+        
+        foreach ($params as $key => &$val) {
+            $stmt->bindParam($key, $val);
+        }
+        
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
 }
