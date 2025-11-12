@@ -2,6 +2,18 @@
 
 ## Wednesday, November 12, 2025
 
+### Improvement: Redesigned Admin Fraud Checker UI
+*   **What:** Redesigned the user interface of the admin fraud checker page.
+*   **Why:** To provide a more modern, visually appealing, and user-friendly experience.
+*   **Where:**
+    *   Modified `admin/fraud_checker.php`.
+*   **Changes:**
+    *   Updated the layout of the form and table to be more organized and spacious.
+    *   Improved the design of form elements, including adding an icon to the search bar.
+    *   Enhanced the table's appearance with a cleaner header, hover effects on rows, and better typography.
+    *   Added a "no data" message with an icon for empty table states.
+    *   Implemented a more advanced and responsive pagination component.
+
 ### Bug Fix: Admin Fraud Checker Pagination
 *   **What:** Fixed a bug that was causing a fatal error on the admin fraud checker page due to incorrect SQL syntax for pagination.
 *   **Why:** The `LIMIT` and `OFFSET` values in the SQL query were being quoted as strings, which is not valid syntax. This was happening because PDO's `execute()` method treats all parameters in the array as strings.
