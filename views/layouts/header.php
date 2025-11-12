@@ -25,7 +25,6 @@ ensure_logged_in();
                         <a href="<?php echo APP_URL; ?>/views/dashboard/index.php" class="<?php echo is_active('/views/dashboard/index.php') ? 'text-gray-900 border-indigo-500' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Dashboard</a>
                         <a href="<?php echo APP_URL; ?>/views/dashboard/websites.php" class="<?php echo is_active('/views/dashboard/websites.php') ? 'text-gray-900 border-indigo-500' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">My Websites</a>
                         <a href="<?php echo APP_URL; ?>/views/dashboard/send_sms.php" class="<?php echo is_active('/views/dashboard/send_sms.php') ? 'text-gray-900 border-indigo-500' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Send SMS</a>
-                        <a href="<?php echo APP_URL; ?>/views/dashboard/fraud_checker.php" class="<?php echo is_active('/views/dashboard/fraud_checker.php') ? 'text-gray-900 border-indigo-500' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Fraud Checker</a>
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center">
@@ -52,7 +51,6 @@ ensure_logged_in();
                 <a href="<?php echo APP_URL; ?>/views/dashboard/index.php" class="<?php echo is_active('/views/dashboard/index.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'; ?> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</a>
                 <a href="<?php echo APP_URL; ?>/views/dashboard/websites.php" class="<?php echo is_active('/views/dashboard/websites.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'; ?> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">My Websites</a>
                 <a href="<?php echo APP_URL; ?>/views/dashboard/send_sms.php" class="<?php echo is_active('/views/dashboard/send_sms.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'; ?> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Send SMS</a>
-                <a href="<?php echo APP_URL; ?>/views/dashboard/fraud_checker.php" class="<?php echo is_active('/views/dashboard/fraud_checker.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'; ?> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Fraud Checker</a>
             </div>
             <div class="pt-4 pb-3 border-t border-gray-200">
                 <div class="flex items-center px-4">

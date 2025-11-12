@@ -2,23 +2,32 @@
 
 ## Wednesday, November 12, 2025
 
-### Feature: Admin Courier History Menu and Page
-*   **What:** Created a new menu item "Courier History" in the admin dashboard and implemented the corresponding page to display all courier history from the database.
-*   **Why:** To provide administrators with a dedicated section to view and manage courier delivery records, enhancing oversight and data analysis capabilities.
+### Feature Removal: Fraud Checker
+*   **What:** Removed the "Fraud Checker" feature.
+*   **Why:** The feature was no longer needed.
 *   **Where:**
-    *   Modified `views/layouts/admin_header.php` to include "Courier History" in the SMS dropdown menu for both desktop and mobile views.
-    *   The `admin/courier_history.php` page was already created and configured to display paginated courier history.
+    *   Deleted `fraud_checker.php`.
+    *   Deleted `cron/update_courier_cache.php`.
+    *   Deleted `cron/update_courier_history.php`.
+    *   Deleted `models/CourierCache.php`.
+    *   Deleted `api/v1/courier_check.php`.
+    *   Deleted `views/dashboard/fraud_checker.php`.
+    *   Dropped the `courier_history` and `courier_cache` tables from the database.
+    *   Removed the "Fraud Checker" link from `views/layouts/header.php`.
 *   **Changes:**
-    *   Admins can now easily navigate to the "Courier History" page from the main admin menu.
-    *   The page displays courier records in a table format with pagination options (50, 100, 500, 1000 rows per page) and search functionality.
+    *   The "Fraud Checker" feature has been completely removed.
 
-### Bug Fix: Fraud Checker
-*   **What:** Fixed a bug in the "Fraud Checker" feature that was causing an "An error occurred while fetching data" message to be displayed to the user.
-*   **Why:** The issue was caused by the `CourierHistory` model being used with static method calls instead of instance method calls. The model was also being instantiated without a database connection.
+### Feature Removal: Admin Courier History
+*   **What:** Removed the "Courier History" feature from the admin panel.
+*   **Why:** The feature was no longer needed.
 *   **Where:**
-    *   Modified `fraud_checker.php` to properly instantiate the `CourierHistory` model with a database connection and use the instance to call the `findByPhoneNumber` method.
+    *   Deleted `admin/courier_history.php`.
+    *   Deleted `models/CourierHistory.php`.
+    *   Deleted `controllers/courierController.php`.
+    *   Dropped the `courier_history` table from the database.
+    *   Removed the "Courier History" link from `views/layouts/admin_header.php`.
 *   **Changes:**
-    *   The "Fraud Checker" feature now works correctly and no longer displays an error message.
+    *   The "Courier History" feature has been completely removed from the admin panel.
 
 ### Bug Fix: Admin Courier History Page
 *   **What:** Fixed a bug that was causing the admin courier history page to return a blank page.
@@ -40,55 +49,6 @@
     *   Admins can now view a paginated and searchable table of all courier history records.
     *   The table displays the phone number, total orders, total delivered, total cancelled, success rate, and last updated date.
     *   The page includes options to change the number of rows displayed per page (50, 100, 500, 1000).
-
-### Improvement: Fraud Checker Logic
-*   **What:** Modified the "Fraud Checker" feature to always prioritize checking the local database for a phone number's history before making an API call.
-*   **Why:** To reduce unnecessary API calls and to ensure that the user is always shown the data from the local database if it exists.
-*   **Where:**
-    *   Modified `fraud_checker.php`.
-*   **Changes:**
-    *   The script now first checks if the phone number exists in the `courier_history` table.
-    *   If the phone number is found, the script returns the data from the database.
-    *   If the phone number is not found, the script fetches the data from the courier's API, saves it to the database, and then returns it to the user.
-
-### Bug Fix: Fraud Checker
-*   **What:** Fixed a bug in the "Fraud Checker" feature that was causing an "An error occurred while fetching data" message to be displayed to the user.
-*   **Why:** The issue was caused by the AJAX call not properly handling the error response from the server.
-*   **Where:**
-    *   Modified `views/dashboard/fraud_checker.php` to properly handle the JSON response from the server.
-*   **Changes:**
-    *   The "Fraud Checker" feature now correctly displays error messages returned from the server.
-
-### Bug Fix: Fraud Checker
-*   **What:** Fixed a bug in the "Fraud Checker" feature that was causing an "An error occurred while fetching data" message to be displayed to the user.
-*   **Why:** The issue was caused by a combination of factors, including incorrect file permissions, a misconfigured database connection, and a 404 error when submitting the form.
-*   **Where:**
-    *   Modified `fraud_checker.php` to add more detailed logging.
-    *   Modified `core/db.php` to return the PDO object.
-    *   Modified `models/CourierHistory.php` to correctly use the PDO object.
-    *   Modified `views/dashboard/fraud_checker.php` to use AJAX for form submission and to fix the form action URL.
-*   **Changes:**
-    *   The "Fraud Checker" feature now works correctly.
-    *   The form is now submitted via AJAX, providing a better user experience.
-    *   The database connection is now correctly established when the script is run from the CLI.
-    *   The `courier_history` table is now created automatically if it doesn't exist.
-
-### Feature: Fraud Checker
-*   **What:** Implemented a "Fraud Checker" feature that allows users to check the delivery history of a phone number.
-*   **Why:** To help users identify potentially fraudulent customers by providing them with a summary of their order history with a specific courier.
-*   **Where:**
-    *   Created `courier_history.sql` to define the `courier_history` table schema.
-    *   Created `models/CourierHistory.php` to manage courier history data.
-    *   Created `controllers/fraudCheckerController.php` to handle the logic for the fraud checker page.
-    *   Created `views/dashboard/fraud_checker.php` to provide the user interface for the fraud checker.
-    *   Created `fraud_checker.php` in the root directory to handle routing.
-    *   Created `cron/update_courier_history.php` to periodically update the courier history data.
-    *   Modified `views/layouts/header.php` to add a "Fraud Checker" link to the user dashboard menu.
-*   **Changes:**
-    *   Users can now search for a phone number on the "Fraud Checker" page to view its delivery history.
-    *   The system fetches data from the Packzy API and stores it in a local database to reduce API calls and improve performance.
-    *   A cron job runs periodically to update the stored data.
-    *   The results show the total orders, deliveries, cancellations, and the delivery success rate for the given phone number.
 
 ### Improvement: Clickable Messages in Admin SMS History
 *   **What:** Modified the admin SMS history page to make the truncated message text clickable for viewing the full message.
