@@ -2,6 +2,55 @@
 
 ## Wednesday, November 12, 2025
 
+### Improvement: Fraud Checker Logic
+*   **What:** Modified the "Fraud Checker" feature to always prioritize checking the local database for a phone number's history before making an API call.
+*   **Why:** To reduce unnecessary API calls and to ensure that the user is always shown the data from the local database if it exists.
+*   **Where:**
+    *   Modified `fraud_checker.php`.
+*   **Changes:**
+    *   The script now first checks if the phone number exists in the `courier_history` table.
+    *   If the phone number is found, the script returns the data from the database.
+    *   If the phone number is not found, the script fetches the data from the courier's API, saves it to the database, and then returns it to the user.
+
+### Bug Fix: Fraud Checker
+*   **What:** Fixed a bug in the "Fraud Checker" feature that was causing an "An error occurred while fetching data" message to be displayed to the user.
+*   **Why:** The issue was caused by the AJAX call not properly handling the error response from the server.
+*   **Where:**
+    *   Modified `views/dashboard/fraud_checker.php` to properly handle the JSON response from the server.
+*   **Changes:**
+    *   The "Fraud Checker" feature now correctly displays error messages returned from the server.
+
+### Bug Fix: Fraud Checker
+*   **What:** Fixed a bug in the "Fraud Checker" feature that was causing an "An error occurred while fetching data" message to be displayed to the user.
+*   **Why:** The issue was caused by a combination of factors, including incorrect file permissions, a misconfigured database connection, and a 404 error when submitting the form.
+*   **Where:**
+    *   Modified `fraud_checker.php` to add more detailed logging.
+    *   Modified `core/db.php` to return the PDO object.
+    *   Modified `models/CourierHistory.php` to correctly use the PDO object.
+    *   Modified `views/dashboard/fraud_checker.php` to use AJAX for form submission and to fix the form action URL.
+*   **Changes:**
+    *   The "Fraud Checker" feature now works correctly.
+    *   The form is now submitted via AJAX, providing a better user experience.
+    *   The database connection is now correctly established when the script is run from the CLI.
+    *   The `courier_history` table is now created automatically if it doesn't exist.
+
+### Feature: Fraud Checker
+*   **What:** Implemented a "Fraud Checker" feature that allows users to check the delivery history of a phone number.
+*   **Why:** To help users identify potentially fraudulent customers by providing them with a summary of their order history with a specific courier.
+*   **Where:**
+    *   Created `courier_history.sql` to define the `courier_history` table schema.
+    *   Created `models/CourierHistory.php` to manage courier history data.
+    *   Created `controllers/fraudCheckerController.php` to handle the logic for the fraud checker page.
+    *   Created `views/dashboard/fraud_checker.php` to provide the user interface for the fraud checker.
+    *   Created `fraud_checker.php` in the root directory to handle routing.
+    *   Created `cron/update_courier_history.php` to periodically update the courier history data.
+    *   Modified `views/layouts/header.php` to add a "Fraud Checker" link to the user dashboard menu.
+*   **Changes:**
+    *   Users can now search for a phone number on the "Fraud Checker" page to view its delivery history.
+    *   The system fetches data from the Packzy API and stores it in a local database to reduce API calls and improve performance.
+    *   A cron job runs periodically to update the stored data.
+    *   The results show the total orders, deliveries, cancellations, and the delivery success rate for the given phone number.
+
 ### Improvement: Clickable Messages in Admin SMS History
 *   **What:** Modified the admin SMS history page to make the truncated message text clickable for viewing the full message.
 *   **Why:** To provide a more intuitive and seamless user experience, removing the need for a separate "View Full" button.
