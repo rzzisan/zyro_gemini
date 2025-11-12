@@ -2,6 +2,24 @@
 
 ## Wednesday, November 12, 2025
 
+### Bug Fix: Admin Fraud Checker Pagination
+*   **What:** Fixed a bug that was causing a fatal error on the admin fraud checker page due to incorrect SQL syntax for pagination.
+*   **Why:** The `LIMIT` and `OFFSET` values in the SQL query were being quoted as strings, which is not valid syntax. This was happening because PDO's `execute()` method treats all parameters in the array as strings.
+*   **Where:**
+    *   Modified `models/CourierStats.php` in the `getCourierStatsPaginated` function.
+*   **Changes:**
+    *   The `getCourierStatsPaginated` function now uses `bindValue()` with `PDO::PARAM_INT` to explicitly bind the `LIMIT` and `OFFSET` values as integers.
+    *   Removed debugging `var_dump` statements from `admin/fraud_checker.php`.
+
+### Feature: Admin Cached Courier History
+*   **What:** Added a feature to the admin fraud checker page to display all cached courier history with pagination and search functionality.
+*   **Why:** To provide administrators with a way to view and manage all cached courier data.
+*   **Where:**
+    *   Modified `admin/fraud_checker.php` to display the cached data in a paginated and searchable table.
+    *   Modified `models/CourierStats.php` to add methods for fetching paginated and searchable data from the `courier_stats` table.
+*   **Changes:**
+    *   The admin fraud checker page now displays a paginated and searchable table of all cached courier history.
+
 ### Feature: Admin Fraud Checker
 *   **What:** Added the Fraud Checker feature to the admin panel.
 *   **Why:** To allow administrators to use the Fraud Checker feature.
@@ -236,7 +254,7 @@
 ### Bug Fix: SMS History Modal Behavior
 
 *   **What:** Fixed an issue where a blank "Full SMS Message" modal would appear on page load for various user dashboard pages and could not be closed.
-*   **Why:** The Alpine.js library, which controls the modal's behavior, was not being loaded in the user dashboard header. Without Alpine.js, the browser would not process the `x-show` directive intended to hide the modal by default, causing it to be visible. The close button also relied on Alpine.js and was therefore non-functional.
+*   - **Why:** The Alpine.js library, which controls the modal's behavior, was not being loaded in the user dashboard header. Without Alpine.js, the browser would not process the `x-show` directive intended to hide the modal by default, causing it to be visible. The close button also relied on Alpine.js and was therefore non-functional.
 *   **Where:**
     *   Modified `views/layouts/header.php` to include the Alpine.js script.
 *   **Changes:**

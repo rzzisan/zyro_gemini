@@ -36,4 +36,39 @@ class CourierStats
             ':total_fraud_reports' => $data['total_fraud_reports']
         ]);
     }
+    public function getTotalCourierStatsCount($searchTerm = '')
+    {
+        $sql = "SELECT COUNT(*) FROM courier_stats";
+        $params = [];
+        if (!empty($searchTerm)) {
+            $sql .= " WHERE phone_number LIKE ?";
+            $params[] = '%' . $searchTerm . '%';
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn();
+    }
+
+    public function getCourierStatsPaginated($page, $rowsPerPage, $searchTerm = '')
+    {
+        $offset = ($page - 1) * $rowsPerPage;
+        $sql = "SELECT * FROM courier_stats";
+        
+        if (!empty($searchTerm)) {
+            $sql .= " WHERE phone_number LIKE :searchTerm";
+        }
+        $sql .= " ORDER BY last_updated_at DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($sql);
+
+        if (!empty($searchTerm)) {
+            $stmt->bindValue(':searchTerm', '%' . $searchTerm . '%', PDO::PARAM_STR);
+        }
+
+        $stmt->bindValue(':limit', (int) $rowsPerPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
