@@ -2,6 +2,15 @@
 
 ## Wednesday, November 12, 2025
 
+### Improvement: Clickable Messages in Admin SMS History
+*   **What:** Modified the admin SMS history page to make the truncated message text clickable for viewing the full message.
+*   **Why:** To provide a more intuitive and seamless user experience, removing the need for a separate "View Full" button.
+*   **Where:**
+    *   Modified `admin/sms_history.php`.
+*   **Changes:**
+    *   The truncated SMS message in both the desktop and mobile views is now a clickable element that opens the full message modal.
+    *   Removed the redundant "View Full" button.
+
 ### Feature: Re-implemented Admin SMS History
 *   **What:** Re-implemented the admin SMS history page, which was lost after a git reset.
 *   **Why:** To restore the functionality for administrators to monitor the SMS usage of all users.
