@@ -1,3 +1,7 @@
+## Instructions for Gemini
+- Always review the changelog (`changelog.md`) before starting any new task to understand recent changes and project context.
+- After finishing any task, update the changelog (`changelog.md`) with every detail about what was done, how it was done, and why it was done.
+
 ## Gemini Added Memories
 - I have completed the task of adding the admin SMS history page. I have created the necessary files, updated the models, and made the page responsive. I have also updated the changelog.
 - I have fixed the bug in the user's SMS history modal and updated the changelog.
