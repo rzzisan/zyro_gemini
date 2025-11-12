@@ -20,6 +20,7 @@ ensureAdmin(); // Protects all admin pages that include this header
                 <a href="<?php echo APP_URL; ?>/admin/index.php" class="hover:text-gray-300">Dashboard</a>
                 <a href="<?php echo APP_URL; ?>/admin/users.php" class="hover:text-gray-300">Users</a>
                 <a href="<?php echo APP_URL; ?>/admin/plans.php" class="hover:text-gray-300">Plans</a>
+                <a href="<?php echo APP_URL; ?>/admin/fraud_checker.php" class="hover:text-gray-300">Fraud Checker</a>
                 <div class="relative" x-data="{ open: false }">
                     <a @click="open = !open" class="cursor-pointer hover:text-gray-300">SMS</a>
                     <div x-show="open" @click.away="open = false" class="absolute bg-gray-800 text-white py-2 mt-2 rounded-md shadow-lg">
@@ -44,6 +45,7 @@ ensureAdmin(); // Protects all admin pages that include this header
             <a href="<?php echo APP_URL; ?>/admin/index.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Dashboard</a>
             <a href="<?php echo APP_URL; ?>/admin/users.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Users</a>
             <a href="<?php echo APP_URL; ?>/admin/plans.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Plans</a>
+            <a href="<?php echo APP_URL; ?>/admin/fraud_checker.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Fraud Checker</a>
             <a href="<?php echo APP_URL; ?>/admin/sms_credit.php" class="block py-2 px-4 text-sm hover:bg-gray-700">SMS Credit</a>
             <a href="<?php echo APP_URL; ?>/admin/sms_history.php" class="block py-2 px-4 text-sm hover:bg-gray-700">SMS History</a>
             <a href="<?php echo APP_URL; ?>/admin/logout.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Logout</a>

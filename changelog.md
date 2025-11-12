@@ -2,20 +2,53 @@
 
 ## Wednesday, November 12, 2025
 
-### Feature Removal: Fraud Checker
-*   **What:** Removed the "Fraud Checker" feature.
-*   **Why:** The feature was no longer needed.
+### Feature: Admin Fraud Checker
+*   **What:** Added the Fraud Checker feature to the admin panel.
+*   **Why:** To allow administrators to use the Fraud Checker feature.
 *   **Where:**
-    *   Deleted `fraud_checker.php`.
-    *   Deleted `cron/update_courier_cache.php`.
-    *   Deleted `cron/update_courier_history.php`.
-    *   Deleted `models/CourierCache.php`.
-    *   Deleted `api/v1/courier_check.php`.
-    *   Deleted `views/dashboard/fraud_checker.php`.
-    *   Dropped the `courier_history` and `courier_cache` tables from the database.
-    *   Removed the "Fraud Checker" link from `views/layouts/header.php`.
+    *   Created `admin/fraud_checker.php` to provide the user interface for the fraud checker in the admin panel.
+    *   Modified `views/layouts/admin_header.php` to add a "Fraud Checker" link to the admin dashboard menu.
 *   **Changes:**
-    *   The "Fraud Checker" feature has been completely removed.
+    *   The Fraud Checker feature is now available in the admin panel.
+
+### Housekeeping: Removed Unnecessary Files
+*   **What:** Removed the `api_tokens.sql`, `websites.sql`, `debug.log`, `auth_tokens.sql`, `composer.json`, and `package.json` files.
+*   **Why:** The files were no longer needed for the project.
+*   **Where:**
+    *   Removed `api_tokens.sql`, `websites.sql`, `debug.log`, `auth_tokens.sql`, `composer.json`, and `package.json` from the root directory.
+*   **Changes:**
+    *   The project directory is now cleaner.
+
+### Improvement: Fraud Checker
+*   **What:** Refactored the Fraud Checker feature to improve its reliability, security, and user experience.
+*   **Why:** The previous implementation had several issues, including incorrect phone number validation, improper API response handling, and security vulnerabilities.
+*   **Where:**
+    *   Modified `fraud_checker.php` to add robust data validation, error handling, and secure logging.
+    *   Modified `models/CourierStats.php` to use an `upsert` method for more efficient database operations.
+    *   Modified `core/config.php` to remove unnecessary API keys.
+    *   Modified `views/dashboard/fraud_checker.php` to add client-side validation and improve error display.
+    *   Removed the `courier_stats.sql` file as it is no longer needed.
+*   **Changes:**
+    *   The Fraud Checker now validates phone numbers against the `01xxxxxxxxx` format on both the client-side and server-side.
+    *   The feature now correctly handles the API response, including the `total_fraud_reports` field.
+    *   Fixed a bug that was causing an "Incorrect integer value" error when saving data to the database.
+    *   Fixed a bug that was causing an "Unknown error from API" error due to incorrect API response handling.
+    *   Unnecessary API keys have been removed, and the API integration is more robust.
+    *   The database now correctly stores and updates courier statistics.
+
+### Feature: Fraud Checker
+*   **What:** Implemented a "Fraud Checker" feature that allows users to check the delivery history of a phone number.
+*   **Why:** To help users identify potentially fraudulent customers by providing them with a summary of their order history with a specific courier.
+*   **Where:**
+    *   Created `courier_stats.sql` to define the `courier_stats` table schema.
+    *   Created `models/CourierStats.php` to manage courier stats data.
+    *   Created `fraud_checker.php` in the root directory to handle the AJAX requests.
+    *   Created `views/dashboard/fraud_checker.php` to provide the user interface for the fraud checker.
+    *   Modified `views/layouts/header.php` to add a "Fraud Checker" link to the user dashboard menu.
+*   **Changes:**
+    *   Users can now search for a phone number on the "Fraud Checker" page to view its delivery history.
+    *   The system fetches data from the SteadFast API and stores it in a local database to reduce API calls and improve performance.
+    *   The results show the total parcels, deliveries, cancellations, and fraud reports for the given phone number.
 
 ### Feature Removal: Admin Courier History
 *   **What:** Removed the "Courier History" feature from the admin panel.
