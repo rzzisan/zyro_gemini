@@ -2,6 +2,27 @@
 
 ## Wednesday, November 12, 2025
 
+### Bug Fix: Admin Courier History Page
+*   **What:** Fixed a bug that was causing the admin courier history page to return a blank page.
+*   **Why:** The issue was caused by the `CourierHistory` model not being instantiated with a database connection.
+*   **Where:**
+    *   Modified `admin/courier_history.php` to instantiate the `CourierHistory` model with a database connection.
+    *   Modified `models/CourierHistory.php` to accept a database connection in the constructor and to use it in the methods.
+*   **Changes:**
+    *   The admin courier history page now displays correctly.
+
+### Feature: Admin Courier History Page
+*   **What:** Created a new page in the admin dashboard to display the courier history.
+*   **Why:** To allow administrators to view and search all courier history records in the database.
+*   **Where:**
+    *   Created `admin/courier_history.php` to display the courier history.
+    *   Modified `models/CourierHistory.php` to add `getCourierHistoryPaginated()` and `getTotalCourierHistoryCount()` methods.
+    *   Modified `views/layouts/admin_header.php` to add a "Courier History" link to the admin menu.
+*   **Changes:**
+    *   Admins can now view a paginated and searchable table of all courier history records.
+    *   The table displays the phone number, total orders, total delivered, total cancelled, success rate, and last updated date.
+    *   The page includes options to change the number of rows displayed per page (50, 100, 500, 1000).
+
 ### Improvement: Fraud Checker Logic
 *   **What:** Modified the "Fraud Checker" feature to always prioritize checking the local database for a phone number's history before making an API call.
 *   **Why:** To reduce unnecessary API calls and to ensure that the user is always shown the data from the local database if it exists.

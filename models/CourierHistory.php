@@ -1,6 +1,7 @@
 <?php
 
 class CourierHistory {
+    private $db;
     public ?int $id;
     public string $courier_name;
     public string $phone_number;
@@ -9,34 +10,20 @@ class CourierHistory {
     public int $total_cancelled;
     public string $last_updated;
 
-    public function __construct(
-        ?int $id = null,
-        string $courier_name = 'steadfast',
-        string $phone_number = '',
-        int $total_orders = 0,
-        int $total_delivered = 0,
-        int $total_cancelled = 0,
-        string $last_updated = ''
-    ) {
-        $this->id = $id;
-        $this->courier_name = $courier_name;
-        $this->phone_number = $phone_number;
-        $this->total_orders = $total_orders;
-        $this->total_delivered = $total_delivered;
-        $this->total_cancelled = $total_cancelled;
-        $this->last_updated = $last_updated;
+    public function __construct($db) {
+        $this->db = $db;
     }
 
-    public static function fromArray(array $data): self {
-        return new self(
-            $data['id'] ?? null,
-            $data['courier_name'] ?? 'steadfast',
-            $data['phone_number'] ?? '',
-            $data['total_orders'] ?? 0,
-            $data['total_delivered'] ?? 0,
-            $data['total_cancelled'] ?? 0,
-            $data['last_updated'] ?? ''
-        );
+    public function fromArray(array $data): self {
+        $instance = new self($this->db);
+        $instance->id = $data['id'] ?? null;
+        $instance->courier_name = $data['courier_name'] ?? 'steadfast';
+        $instance->phone_number = $data['phone_number'] ?? '';
+        $instance->total_orders = $data['total_orders'] ?? 0;
+        $instance->total_delivered = $data['total_delivered'] ?? 0;
+        $instance->total_cancelled = $data['total_cancelled'] ?? 0;
+        $instance->last_updated = $data['last_updated'] ?? '';
+        return $instance;
     }
 
     public function toArray(): array {
@@ -51,20 +38,17 @@ class CourierHistory {
         ];
     }
 
-    public static function findByPhoneNumber(string $phoneNumber): ?self {
-        $db = require __DIR__ . '/../core/db.php';
-        $stmt = $db->prepare('SELECT * FROM courier_history WHERE phone_number = ?');
+    public function findByPhoneNumber(string $phoneNumber): ?self {
+        $stmt = $this->db->prepare('SELECT * FROM courier_history WHERE phone_number = ?');
         $stmt->execute([$phoneNumber]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data ? self::fromArray($data) : null;
+        return $data ? $this->fromArray($data) : null;
     }
 
     public function save(): void {
-        $db = require __DIR__ . '/../core/db.php';
-
         if ($this->id) {
-            $stmt = $db->prepare(
+            $stmt = $this->db->prepare(
                 'UPDATE courier_history SET courier_name = ?, phone_number = ?, total_orders = ?, total_delivered = ?, total_cancelled = ? WHERE id = ?'
             );
             $stmt->execute([
@@ -76,7 +60,7 @@ class CourierHistory {
                 $this->id,
             ]);
         } else {
-            $stmt = $db->prepare(
+            $stmt = $this->db->prepare(
                 'INSERT INTO courier_history (courier_name, phone_number, total_orders, total_delivered, total_cancelled) VALUES (?, ?, ?, ?, ?)'
             );
             $stmt->execute([
@@ -86,7 +70,46 @@ class CourierHistory {
                 $this->total_delivered,
                 $this->total_cancelled,
             ]);
-            $this->id = (int) $db->lastInsertId();
+            $this->id = (int) $this->db->lastInsertId();
         }
+    }
+
+    public function getCourierHistoryPaginated(int $limit, int $offset, string $searchTerm = ''): array {
+        $sql = 'SELECT * FROM courier_history';
+        $params = [];
+
+        if ($searchTerm) {
+            $sql .= ' WHERE phone_number LIKE ?';
+            $params[] = '%' . $searchTerm . '%';
+        }
+
+        $sql .= ' ORDER BY last_updated DESC LIMIT ? OFFSET ?';
+        $params[] = $limit;
+        $params[] = $offset;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        $results = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $results[] = $this->fromArray($row);
+        }
+
+        return $results;
+    }
+
+    public function getTotalCourierHistoryCount(string $searchTerm = ''): int {
+        $sql = 'SELECT COUNT(*) FROM courier_history';
+        $params = [];
+
+        if ($searchTerm) {
+            $sql .= ' WHERE phone_number LIKE ?';
+            $params[] = '%' . $searchTerm . '%';
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return (int) $stmt->fetchColumn();
     }
 }

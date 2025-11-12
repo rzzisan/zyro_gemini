@@ -25,6 +25,7 @@ ensureAdmin(); // Protects all admin pages that include this header
                     <div x-show="open" @click.away="open = false" class="absolute bg-gray-800 text-white py-2 mt-2 rounded-md shadow-lg">
                         <a href="<?php echo APP_URL; ?>/admin/sms_credit.php" class="block px-4 py-2 hover:bg-gray-700">SMS Credit</a>
                         <a href="<?php echo APP_URL; ?>/admin/sms_history.php" class="block px-4 py-2 hover:bg-gray-700">SMS History</a>
+                        <a href="<?php echo APP_URL; ?>/admin/courier_history.php" class="block px-4 py-2 hover:bg-gray-700">Courier History</a>
                     </div>
                 </div>
                 <a href="<?php echo APP_URL; ?>/admin/logout.php" class="hover:text-gray-300">Logout</a>
@@ -46,6 +47,7 @@ ensureAdmin(); // Protects all admin pages that include this header
             <a href="<?php echo APP_URL; ?>/admin/plans.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Plans</a>
             <a href="<?php echo APP_URL; ?>/admin/sms_credit.php" class="block py-2 px-4 text-sm hover:bg-gray-700">SMS Credit</a>
             <a href="<?php echo APP_URL; ?>/admin/sms_history.php" class="block py-2 px-4 text-sm hover:bg-gray-700">SMS History</a>
+            <a href="<?php echo APP_URL; ?>/admin/courier_history.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Courier History</a>
             <a href="<?php echo APP_URL; ?>/admin/logout.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Logout</a>
         </div>
     </nav>
