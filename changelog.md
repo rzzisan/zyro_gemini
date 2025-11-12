@@ -2,6 +2,24 @@
 
 ## Wednesday, November 12, 2025
 
+### Feature: Admin Courier History Menu and Page
+*   **What:** Created a new menu item "Courier History" in the admin dashboard and implemented the corresponding page to display all courier history from the database.
+*   **Why:** To provide administrators with a dedicated section to view and manage courier delivery records, enhancing oversight and data analysis capabilities.
+*   **Where:**
+    *   Modified `views/layouts/admin_header.php` to include "Courier History" in the SMS dropdown menu for both desktop and mobile views.
+    *   The `admin/courier_history.php` page was already created and configured to display paginated courier history.
+*   **Changes:**
+    *   Admins can now easily navigate to the "Courier History" page from the main admin menu.
+    *   The page displays courier records in a table format with pagination options (50, 100, 500, 1000 rows per page) and search functionality.
+
+### Bug Fix: Fraud Checker
+*   **What:** Fixed a bug in the "Fraud Checker" feature that was causing an "An error occurred while fetching data" message to be displayed to the user.
+*   **Why:** The issue was caused by the `CourierHistory` model being used with static method calls instead of instance method calls. The model was also being instantiated without a database connection.
+*   **Where:**
+    *   Modified `fraud_checker.php` to properly instantiate the `CourierHistory` model with a database connection and use the instance to call the `findByPhoneNumber` method.
+*   **Changes:**
+    *   The "Fraud Checker" feature now works correctly and no longer displays an error message.
+
 ### Bug Fix: Admin Courier History Page
 *   **What:** Fixed a bug that was causing the admin courier history page to return a blank page.
 *   **Why:** The issue was caused by the `CourierHistory` model not being instantiated with a database connection.
@@ -170,8 +188,9 @@
     *   Modified `models/SmsHistory.php` to add `getSmsHistoryPaginated()` and `getTotalSmsHistoryCount()` methods.
 *   **Changes:**
     *   Admins can now view a paginated and filterable table of all SMS messages sent by users.
-    *   The table includes the user, date and time, target phone number, message, SMS count, and credit deducted.
-    *   The page is responsive and includes filtering by user, search term, and date range.
+    *   The table is responsive and includes filtering by user, search term, and date range.
+    *   A modal, powered by Alpine.js, allows for viewing the full text of long messages.
+    *   The page design is consistent with the rest of the admin panel, including hover effects and a mobile-friendly layout.
 
 ### Feature: Mobile Responsive Design
 *   **What:** Made the entire project's design mobile responsive.

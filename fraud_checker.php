@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/core/config.php';
+require_once __DIR__ . '/core/db.php';
 require_once __DIR__ . '/models/CourierHistory.php';
 
 // Clear the debug log for this request
@@ -15,7 +16,9 @@ if (empty($phone_clean)) {
     exit;
 }
 
-$history = CourierHistory::findByPhoneNumber($phone_clean);
+$db = getDb();
+$courierHistoryModel = new CourierHistory($db);
+$history = $courierHistoryModel->findByPhoneNumber($phone_clean);
 
 if ($history) {
     returnData($history);
@@ -55,7 +58,7 @@ if ($response === false || $http_code !== 200 || empty($packzy_data) || !isset($
 }
 
 if (!$history) {
-    $history = new CourierHistory();
+    $history = new CourierHistory($db);
     $history->phone_number = $phone_clean;
 }
 
