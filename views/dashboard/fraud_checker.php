@@ -68,112 +68,242 @@
                 <div id="combined-progress-bar" class="h-4 rounded-full" style="width: 100%; background: linear-gradient(to right, #34D399 0%, #34D399 0%, #EF4444 0%, #EF4444 100%);"></div>
             </div>
 
+            <div id="report-actions" class="mt-4 flex gap-4">
+                <button id="report-fraud-btn" class="bg-red-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    Report Fraud
+                </button>
+                <a href="#" id="view-reports-link" class="text-green-600 font-bold py-3" style="display: none;">View Report Reason</a>
+            </div>
+
             <div id="error-area" class="mt-8 bg-white p-6 rounded-lg shadow-md" style="display: none;">
                  <p id="error-message" class="text-red-500"></p>
             </div>
     </main>
 </div>
 
+<!-- Report Fraud Modal -->
+<div id="report-fraud-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50" style="display: none;">
+    <div class="bg-white rounded-lg p-8 shadow-xl w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4">Report Fraud</h2>
+        <form id="report-fraud-form">
+            <div class="mb-4">
+                <label for="customer_name" class="block text-gray-700">Customer's Name</label>
+                <input type="text" id="customer_name" name="customer_name" class="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500" required>
+            </div>
+            <div class="mb-4">
+                <label for="complaint" class="block text-gray-700">Your Complaint (Max 250 chars)</label>
+                <textarea id="complaint" name="complaint" rows="4" maxlength="250" class="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500" required></textarea>
+            </div>
+            <div id="report-error-message" class="text-red-500 mb-4"></div>
+            <div class="flex justify-end gap-4">
+                <button type="button" id="cancel-report-btn" class="bg-gray-300 text-gray-800 font-bold px-6 py-3 rounded-lg hover:bg-gray-400">Cancel</button>
+                <button type="submit" id="submit-report-btn" class="bg-green-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-green-600">Submit Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- View Reports Modal -->
+<div id="view-reports-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50" style="display: none;">
+    <div class="bg-white rounded-lg p-8 shadow-xl w-full max-w-2xl">
+        <h2 class="text-2xl font-bold mb-4">User Submitted Reports</h2>
+        <div id="reports-list" class="space-y-4 max-h-96 overflow-y-auto">
+            <!-- Reports will be injected here by JS -->
+        </div>
+        <div class="flex justify-end mt-6">
+            <button type="button" id="close-view-reports-btn" class="bg-gray-300 text-gray-800 font-bold px-6 py-3 rounded-lg hover:bg-gray-400">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    document.getElementById('fraud-checker-form').addEventListener('submit', function (e) {
-        e.preventDefault();
+    document.addEventListener('DOMContentLoaded', function () {
+        const fraudCheckerForm = document.getElementById('fraud-checker-form');
         const phoneNumberInput = document.getElementById('phone_number');
-        const phoneNumber = phoneNumberInput.value;
         const searchButton = document.getElementById('search-button');
         const resultsArea = document.getElementById('results-area');
         const errorArea = document.getElementById('error-area');
         const errorMessage = document.getElementById('error-message');
 
-        // Client-side validation
-        if (!phoneNumber) {
-            errorMessage.textContent = 'Phone number is required.';
-            errorArea.style.display = 'block';
-            resultsArea.style.display = 'none';
-            return;
-        }
-        if (!/^01[3-9]\d{8}$/.test(phoneNumber)) {
-            errorMessage.textContent = 'Invalid phone number format. Please use the format 01xxxxxxxxx.';
-            errorArea.style.display = 'block';
-            resultsArea.style.display = 'none';
-            return;
-        }
+        // Report fraud elements
+        const reportFraudBtn = document.getElementById('report-fraud-btn');
+        const reportFraudModal = document.getElementById('report-fraud-modal');
+        const cancelReportBtn = document.getElementById('cancel-report-btn');
+        const reportFraudForm = document.getElementById('report-fraud-form');
+        const submitReportBtn = document.getElementById('submit-report-btn');
+        const reportErrorMessage = document.getElementById('report-error-message');
 
-        searchButton.disabled = true;
-        searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        resultsArea.style.display = 'none';
-        errorArea.style.display = 'none';
+        // View reports elements
+        const viewReportsLink = document.getElementById('view-reports-link');
+        const viewReportsModal = document.getElementById('view-reports-modal');
+        const closeViewReportsBtn = document.getElementById('close-view-reports-btn');
+        const reportsList = document.getElementById('reports-list');
 
-        const formData = new FormData();
-        formData.append('phone_number', phoneNumber);
+        let currentPhoneNumber = '';
 
-        fetch('<?php echo APP_URL; ?>/fraud_checker.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const stats = data.data;
-                
-                // Update summary cards
-                document.getElementById('total-orders').textContent = stats.total_parcels;
-                document.getElementById('total-delivered').textContent = stats.total_delivered;
-                document.getElementById('total-cancelled').textContent = stats.total_cancelled;
-                document.getElementById('total-fraud-reports').textContent = stats.total_fraud_reports;
+        fraudCheckerForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const phoneNumber = phoneNumberInput.value;
+            currentPhoneNumber = phoneNumber; // Store for reporting
 
-                const deliveryRate = stats.total_parcels > 0 ? (stats.total_delivered / stats.total_parcels) * 100 : 0;
-                const cancellationRate = stats.total_parcels > 0 ? (stats.total_cancelled / stats.total_parcels) * 100 : 0;
-                document.getElementById('delivery-rate').textContent = `${deliveryRate.toFixed(1)}%`;
-
-                // Update progress text and status
-                const progressText = document.getElementById('progress-text');
-                const deliveryStatusText = document.getElementById('delivery-status-text');
-                
-                progressText.textContent = `${deliveryRate.toFixed(1)}%`;
-
-                if (deliveryRate >= 95) {
-                    deliveryStatusText.textContent = 'Excellent';
-                } else if (deliveryRate >= 80) {
-                    deliveryStatusText.textContent = 'Good';
-                } else {
-                    deliveryStatusText.textContent = 'Poor';
-                }
-
-                // Update linear progress bar
-                const combinedProgressBar = document.getElementById('combined-progress-bar');
-                const greenWidth = deliveryRate;
-                const redWidth = cancellationRate; // This will be the actual cancellation rate
-
-                // Ensure total doesn't exceed 100%
-                const totalPercentage = greenWidth + redWidth;
-                if (totalPercentage > 100) {
-                    // Adjust if sum exceeds 100, e.g., scale proportionally or cap
-                    // For simplicity, let's cap the red part if it overflows
-                    const scaleFactor = 100 / totalPercentage;
-                    // greenWidth *= scaleFactor; // Not needed if we just cap red
-                    // redWidth *= scaleFactor;
-                }
-
-                combinedProgressBar.style.background = `linear-gradient(to right, #22C55E 0%, #22C55E ${greenWidth}%, #EF4444 ${greenWidth}%, #EF4444 ${greenWidth + redWidth}%)`;
-                // If the sum of green and red is less than 100, the remaining part will be transparent by default.
-                // If we want the remaining part to be gray, we would need a more complex gradient or another div.
-                // For now, this should work as per the request (green for delivery, red for cancellation).
-                // The background of the parent div is already gray, so the remaining part will show gray.
-
-
-                resultsArea.style.display = 'block';
-            } else {
-                errorMessage.textContent = data.message;
+            // Client-side validation
+            if (!phoneNumber) {
+                errorMessage.textContent = 'Phone number is required.';
                 errorArea.style.display = 'block';
+                resultsArea.style.display = 'none';
+                return;
             }
-        })
-        .catch(error => {
-            errorMessage.textContent = 'An error occurred while fetching data.';
-            errorArea.style.display = 'block';
-        })
-        .finally(() => {
-            searchButton.disabled = false;
-            searchButton.innerHTML = 'Search';
+            if (!/^01[3-9]\d{8}$/.test(phoneNumber)) {
+                errorMessage.textContent = 'Invalid phone number format. Please use the format 01xxxxxxxxx.';
+                errorArea.style.display = 'block';
+                resultsArea.style.display = 'none';
+                return;
+            }
+
+            searchButton.disabled = true;
+            searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            resultsArea.style.display = 'none';
+            errorArea.style.display = 'none';
+            viewReportsLink.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('phone_number', phoneNumber);
+
+            fetch('<?php echo APP_URL; ?>/fraud_checker.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const stats = data.data;
+                    
+                    document.getElementById('total-orders').textContent = stats.total_parcels;
+                    document.getElementById('total-delivered').textContent = stats.total_delivered;
+                    document.getElementById('total-cancelled').textContent = stats.total_cancelled;
+                    document.getElementById('total-fraud-reports').textContent = stats.total_fraud_reports;
+
+                    const deliveryRate = stats.total_parcels > 0 ? (stats.total_delivered / stats.total_parcels) * 100 : 0;
+                    const cancellationRate = stats.total_parcels > 0 ? (stats.total_cancelled / stats.total_parcels) * 100 : 0;
+                    document.getElementById('delivery-rate').textContent = `${deliveryRate.toFixed(1)}%`;
+
+                    const progressText = document.getElementById('progress-text');
+                    const deliveryStatusText = document.getElementById('delivery-status-text');
+                    progressText.textContent = `${deliveryRate.toFixed(1)}%`;
+
+                    if (deliveryRate >= 95) {
+                        deliveryStatusText.textContent = 'Excellent';
+                    } else if (deliveryRate >= 80) {
+                        deliveryStatusText.textContent = 'Good';
+                    } else {
+                        deliveryStatusText.textContent = 'Poor';
+                    }
+
+                    const combinedProgressBar = document.getElementById('combined-progress-bar');
+                    const greenWidth = deliveryRate;
+                    const redWidth = cancellationRate;
+                    combinedProgressBar.style.background = `linear-gradient(to right, #22C55E 0%, #22C55E ${greenWidth}%, #EF4444 ${greenWidth}%, #EF4444 ${greenWidth + redWidth}%)`;
+
+                    // Handle user reports
+                    reportsList.innerHTML = ''; // Clear previous reports
+                    if (stats.user_reports_data && stats.user_reports_data.length > 0) {
+                        viewReportsLink.style.display = 'block';
+                        stats.user_reports_data.forEach(report => {
+                            const reportEl = document.createElement('div');
+                            reportEl.className = 'p-4 border rounded-lg bg-gray-50';
+                            reportEl.innerHTML = `
+                                <p class="font-bold text-gray-800">Reported by User #${report.user_id}</p>
+                                <p><span class="font-semibold">Customer Name:</span> ${report.customer_name}</p>
+                                <p><span class="font-semibold">Complaint:</span> ${report.complaint}</p>
+                                <p class="text-sm text-gray-500 mt-1">On: ${new Date(report.reported_at).toLocaleString()}</p>
+                            `;
+                            reportsList.appendChild(reportEl);
+                        });
+                    } else {
+                        viewReportsLink.style.display = 'none';
+                    }
+
+                    resultsArea.style.display = 'block';
+                } else {
+                    errorMessage.textContent = data.message;
+                    errorArea.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                errorMessage.textContent = 'An error occurred while fetching data.';
+                errorArea.style.display = 'block';
+            })
+            .finally(() => {
+                searchButton.disabled = false;
+                searchButton.innerHTML = 'Search';
+            });
+        });
+
+        // --- Modal Handling ---
+
+        // Report Fraud Modal
+        reportFraudBtn.addEventListener('click', () => {
+            reportFraudModal.style.display = 'flex';
+        });
+
+        cancelReportBtn.addEventListener('click', () => {
+            reportFraudModal.style.display = 'none';
+            reportFraudForm.reset();
+            reportErrorMessage.textContent = '';
+        });
+
+        reportFraudForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitReportBtn.disabled = true;
+            submitReportBtn.textContent = 'Submitting...';
+            reportErrorMessage.textContent = '';
+
+            const formData = new FormData(reportFraudForm);
+            formData.append('phone_number', currentPhoneNumber);
+
+            fetch('<?php echo APP_URL; ?>/report_fraud.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Report submitted successfully!');
+                    reportFraudModal.style.display = 'none';
+                    reportFraudForm.reset();
+                    // Optionally, re-run the search to update stats
+                    fraudCheckerForm.dispatchEvent(new Event('submit'));
+                } else {
+                    reportErrorMessage.textContent = data.message || 'An unknown error occurred.';
+                }
+            })
+            .catch(() => {
+                reportErrorMessage.textContent = 'A network error occurred. Please try again.';
+            })
+            .finally(() => {
+                submitReportBtn.disabled = false;
+                submitReportBtn.textContent = 'Submit Report';
+            });
+        });
+
+        // View Reports Modal
+        viewReportsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            viewReportsModal.style.display = 'flex';
+        });
+
+        closeViewReportsBtn.addEventListener('click', () => {
+            viewReportsModal.style.display = 'none';
+        });
+
+        // Close modals by clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === reportFraudModal) {
+                reportFraudModal.style.display = 'none';
+            }
+            if (e.target === viewReportsModal) {
+                viewReportsModal.style.display = 'none';
+            }
         });
     });
 </script>

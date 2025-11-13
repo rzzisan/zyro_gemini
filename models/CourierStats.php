@@ -36,6 +36,26 @@ class CourierStats
             ':total_fraud_reports' => $data['total_fraud_reports']
         ]);
     }
+
+    public function addFraudReport($phoneNumber, $report)
+    {
+        $stat = $this->findByPhoneNumber($phoneNumber);
+
+        if ($stat) {
+            $userReports = $stat['user_reports'] ? json_decode($stat['user_reports'], true) : [];
+            $userReports[] = $report;
+            $updatedReports = json_encode($userReports);
+
+            $sql = "UPDATE courier_stats SET user_reports = :user_reports WHERE phone_number = :phone_number";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([
+                ':user_reports' => $updatedReports,
+                ':phone_number' => $phoneNumber
+            ]);
+        }
+        return false;
+    }
+
     public function getTotalCourierStatsCount($searchTerm = '')
     {
         $sql = "SELECT COUNT(*) FROM courier_stats";

@@ -2,6 +2,28 @@
 
 ## Thursday, November 13, 2025
 
+### Feature: User Fraud Reporting
+*   **What:** Implemented a comprehensive fraud reporting system within the user-facing Fraud Checker page.
+*   **Why:** To empower users to contribute to the fraud detection system by reporting suspicious phone numbers directly. This creates a community-driven layer of data on top of the external API, making the tool more effective and informative for everyone.
+*   **Where:**
+    *   Modified `models/CourierStats.php`
+    *   Created `report_fraud.php`
+    *   Modified `fraud_checker.php`
+    *   Modified `views/dashboard/fraud_checker.php`
+*   **How:**
+    1.  **Database Enhancement:**
+        *   Added a `user_reports` column (`TEXT` type) to the `courier_stats` table to store user-submitted reports in JSON format. This was done via a temporary migration script.
+    2.  **Backend Logic:**
+        *   Created a new `report_fraud.php` endpoint to securely handle AJAX requests for submitting fraud reports. This script validates user authentication, checks input data (phone number, customer name, complaint), and saves the report along with the reporting user's ID and a timestamp.
+        *   Updated the `CourierStats` model by adding an `addFraudReport()` method, which fetches the existing JSON reports, appends the new one, and updates the database.
+        *   Modified the main `fraud_checker.php` endpoint to integrate this new data. When serving cached results, it now reads the `user_reports` JSON, adds the count of these reports to the `total_fraud_reports` metric, and includes the full report details in the API response for the frontend to use.
+    3.  **Frontend User Experience:**
+        *   In `views/dashboard/fraud_checker.php`, a "Report Fraud" button now appears alongside the search results, allowing for immediate action.
+        *   Clicking the button opens a "Report Fraud" modal with a form to input the customer's name and a complaint (up to 250 characters).
+        *   If a searched number has existing user reports, a "View Report Reason" link is now displayed.
+        *   Clicking this link opens a second modal that lists all submitted reports for that number, showing the (anonymized) reporting user's ID, the customer name, the complaint, and the date of the report.
+        *   The entire process is handled via JavaScript, from showing/hiding modals to submitting the report asynchronously and dynamically updating the UI based on the API response.
+
 ### Improvement: Redesigned Fraud Checker UI
 *   **What:** Redesigned the Fraud Checker page to match the user-provided design.
 *   **Why:** To align the UI with the user's vision, which includes a simplified left sidebar and icon-less summary cards.

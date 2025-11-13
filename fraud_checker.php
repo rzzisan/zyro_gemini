@@ -5,9 +5,11 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/core/config.php';
 require_once ROOT_PATH . '/core/db.php';
+require_once ROOT_PATH . '/core/functions.php';
 require_once ROOT_PATH . '/models/CourierStats.php';
 
 header('Content-Type: application/json');
+
 
 $response = ['success' => false, 'message' => 'An error occurred.'];
 
@@ -30,6 +32,16 @@ if (isset($_POST['phone_number'])) {
         $isCacheExpired = !$stats || (time() - strtotime($stats['last_updated_at'])) > (FRAUD_CHECKER_CACHE_EXPIRATION * 24 * 60 * 60);
 
         if ($stats && !$isCacheExpired) {
+            $userReports = [];
+            if (!empty($stats['user_reports'])) {
+                $decodedReports = json_decode($stats['user_reports'], true);
+                if (is_array($decodedReports)) {
+                    $userReports = $decodedReports;
+                }
+            }
+            $stats['total_fraud_reports'] += count($userReports);
+            $stats['user_reports_data'] = $userReports;
+
             $response = ['success' => true, 'data' => $stats];
         } else {
             $apiUrl = PACKZY_API_URL . $phoneNumber;
