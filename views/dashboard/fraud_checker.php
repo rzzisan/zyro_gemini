@@ -3,18 +3,10 @@
 <div class="flex flex-col lg:flex-row gap-8 p-4 lg:p-8">
     <!-- Left Column -->
     <aside class="w-full lg:w-1/4 bg-green-50 rounded-lg p-8 flex flex-col items-center text-center">
-        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-            <i class="fas fa-shield-alt text-green-600"></i> ফ্রডচেকার
-        </h2>
+        <h2 class="text-2xl font-bold mb-4">ফ্রডচেকার</h2>
         <p class="text-green-700 font-semibold mb-4">Delivery Success Ratio</p>
-        <div class="relative w-48 h-48 mb-4">
-            <svg class="w-full h-full" viewBox="0 0 36 36">
-                <path class="text-gray-200" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path id="progress-ring" class="text-green-500" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            </svg>
-            <div id="progress-text" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-gray-700">
-                0%
-            </div>
+        <div id="progress-text" class="text-5xl font-bold text-gray-700 mb-4">
+            0%
         </div>
         <p id="delivery-status-text" class="text-xl font-bold text-gray-800 mb-2">Excellent</p>
         <p class="text-gray-600">এটি একটি নিরাপদ ডেলিভারি।</p>
@@ -29,9 +21,9 @@
             </button>
         </form>
 
-        <div class="text-center border rounded-lg p-3 mb-6">
+        <!-- <div class="text-center border rounded-lg p-3 mb-6">
             <p>মার্চেন্ট রিপোর্ট সহ দেখতে একাউন্ট রেজিস্টার করে লগিন করুন</p>
-        </div>
+        </div> -->
 
         <div id="results-area" style="display: none;">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
@@ -70,6 +62,10 @@
                         <p id="total-fraud-reports" class="text-2xl font-bold">0</p>
                     </div>
                 </div>
+            </div>
+
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                <div id="combined-progress-bar" class="h-4 rounded-full" style="width: 100%; background: linear-gradient(to right, #34D399 0%, #34D399 0%, #EF4444 0%, #EF4444 100%);"></div>
             </div>
 
             <div id="error-area" class="mt-8 bg-white p-6 rounded-lg shadow-md" style="display: none;">
@@ -126,29 +122,44 @@
                 document.getElementById('total-fraud-reports').textContent = stats.total_fraud_reports;
 
                 const deliveryRate = stats.total_parcels > 0 ? (stats.total_delivered / stats.total_parcels) * 100 : 0;
+                const cancellationRate = stats.total_parcels > 0 ? (stats.total_cancelled / stats.total_parcels) * 100 : 0;
                 document.getElementById('delivery-rate').textContent = `${deliveryRate.toFixed(1)}%`;
 
-                // Update circular progress bar
-                const progressRing = document.getElementById('progress-ring');
+                // Update progress text and status
                 const progressText = document.getElementById('progress-text');
                 const deliveryStatusText = document.getElementById('delivery-status-text');
                 
-                progressRing.style.strokeDasharray = `${deliveryRate}, 100`;
                 progressText.textContent = `${deliveryRate.toFixed(1)}%`;
 
                 if (deliveryRate >= 95) {
                     deliveryStatusText.textContent = 'Excellent';
-                    progressRing.classList.remove('text-yellow-500', 'text-red-500');
-                    progressRing.classList.add('text-green-500');
                 } else if (deliveryRate >= 80) {
                     deliveryStatusText.textContent = 'Good';
-                    progressRing.classList.remove('text-green-500', 'text-red-500');
-                    progressRing.classList.add('text-yellow-500');
                 } else {
                     deliveryStatusText.textContent = 'Poor';
-                    progressRing.classList.remove('text-green-500', 'text-yellow-500');
-                    progressRing.classList.add('text-red-500');
                 }
+
+                // Update linear progress bar
+                const combinedProgressBar = document.getElementById('combined-progress-bar');
+                const greenWidth = deliveryRate;
+                const redWidth = cancellationRate; // This will be the actual cancellation rate
+
+                // Ensure total doesn't exceed 100%
+                const totalPercentage = greenWidth + redWidth;
+                if (totalPercentage > 100) {
+                    // Adjust if sum exceeds 100, e.g., scale proportionally or cap
+                    // For simplicity, let's cap the red part if it overflows
+                    const scaleFactor = 100 / totalPercentage;
+                    // greenWidth *= scaleFactor; // Not needed if we just cap red
+                    // redWidth *= scaleFactor;
+                }
+
+                combinedProgressBar.style.background = `linear-gradient(to right, #22C55E 0%, #22C55E ${greenWidth}%, #EF4444 ${greenWidth}%, #EF4444 ${greenWidth + redWidth}%)`;
+                // If the sum of green and red is less than 100, the remaining part will be transparent by default.
+                // If we want the remaining part to be gray, we would need a more complex gradient or another div.
+                // For now, this should work as per the request (green for delivery, red for cancellation).
+                // The background of the parent div is already gray, so the remaining part will show gray.
+
 
                 resultsArea.style.display = 'block';
             } else {

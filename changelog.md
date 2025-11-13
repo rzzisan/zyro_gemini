@@ -2,6 +2,17 @@
 
 ## Thursday, November 13, 2025
 
+### Improvement: Redesigned Fraud Checker UI
+*   **What:** Redesigned the Fraud Checker page to match the user-provided design.
+*   **Why:** To align the UI with the user's vision, which includes a simplified left sidebar and icon-less summary cards.
+*   **Where:**
+    *   Modified `views/dashboard/fraud_checker.php`.
+*   **Changes:**
+    *   Removed the circular progress bar from the left sidebar and replaced it with a large text display for the delivery success ratio.
+    *   Removed the icons from all summary cards in the main content area.
+    *   Adjusted the styling of the summary cards to be text-aligned to the center.
+    *   Updated the JavaScript to remove the logic for the circular progress bar.
+
 ### Improvement: Fraud Checker UI Modernization
 *   **What:** Modernized the user interface of the Fraud Checker page by removing the courier-specific table and adding a "Total Fraud Reports" summary card.
 *   **Why:** To streamline the display of fraud-related information, focusing on overall statistics rather than individual courier data, and to align with the current operational focus on a single courier.
@@ -235,7 +246,7 @@
 *   **Why:** To allow administrators to monitor the SMS usage of all users in one place.
 *   **Where:**
     *   Created `admin/sms_history.php`.
-    *   Modified `views/layouts/admin_header.php` to add a link to the new page.
+    *   Modified `views/layouts/admin_header.php` to add a link to the new page in the admin menu.
     *   Modified `models/SmsHistory.php` to add `getSmsHistoryPaginated()` and `getTotalSmsHistoryCount()` methods.
 *   **Changes:**
     *   Admins can now view a paginated and filterable table of all SMS messages sent by users.
