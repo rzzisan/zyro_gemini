@@ -14,6 +14,11 @@
 
     <!-- Right Column -->
     <main class="w-full lg:w-3/4">
+        <div class="flex justify-end mb-4">
+            <a href="<?php echo APP_URL; ?>/views/dashboard/my_fraud_reports.php" class="bg-red-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                My Fraud Report List
+            </a>
+        </div>
         <form id="fraud-checker-form" class="flex items-center mb-6">
             <input type="text" id="phone_number" name="phone_number" class="w-full border rounded-l-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="মোবাইল নম্বর দিন! যেমনঃ 01303352482">
             <button type="submit" id="search-button" class="bg-green-500 text-white font-bold px-6 py-3 rounded-r-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">

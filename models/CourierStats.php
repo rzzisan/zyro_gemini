@@ -43,6 +43,7 @@ class CourierStats
 
         if ($stat) {
             $userReports = $stat['user_reports'] ? json_decode($stat['user_reports'], true) : [];
+            $report['report_id'] = uniqid('rep_'); // Use simpler unique ID
             $userReports[] = $report;
             $updatedReports = json_encode($userReports);
 
@@ -53,6 +54,101 @@ class CourierStats
                 ':phone_number' => $phoneNumber
             ]);
         }
+        return false;
+    }
+
+    public function getReportsByUserId($userId)
+    {
+        $stmt = $this->db->prepare("SELECT phone_number, user_reports FROM courier_stats WHERE user_reports IS NOT NULL");
+        $stmt->execute();
+        $allStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $userReports = [];
+        foreach ($allStats as $stat) {
+            $reports = json_decode($stat['user_reports'], true);
+            if (is_array($reports)) {
+                foreach ($reports as $report) {
+                    if (isset($report['user_id']) && $report['user_id'] == $userId) {
+                        $report['phone_number'] = $stat['phone_number']; // Add phone number for context
+                        $userReports[] = $report;
+                    }
+                }
+            }
+        }
+        return $userReports;
+    }
+
+    public function updateUserReport($userId, $phoneNumber, $reportId, $newCustomerName, $newComplaint)
+    {
+        $stat = $this->findByPhoneNumber($phoneNumber);
+        if (!$stat || empty($stat['user_reports'])) {
+            return false;
+        }
+
+        $reports = json_decode($stat['user_reports'], true);
+        $reportFound = false;
+        foreach ($reports as &$report) {
+            if (isset($report['report_id']) && $report['report_id'] === $reportId) {
+                if (isset($report['user_id']) && $report['user_id'] == $userId) {
+                    $report['customer_name'] = $newCustomerName;
+                    $report['complaint'] = $newComplaint;
+                    $reportFound = true;
+                }
+                break;
+            }
+        }
+
+        if ($reportFound) {
+            $updatedReports = json_encode($reports);
+            $sql = "UPDATE courier_stats SET user_reports = :user_reports WHERE phone_number = :phone_number";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([':user_reports' => $updatedReports, ':phone_number' => $phoneNumber]);
+        }
+
+        return false;
+    }
+
+    public function deleteUserReport($userId, $phoneNumber, $reportId)
+    {
+        $stat = $this->findByPhoneNumber($phoneNumber);
+        if (!$stat || empty($stat['user_reports'])) {
+            return false;
+        }
+
+        $reports = json_decode($stat['user_reports'], true);
+        $reportToDelete = null;
+        $reportIndex = -1;
+
+        foreach ($reports as $index => $report) {
+            if (isset($report['report_id']) && $report['report_id'] === $reportId) {
+                if (isset($report['user_id']) && $report['user_id'] == $userId) {
+                    $reportToDelete = $report;
+                    $reportIndex = $index;
+                }
+                break;
+            }
+        }
+
+        if ($reportToDelete) {
+            // Move to trash table
+            $trashSql = "INSERT INTO trash_fraud_report (user_id, phone_number, customer_name, complaint, reported_at) VALUES (:user_id, :phone_number, :customer_name, :complaint, :reported_at)";
+            $trashStmt = $this->db->prepare($trashSql);
+            $trashStmt->execute([
+                ':user_id' => $reportToDelete['user_id'],
+                ':phone_number' => $phoneNumber,
+                ':customer_name' => $reportToDelete['customer_name'],
+                ':complaint' => $reportToDelete['complaint'],
+                ':reported_at' => $reportToDelete['reported_at']
+            ]);
+
+            // Remove from user_reports
+            array_splice($reports, $reportIndex, 1);
+            $updatedReports = json_encode($reports);
+            $sql = "UPDATE courier_stats SET user_reports = :user_reports WHERE phone_number = :phone_number";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([':user_reports' => $updatedReports, ':phone_number' => $phoneNumber]);
+        }
+
         return false;
     }
 
