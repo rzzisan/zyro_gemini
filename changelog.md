@@ -1,5 +1,28 @@
 # Changelog
 
+## Friday, November 14, 2025
+
+### Improvement: Modernized Admin User Fraud Reports UI
+*   **What:** Completely redesigned the "All User Fraud Reports" page in the admin panel to include advanced filtering, pagination, and a more modern UI.
+*   **Why:** To improve the administrator's user experience by making it easier and more efficient to manage a large volume of user-submitted fraud reports. The previous UI was a simple, non-paginated table that would become slow and difficult to use as data grew.
+*   **Where:**
+    *   Modified `admin/user_fraud_reports.php`
+    *   Modified `get_all_user_reports.php`
+*   **How:**
+    1.  **UI Overhaul (`admin/user_fraud_reports.php`):**
+        *   Added a filter bar at the top with a search input (for phone, name, or complaint) and a "rows per page" selector.
+        *   Updated the table styling to match the modern look of other admin pages, including a serial number (`SL`) column for easier reference.
+        *   Implemented a full-featured, responsive pagination component at the bottom of the table.
+        *   The entire process is now handled by a single, comprehensive JavaScript implementation that manages state (current page, search term), fetches data dynamically, and renders the table and pagination controls.
+    2.  **Backend Enhancement (`get_all_user_reports.php`):**
+        *   Modified the endpoint to accept `page`, `rows_per_page`, and `search` GET parameters.
+        *   The script now fetches all reports, performs filtering on the server-side in PHP based on the search term, and then uses `array_slice` to return only the data for the requested page.
+        *   The JSON response was enhanced to include a `pagination` object containing `total_rows`, `total_pages`, and `current_page`, giving the frontend all the information needed to render the controls.
+    3.  **Improved Functionality:**
+        *   Admins can now instantly search across all reports without waiting for the entire dataset to load on the client.
+        *   Pagination allows the system to handle thousands of reports efficiently.
+        *   The "Edit" and "Delete" actions now correctly refresh the current paginated and filtered view, preserving the admin's context.
+
 ## Thursday, November 13, 2025
 
 ### Feature: Admin Fraud Report Management
