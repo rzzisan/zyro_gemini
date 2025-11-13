@@ -2,6 +2,32 @@
 
 ## Thursday, November 13, 2025
 
+### Feature: Implement 'My Fraud Report' list with edit/delete functionality and fix report ID issue
+*   **What:** Implemented the 'My Fraud Report' feature, allowing users to view, edit, and delete their submitted fraud reports.
+*   **Why:** To provide users with full control over the fraud reports they submit, including the ability to correct or remove them, while also ensuring data integrity and security.
+*   **Where:**
+    *   Modified `models/CourierStats.php`
+    *   Modified `views/dashboard/fraud_checker.php`
+    *   Created `delete_my_report.php`
+    *   Created `edit_my_report.php`
+    *   Created `get_my_reports.php`
+    *   Created `views/dashboard/my_fraud_reports.php`
+*   **How:**
+    1.  **Database:**
+        *   Created a new `trash_fraud_report` table to store deleted reports, preserving historical data.
+        *   Ran a one-time data migration script to add unique `report_id`s to existing reports in the `courier_stats` table that were missing them, resolving issues with editing/deleting older reports.
+    2.  **Backend:**
+        *   Updated the `CourierStats.php` model with new methods (`getReportsByUserId`, `updateUserReport`, `deleteUserReport`) to handle fetching, editing, and deleting user-specific reports.
+        *   Created new endpoints (`get_my_reports.php`, `edit_my_report.php`, `delete_my_report.php`) to securely manage these operations.
+        *   Implemented user ownership verification in the backend for all report modifications, ensuring users can only interact with their own reports.
+    3.  **Frontend:**
+        *   Added a "My Fraud Report List" button to the `fraud_checker.php` page, linking to the new reports page.
+        *   Created a dedicated `my_fraud_reports.php` page to display a paginated table of the user's submitted reports.
+        *   Implemented "Edit" and "Delete" buttons for each report, which trigger modals for editing and confirmation for deletion, respectively.
+        *   Enhanced client-side JavaScript to fetch, display, and manage the lifecycle of these reports, including form submissions and table refreshes.
+    4.  **Bug Fix:**
+        *   Resolved the "Failed to update report." and "Failed to delete report." errors by ensuring all reports have a unique `report_id` and implementing proper ownership checks, which was identified through a debugging process.
+
 ### Feature: User Fraud Reporting
 *   **What:** Implemented a comprehensive fraud reporting system within the user-facing Fraud Checker page.
 *   **Why:** To empower users to contribute to the fraud detection system by reporting suspicious phone numbers directly. This creates a community-driven layer of data on top of the external API, making the tool more effective and informative for everyone.
