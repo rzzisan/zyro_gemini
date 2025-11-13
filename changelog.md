@@ -2,6 +2,38 @@
 
 ## Thursday, November 13, 2025
 
+### Feature: Admin Fraud Report Management
+*   **What:** Implemented a new page in the admin panel for administrators to view, edit, and delete all fraud reports submitted by all users.
+*   **Why:** To provide administrators with complete oversight and moderation capabilities over user-generated content, ensuring data quality and allowing them to manage reports centrally.
+*   **Where:**
+    *   `models/User.php`
+    *   `models/CourierStats.php`
+    *   `edit_my_report.php`
+    *   `delete_my_report.php`
+    *   Created `get_all_user_reports.php`
+    *   Created `admin/user_fraud_reports.php`
+    *   Modified `admin/fraud_checker.php`
+*   **How:**
+    1.  **Backend Enhancements:**
+        *   Added a `getAllUsersAsMap()` method to the `User` model to create an efficient mapping of user IDs to user names.
+        *   Added a `getAllUserReports()` method to the `CourierStats` model. This method fetches all reports from the database and uses the user map to enrich each report with the reporter's name.
+        *   Created a new `get_all_user_reports.php` endpoint, restricted to administrators, to serve this comprehensive list of reports.
+        *   Modified the `updateUserReport()` and `deleteUserReport()` methods in the `CourierStats` model to accept an `$isAdmin` flag, which bypasses the standard user ownership check and allows admins to modify any report.
+    2.  **Frontend Implementation:**
+        *   Created a new admin page at `admin/user_fraud_reports.php` that fetches and displays all user reports in a table, including the reporter's name and ID.
+        *   The page reuses the existing edit/delete modals and JavaScript logic, providing a consistent management experience.
+        *   Added a "User Fraud Reports" button to the `admin/fraud_checker.php` page for easy navigation to the new management interface.
+
+### Bug Fix: Incorrect Administrator Access Check
+*   **What:** Fixed a bug that caused an "Administrator access required" error on the new `admin/user_fraud_reports.php` page.
+*   **Why:** The code was checking for an incorrect session variable (`$_SESSION['role'] === 'admin'`) to verify administrator privileges. The project's convention is to use `$_SESSION['is_admin'] === true`.
+*   **Where:**
+    *   `get_all_user_reports.php`
+    *   `edit_my_report.php`
+    *   `delete_my_report.php`
+*   **How:**
+    *   Replaced the incorrect condition `isset($_SESSION['role']) && $_SESSION['role'] === 'admin'` with the correct one: `isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true`. This was applied to all new and modified endpoints to ensure the application correctly identifies logged-in administrators.
+
 ### Feature: Implement 'My Fraud Report' list with edit/delete functionality and fix report ID issue
 *   **What:** Implemented the 'My Fraud Report' feature, allowing users to view, edit, and delete their submitted fraud reports.
 *   **Why:** To provide users with full control over the fraud reports they submit, including the ability to correct or remove them, while also ensuring data integrity and security.
@@ -473,7 +505,7 @@
     *   Modified `core/functions.php` to add a helper function `is_active()` to highlight the current page in the navigation.
 *   **Changes:**
     *   Extracted the SMS form from `views/dashboard/index.php` into `views/dashboard/send_sms.php`.
-    *   Created a new controller-like file `send_sms.php` in the root to handle the form submission.
+    *   Created a new controller-like file `send_sms.php` in the project root to handle the form submission.
     *   Updated the `smsController` to redirect to the new SMS page and to handle phone number formatting more robustly.
     *   Added a navigation link to the new page in the header.
     *   Added a helper function to improve navigation highlighting.

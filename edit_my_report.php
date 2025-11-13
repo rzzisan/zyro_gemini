@@ -34,7 +34,12 @@ if (strlen($complaint) > 250) {
 }
 
 $courierStatsModel = new CourierStats($GLOBALS['pdo']);
-$result = $courierStatsModel->updateUserReport($_SESSION['user_id'], $phoneNumber, $reportId, $customerName, $complaint);
+
+$isAdmin = (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true);
+
+// For non-admins, we must verify ownership. For admins, we can skip it.
+// The model method will handle this logic.
+$result = $courierStatsModel->updateUserReport($_SESSION['user_id'], $phoneNumber, $reportId, $customerName, $complaint, $isAdmin);
 
 if ($result) {
     echo json_encode(['success' => true, 'message' => 'Report updated successfully.']);

@@ -27,7 +27,10 @@ if (empty($phoneNumber) || empty($reportId)) {
 }
 
 $courierStatsModel = new CourierStats($GLOBALS['pdo']);
-$result = $courierStatsModel->deleteUserReport($_SESSION['user_id'], $phoneNumber, $reportId);
+
+$isAdmin = (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true);
+
+$result = $courierStatsModel->deleteUserReport($_SESSION['user_id'], $phoneNumber, $reportId, $isAdmin);
 
 if ($result) {
     echo json_encode(['success' => true, 'message' => 'Report deleted successfully.']);

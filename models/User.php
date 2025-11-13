@@ -163,4 +163,15 @@ class User
             return false;
         }
     }
+
+    public function getAllUsersAsMap()
+    {
+        $stmt = $this->db->query("SELECT id, name FROM users");
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $userMap = [];
+        foreach ($users as $user) {
+            $userMap[$user['id']] = $user['name'];
+        }
+        return $userMap;
+    }
 }

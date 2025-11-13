@@ -78,7 +78,7 @@ class CourierStats
         return $userReports;
     }
 
-    public function updateUserReport($userId, $phoneNumber, $reportId, $newCustomerName, $newComplaint)
+    public function updateUserReport($userId, $phoneNumber, $reportId, $newCustomerName, $newComplaint, $isAdmin = false)
     {
         $stat = $this->findByPhoneNumber($phoneNumber);
         if (!$stat || empty($stat['user_reports'])) {
@@ -89,7 +89,7 @@ class CourierStats
         $reportFound = false;
         foreach ($reports as &$report) {
             if (isset($report['report_id']) && $report['report_id'] === $reportId) {
-                if (isset($report['user_id']) && $report['user_id'] == $userId) {
+                if ($isAdmin || (isset($report['user_id']) && $report['user_id'] == $userId)) {
                     $report['customer_name'] = $newCustomerName;
                     $report['complaint'] = $newComplaint;
                     $reportFound = true;
@@ -108,7 +108,7 @@ class CourierStats
         return false;
     }
 
-    public function deleteUserReport($userId, $phoneNumber, $reportId)
+    public function deleteUserReport($userId, $phoneNumber, $reportId, $isAdmin = false)
     {
         $stat = $this->findByPhoneNumber($phoneNumber);
         if (!$stat || empty($stat['user_reports'])) {
@@ -121,7 +121,7 @@ class CourierStats
 
         foreach ($reports as $index => $report) {
             if (isset($report['report_id']) && $report['report_id'] === $reportId) {
-                if (isset($report['user_id']) && $report['user_id'] == $userId) {
+                if ($isAdmin || (isset($report['user_id']) && $report['user_id'] == $userId)) {
                     $reportToDelete = $report;
                     $reportIndex = $index;
                 }
@@ -186,5 +186,25 @@ class CourierStats
 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllUserReports($userMap)
+    {
+        $stmt = $this->db->prepare("SELECT phone_number, user_reports FROM courier_stats WHERE user_reports IS NOT NULL AND user_reports != '[]'");
+        $stmt->execute();
+        $allStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $allUserReports = [];
+        foreach ($allStats as $stat) {
+            $reports = json_decode($stat['user_reports'], true);
+            if (is_array($reports)) {
+                foreach ($reports as $report) {
+                    $report['phone_number'] = $stat['phone_number'];
+                    $report['user_name'] = $userMap[$report['user_id']] ?? 'Unknown User';
+                    $allUserReports[] = $report;
+                }
+            }
+        }
+        return $allUserReports;
     }
 }
