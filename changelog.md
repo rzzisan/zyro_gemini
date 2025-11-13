@@ -1,5 +1,33 @@
 # Changelog
 
+## Thursday, November 13, 2025
+
+### Improvement: Fraud Checker UI Modernization
+*   **What:** Modernized the user interface of the Fraud Checker page by removing the courier-specific table and adding a "Total Fraud Reports" summary card.
+*   **Why:** To streamline the display of fraud-related information, focusing on overall statistics rather than individual courier data, and to align with the current operational focus on a single courier.
+*   **Where:**
+    *   Modified `views/dashboard/fraud_checker.php`.
+*   **Changes:**
+    *   Removed the detailed table displaying statistics for individual couriers (Pathao, Steadfast, PaperFly, Redx).
+    *   Added a new summary card for "Total Fraud Reports" to the main statistics section.
+    *   Updated the grid layout to accommodate the new card.
+    *   Updated the JavaScript to populate the "Total Fraud Reports" card with data from the API response.
+
+### Improvement: Complete Redesign of User Fraud Checker UI
+*   **What:** Completely redesigned the user interface of the fraud checker page to match a new, modern design.
+*   **Why:** To provide a more visually appealing, intuitive, and data-rich user experience, inspired by a user-provided screenshot.
+*   **Where:**
+    *   Modified `views/dashboard/fraud_checker.php`.
+    *   Modified `views/layouts/header.php` to include the Font Awesome CDN.
+*   **Changes:**
+    *   Implemented a two-column layout with a left sidebar for the delivery success ratio and a main content area on the right.
+    *   Added a circular progress bar (using SVG) to visualize the delivery success rate.
+    *   The progress bar dynamically changes color based on the success rate (green for excellent, yellow for good, red for poor).
+    *   Incorporated Bengali text and a new color scheme to match the provided design.
+    *   Added summary cards with Font Awesome icons for "Total Orders," "Total Delivered," "Total Cancelled," and "Delivery Rate."
+    *   Included a static table with per-courier data as a placeholder, since the current API does not provide this level of detail.
+    *   Updated the JavaScript to populate all the new UI elements with data from the API response.
+
 ## Wednesday, November 12, 2025
 
 ### Improvement: Redesigned Admin Fraud Checker UI
