@@ -57,6 +57,7 @@ $stats = $courierStats->getCourierStatsPaginated($page, $rowsPerPage, $searchTer
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SL</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Parcels</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Delivered</th>
@@ -77,8 +78,10 @@ $stats = $courierStats->getCourierStatsPaginated($page, $rowsPerPage, $searchTer
                             </td>
                         </tr>
                     <?php else : ?>
-                        <?php foreach ($stats as $stat) : ?>
+                        <?php $serialNumber = (($page - 1) * $rowsPerPage); ?>
+                        <?php foreach ($stats as $index => $stat) : ?>
                             <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $serialNumber + $index + 1; ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($stat['phone_number']); ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($stat['total_parcels']); ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($stat['total_delivered']); ?></td>
