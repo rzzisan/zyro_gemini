@@ -8,7 +8,16 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['user_id'])) {
+$user_id = null;
+$is_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+
+if ($is_admin) {
+    $user_id = $_SESSION['admin_id'] ?? null;
+} else {
+    $user_id = $_SESSION['user_id'] ?? null;
+}
+
+if (!$user_id) {
     echo json_encode(['success' => false, 'message' => 'Authentication required.']);
     exit();
 }
@@ -35,11 +44,9 @@ if (strlen($complaint) > 250) {
 
 $courierStatsModel = new CourierStats($GLOBALS['pdo']);
 
-$isAdmin = (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true);
-
 // For non-admins, we must verify ownership. For admins, we can skip it.
 // The model method will handle this logic.
-$result = $courierStatsModel->updateUserReport($_SESSION['user_id'], $phoneNumber, $reportId, $customerName, $complaint, $isAdmin);
+$result = $courierStatsModel->updateUserReport($user_id, $phoneNumber, $reportId, $customerName, $complaint, $is_admin);
 
 if ($result) {
     echo json_encode(['success' => true, 'message' => 'Report updated successfully.']);

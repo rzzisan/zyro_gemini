@@ -1,7 +1,10 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../../core/config.php';
 require_once ROOT_PATH . '/core/functions.php';
-// ensureAdmin(); // Protects all admin pages that include this header
+ensureAdmin(); // Protects all admin pages that include this header
 ?>
 <!DOCTYPE html>
 <html lang="en">
