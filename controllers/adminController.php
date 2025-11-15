@@ -90,7 +90,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     'name' => $_POST['name'],
                     'email' => $_POST['email'],
                     'role' => $_POST['role'],
-                    'password' => $_POST['password'] ?? ''
+                    'password' => $_POST['password'] ?? '',
+                    'phone_number' => $_POST['phone_number'] ?? null,
+                    'district' => $_POST['district'] ?? null,
+                    'upazila' => $_POST['upazila'] ?? null
                 ];
                 $userModel->update($user_id, $data);
                 $_SESSION['flash_message'] = 'User updated successfully!';

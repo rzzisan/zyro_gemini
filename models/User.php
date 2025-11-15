@@ -19,7 +19,10 @@ class User
 
     public function find($id)
     {
-        $stmt = $this->db->prepare("SELECT u.*, sc.balance as sms_balance FROM users u LEFT JOIN sms_credits sc ON u.id = sc.user_id WHERE u.id = ?");
+        $stmt = $this->db->prepare("SELECT u.*, sc.balance as sms_balance, u.phone_number, u.district, u.upazila 
+                                   FROM users u 
+                                   LEFT JOIN sms_credits sc ON u.id = sc.user_id 
+                                   WHERE u.id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -66,6 +69,9 @@ class User
                     u.email, 
                     u.role,
                     u.created_at,
+                    u.phone_number,
+                    u.district,
+                    u.upazila,
                     p.name as plan_name,
                     sc.balance as balance
                 FROM users u
@@ -103,21 +109,27 @@ class User
 
     public function update($id, $data)
     {
-        $sql = "UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?";
+        $sql = "UPDATE users SET name = ?, email = ?, role = ?, phone_number = ?, district = ?, upazila = ? WHERE id = ?";
         $params = [
             $data['name'],
             $data['email'],
             $data['role'],
+            $data['phone_number'],
+            $data['district'],
+            $data['upazila'],
             $id
         ];
 
         if (!empty($data['password'])) {
-            $sql = "UPDATE users SET name = ?, email = ?, role = ?, password = ? WHERE id = ?";
+            $sql = "UPDATE users SET name = ?, email = ?, role = ?, password = ?, phone_number = ?, district = ?, upazila = ? WHERE id = ?";
             $params = [
                 $data['name'],
                 $data['email'],
                 $data['role'],
                 password_hash($data['password'], PASSWORD_BCRYPT),
+                $data['phone_number'],
+                $data['district'],
+                $data['upazila'],
                 $id
             ];
         }
@@ -126,7 +138,7 @@ class User
         return $stmt->execute($params);
     }
 
-    public function updateProfile($id, $name, $email)
+    public function updateProfile($id, $name, $email, $phone_number, $district, $upazila)
     {
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE email = ? AND id != ?");
         $stmt->execute([$email, $id]);
@@ -134,8 +146,8 @@ class User
             return false; // Email already in use
         }
 
-        $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
-        return $stmt->execute([$name, $email, $id]);
+        $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, phone_number = ?, district = ?, upazila = ? WHERE id = ?");
+        return $stmt->execute([$name, $email, $phone_number, $district, $upazila, $id]);
     }
 
     public function updatePassword($id, $hashedPassword)

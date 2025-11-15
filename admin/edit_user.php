@@ -22,6 +22,10 @@ if (!$user_details) {
 
 $planModel = new Plan($db);
 $plans = $planModel->findAll();
+
+// Store saved values for JS
+$savedDistrict = $user_details['district'] ?? '';
+$savedUpazila = $user_details['upazila'] ?? '';
 ?>
 
 <h1 class="text-3xl font-bold text-gray-800 mb-6">Edit User: <?php echo htmlspecialchars($user_details['name']); ?></h1>
@@ -50,6 +54,25 @@ if (isset($_SESSION['flash_message'])) {
         </div>
         
         <div class="mb-4">
+            <label for="phone_number" class="block text-gray-700 text-sm font-bold mb-2">Phone Number:</label>
+            <input type="text" name="phone_number" id="phone_number" value="<?php echo htmlspecialchars($user_details['phone_number'] ?? ''); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        
+        <div class="mb-4">
+            <label for="district" class="block text-gray-700 text-sm font-bold mb-2">District:</label>
+            <select name="district" id="district" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <option value="">Select District</option>
+            </select>
+        </div>
+        
+        <div class="mb-4">
+            <label for="upazila" class="block text-gray-700 text-sm font-bold mb-2">Upazila:</label>
+            <select name="upazila" id="upazila" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <option value="">Select Upazila</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
             <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Role:</label>
             <select id="role" name="role" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 <option value="user" <?php echo ($user_details['role'] == 'user') ? 'selected' : ''; ?>>User</option>
@@ -67,7 +90,6 @@ if (isset($_SESSION['flash_message'])) {
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Form 1: Update Subscription -->
     <div class="bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">Manage Subscription</h2>
         <p class="text-gray-600 mb-4">Current Plan: <span class="font-bold"><?php echo htmlspecialchars($user_details['plan_name'] ?? 'Not Subscribed'); ?></span></p>
@@ -91,7 +113,6 @@ if (isset($_SESSION['flash_message'])) {
         </form>
     </div>
 
-    <!-- Form 2: Update SMS Credits -->
     <div class="bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">Manage SMS Credits</h2>
         <p class="text-gray-600 mb-4">Current Credits: <span class="font-bold"><?php echo htmlspecialchars($user_details['balance'] ?? '0'); ?></span></p>
@@ -113,6 +134,74 @@ if (isset($_SESSION['flash_message'])) {
 <div class="mt-6">
     <a href="<?php echo APP_URL; ?>/admin/users.php" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">Back to User List</a>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const districtSelect = document.getElementById('district');
+    const upazilaSelect = document.getElementById('upazila');
+
+    const savedDistrict = '<?php echo $savedDistrict; ?>';
+    const savedUpazila = '<?php echo $savedUpazila; ?>';
+
+    let districts = [];
+    let upazilas = [];
+
+    try {
+        const [districtsRes, upazilasRes] = await Promise.all([
+            fetch('../content/bd-districts.json'),
+            fetch('../content/bd-upazilas.json')
+        ]);
+
+        // ফিক্স: .districts এবং .upazilas প্রপার্টি অ্যাক্সেস করা
+        districts = (await districtsRes.json()).districts;
+        upazilas = (await upazilasRes.json()).upazilas;
+
+    } catch (error) {
+        console.error('Failed to load location data:', error);
+        return;
+    }
+
+    // Populate districts
+    districts.forEach(district => {
+        const option = new Option(district.name, district.name);
+        districtSelect.add(option);
+    });
+
+    // Function to load upazilas based on district
+    const loadUpazilas = (districtName) => {
+        upazilaSelect.innerHTML = '<option value="">Select Upazila</option>';
+        if (!districtName) return;
+
+        const selectedDistrict = districts.find(d => d.name === districtName);
+        if (!selectedDistrict) return;
+
+        const filteredUpazilas = upazilas.filter(u => u.district_id === selectedDistrict.id);
+        
+        filteredUpazilas.forEach(upazila => {
+            const option = new Option(upazila.name, upazila.name);
+            upazilaSelect.add(option);
+        });
+
+        // Set saved upazila if matches
+        if (districtName === savedDistrict && savedUpazila) {
+            upazilaSelect.value = savedUpazila;
+        }
+    };
+
+    // Set saved district
+    if (savedDistrict) {
+        districtSelect.value = savedDistrict;
+    }
+
+    // Initial load of upazilas
+    loadUpazilas(districtSelect.value);
+
+    // Add event listener
+    districtSelect.addEventListener('change', () => {
+        loadUpazilas(districtSelect.value);
+    });
+});
+</script>
 
 
 <?php

@@ -7,12 +7,12 @@ require_once __DIR__ . '/../models/User.php';
 
 class UserController
 {
-    public static function handleProfileUpdate($userId, $name, $email)
+    public static function handleProfileUpdate($userId, $name, $email, $phone, $district, $upazila)
     {
         $db = getDb();
         $userModel = new User($db);
 
-        if (!$userModel->updateProfile($userId, $name, $email)) {
+        if (!$userModel->updateProfile($userId, $name, $email, $phone, $district, $upazila)) {
             set_message('Email already in use by another account.', 'danger');
         } else {
             set_message('Profile updated successfully!', 'success');

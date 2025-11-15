@@ -2,7 +2,84 @@
 
 ## Saturday, November 15, 2025
 
-### Bug Fix: Resolve Blank Page on Profile Form Submission
+### Fix: Correctly parse nested JSON for district/upazila in admin panel
+*   **What:** Modified `admin/edit_user.php` to correctly parse the nested JSON structure for districts and upazilas.
+*   **Why:** The previous JavaScript code was failing to load districts and upazilas because it was not correctly accessing the `.districts` and `.upazilas` properties of the fetched JSON responses.
+*   **Where:**
+    *   Modified the `<script>` block in `admin/edit_user.php`.
+*   **How:**
+    *   Updated the `fetch` calls to explicitly access `(await districtsRes.json()).districts` and `(await upazilasRes.json()).upazilas` to correctly extract the array data from the JSON objects.
+
+### Fix: Correctly parse nested JSON for district/upazila in user profile
+*   **What:** Modified `views/dashboard/profile.php` to correctly parse the nested JSON structure for districts and upazilas.
+*   **Why:** The previous JavaScript code was failing to load districts and upazilas because it was not correctly accessing the `.districts` and `.upazilas` properties of the fetched JSON responses.
+*   **Where:**
+    *   Modified the `<script>` block in `views/dashboard/profile.php`.
+*   **How:**
+    *   Updated the `fetch` calls to explicitly access `(await districtsRes.json()).districts` and `(await upazilasRes.json()).upazilas` to correctly extract the array data from the JSON objects.
+
+### Feat: Add new fields and district/upazila logic to admin edit user page
+*   **What:** Replaced the entire content of `admin/edit_user.php` to include new form fields for `phone_number`, `district`, and `upazila`, along with JavaScript logic to dynamically load districts and upazilas from JSON files.
+*   **Why:** To allow administrators to update user profiles with phone numbers and select their district and upazila from a predefined list, enhancing user data management.
+*   **Where:**
+    *   Modified `admin/edit_user.php`.
+*   **How:**
+    *   Added input fields for `phone_number`, and dropdowns for `district` and `upazila`.
+    *   Implemented JavaScript to fetch `bd-districts.json` and `bd-upazilas.json` from the `content/` directory.
+    *   Populated the `district` dropdown with data from `bd-districts.json`.
+    *   Added an event listener to the `district` dropdown to dynamically load and populate the `upazila` dropdown based on the selected district.
+    *   Pre-selected saved district and upazila values from the user's profile.
+
+### Feat: Add new fields and district/upazila logic to user profile
+*   **What:** Replaced the entire content of `views/dashboard/profile.php` to include new form fields for `phone_number`, `district`, and `upazila`, along with JavaScript logic to dynamically load districts and upazilas from JSON files.
+*   **Why:** To allow users to update their phone number and select their district and upazila from a predefined list, enhancing user profile completeness and data accuracy.
+*   **Where:**
+    *   Modified `views/dashboard/profile.php`.
+*   **How:**
+    *   Added input fields for `phone_number`, and dropdowns for `district` and `upazila`.
+    *   Implemented JavaScript to fetch `bd-districts.json` and `bd-upazilas.json` from the `content/` directory.
+    *   Populated the `district` dropdown with data from `bd-districts.json`.
+    *   Added an event listener to the `district` dropdown to dynamically load and populate the `upazila` dropdown based on the selected district.
+    *   Pre-selected saved district and upazila values from the user's profile.
+
+### Refactor: Update adminController to handle new user fields
+*   **What:** Modified `controllers/adminController.php` to update the `case 'update_user':` block.
+*   **Why:** To ensure that administrators can update the new `phone_number`, `district`, and `upazila` fields for users.
+*   **Where:**
+    *   Modified `controllers/adminController.php`.
+*   **How:**
+    *   Updated the `data` array within the `update_user` case to include `phone_number`, `district`, and `upazila` from the `$_POST` data.
+    *   These new fields are then passed to the `userModel->update()` method.
+
+### Refactor: Update userController to handle new profile fields
+*   **What:** Modified `controllers/userController.php` to update the `handleProfileUpdate` method.
+*   **Why:** To accommodate the new `phone_number`, `district`, and `upazila` fields when updating a user's profile.
+*   **Where:**
+    *   Modified `controllers/userController.php`.
+*   **How:**
+    *   Updated the `handleProfileUpdate` method signature to accept `phone`, `district`, and `upazila` parameters.
+    *   Passed these new parameters to the `updateProfile` method of the `User` model.
+
+### Feat: Update User model to support new profile fields
+*   **What:** Modified `models/User.php` to include the new `phone_number`, `district`, and `upazila` fields.
+*   **Why:** To allow the application to retrieve and update the new user profile fields.
+*   **Where:**
+    *   Modified `models/User.php`.
+*   **How:**
+    *   Replaced the `find()` method with a new version that selects the new fields.
+    *   Replaced the `getUserDetails()` method with a new version that selects the new fields.
+    *   Replaced the `updateProfile()` method to handle the new fields.
+    *   Replaced the `update()` method (for admins) to handle the new fields robustly.
+
+### Database Migration: Add User Contact and Location Fields
+*   **What:** Added `phone_number`, `district`, and `upazila` columns to the `users` table.
+*   **Why:** To store additional user contact and location information, which may be used for future features or user management.
+*   **Where:**
+    *   Modified the `users` table in the database.
+*   **How:**
+    *   Executed an `ALTER TABLE` SQL command to add the `phone_number` (VARCHAR(20), NULLABLE), `district` (VARCHAR(100), NULLABLE), and `upazila` (VARCHAR(100), NULLABLE) columns to the `users` table.
+
+
 *   **What:** Fixed a critical "Headers already sent" error that occurred when submitting the profile update or password change forms, resulting in a blank page.
 *   **Why:** The `views/dashboard/profile.php` file was including the HTML header (`header.php`) before processing the POST request. Since the controller logic performs a `redirect()`, which modifies HTTP headers, it failed because output had already started.
 *   **Where:**
