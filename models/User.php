@@ -126,6 +126,24 @@ class User
         return $stmt->execute($params);
     }
 
+    public function updateProfile($id, $name, $email)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE email = ? AND id != ?");
+        $stmt->execute([$email, $id]);
+        if ($stmt->fetchColumn() > 0) {
+            return false; // Email already in use
+        }
+
+        $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
+        return $stmt->execute([$name, $email, $id]);
+    }
+
+    public function updatePassword($id, $hashedPassword)
+    {
+        $stmt = $this->db->prepare("UPDATE users SET password = ? WHERE id = ?");
+        return $stmt->execute([$hashedPassword, $id]);
+    }
+
     public function delete($id)
     {
         try {

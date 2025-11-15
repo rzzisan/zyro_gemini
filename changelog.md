@@ -1,5 +1,33 @@
 # Changelog
 
+## Saturday, November 15, 2025
+
+### Feature: User Profile Management
+*   **What:** Added a new "Profile" page to the user dashboard, allowing users to update their name, email, and password.
+*   **Why:** To give users the ability to manage their own account details directly, improving usability and self-service capabilities.
+*   **Where:**
+    *   Modified `views/layouts/header.php`
+    *   Modified `models/User.php`
+    *   Rewrote `controllers/userController.php`
+    *   Rewrote `views/dashboard/profile.php`
+*   **How:**
+    1.  **Navigation Link:**
+        *   Added a "Profile" link to both the desktop and mobile navigation menus in `views/layouts/header.php`, pointing to the new profile page.
+    2.  **Backend Methods:**
+        *   Added two new methods to the `User` model (`models/User.php`):
+            *   `updateProfile($id, $name, $email)`: This method updates the user's name and email. It includes a crucial validation step to check if the new email is already in use by another user before performing the update, preventing duplicate email addresses.
+            *   `updatePassword($id, $hashedPassword)`: This method securely updates only the user's password.
+        *   These methods are distinct from the existing `update()` method, which is reserved for the admin panel, ensuring that user-facing profile changes follow a different and more constrained logic.
+    3.  **Controller Logic:**
+        *   Rewrote `controllers/userController.php` to include a `UserController` class with two static public methods:
+            *   `handleProfileUpdate($userId, $name, $email)`: This method orchestrates the profile update process, including calling the `User` model's `updateProfile` method, handling email uniqueness validation, setting appropriate session messages, and redirecting the user. It also updates the `$_SESSION['user_name']` upon successful name change.
+            *   `handleChangePassword($userId, $currentPassword, $newPassword, $confirmPassword)`: This method handles password change requests, including validating new password confirmation, verifying the current password against the stored hash, hashing the new password, calling the `User` model's `updatePassword` method, setting session messages, and redirecting the user.
+    4.  **Frontend UI:**
+        *   Rewrote `views/dashboard/profile.php` to create a complete user profile management page.
+        *   The page now includes two distinct forms within styled cards: one for updating profile details (name and email) and another for changing the password.
+        *   It handles POST requests for both actions, calling the appropriate `UserController` methods.
+        *   It fetches the current user's data to pre-fill the profile form and uses the `display_message()` function to show success or error alerts to the user.
+
 ## Friday, November 14, 2025
 
 ### Improvement: Modernized Admin User Fraud Reports UI
