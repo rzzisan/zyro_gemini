@@ -11,6 +11,9 @@ Stores user account information.
 - `email`: The user's email address (used for login).
 - `password`: Hashed password for the user.
 - `role`: The role of the user (e.g., 'admin', 'user').
+- `phone_number`: The user's phone number.
+- `district`: The user's district.
+- `upazila`: The user's upazila.
 - `created_at`: Timestamp of when the user account was created.
 
 ---
