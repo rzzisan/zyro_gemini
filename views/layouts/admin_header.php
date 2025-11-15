@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 require_once __DIR__ . '/../../core/config.php';
 require_once ROOT_PATH . '/core/functions.php';
-ensureAdmin(); // Protects all admin pages that include this header
+ensureAdmin();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,45 +13,104 @@ ensureAdmin(); // Protects all admin pages that include this header
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body class="bg-gray-100" x-data="{ 'isMobileMenuOpen': false }">
-    <nav class="bg-gray-800 p-4 text-white shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="text-lg font-bold">Admin Panel</div>
-            <div class="hidden md:flex space-x-4">
-                <a href="<?php echo APP_URL; ?>/admin/index.php" class="hover:text-gray-300">Dashboard</a>
-                <a href="<?php echo APP_URL; ?>/admin/users.php" class="hover:text-gray-300">Users</a>
-                <a href="<?php echo APP_URL; ?>/admin/plans.php" class="hover:text-gray-300">Plans</a>
-                <a href="<?php echo APP_URL; ?>/admin/fraud_checker.php" class="hover:text-gray-300">Fraud Checker</a>
-                <div class="relative" x-data="{ open: false }">
-                    <a @click="open = !open" class="cursor-pointer hover:text-gray-300">SMS</a>
-                    <div x-show="open" @click.away="open = false" class="absolute bg-gray-800 text-white py-2 mt-2 rounded-md shadow-lg">
-                        <a href="<?php echo APP_URL; ?>/admin/sms_credit.php" class="block px-4 py-2 hover:bg-gray-700">SMS Credit</a>
-                        <a href="<?php echo APP_URL; ?>/admin/sms_history.php" class="block px-4 py-2 hover:bg-gray-700">SMS History</a>
-                    </div>
-                </div>
-                <a href="<?php echo APP_URL; ?>/admin/logout.php" class="hover:text-gray-300">Logout</a>
-            </div>
-            <div class="hidden md:block text-sm">
-                <?php echo "Welcome, " . htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?>
-            </div>
-            <div class="md:hidden">
-                <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="text-white focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
+<body class="bg-gray-100">
+
+<div x-data="{ sidebarOpen: window.innerWidth > 1024 }" class="flex h-screen bg-gray-100">
+
+    <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black opacity-50 transition-opacity lg:hidden" x-cloak></div>
+
+    <aside
+        class="fixed inset-y-0 left-0 z-30 bg-gray-800 text-gray-100 transition-all duration-300 transform 
+               lg:static lg:inset-0 lg:translate-x-0"
+        :class="{
+            'w-64': sidebarOpen, 
+            'w-20': !sidebarOpen, 
+            'translate-x-0': sidebarOpen, 
+            '-translate-x-full': !sidebarOpen
+        }"
+        class="lg:translate-x-0"
+        x-cloak
+    >
+        <div class="flex items-center h-16" :class="{ 'justify-between': sidebarOpen, 'justify-center': !sidebarOpen }" class="px-4 py-2">
+            <a href="<?php echo APP_URL; ?>/admin/index.php" class="text-2xl font-bold text-white" x-show="sidebarOpen">Admin Panel</a>
+            <button @click="sidebarOpen = false" class="text-gray-300 lg:hidden" x-show="sidebarOpen">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="mt-8">
+            <a href="<?php echo APP_URL; ?>/admin/index.php"
+               class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
+               <?php echo is_active('/admin/index.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
+               :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
+                <i class="fas fa-tachometer-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                <span x-show="sidebarOpen" class="transition-opacity">Dashboard</span>
+            </a>
+            <a href="<?php echo APP_URL; ?>/admin/users.php"
+               class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
+               <?php echo is_active('/admin/users.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
+               :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
+                <i class="fas fa-users w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                <span x-show="sidebarOpen" class="transition-opacity">Users</span>
+            </a>
+            <a href="<?php echo APP_URL; ?>/admin/plans.php"
+               class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
+               <?php echo is_active('/admin/plans.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
+               :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
+                <i class="fas fa-clipboard-list w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                <span x-show="sidebarOpen" class="transition-opacity">Plans</span>
+            </a>
+            <a href="<?php echo APP_URL; ?>/admin/fraud_checker.php"
+               class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
+               <?php echo is_active('/admin/fraud_checker.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
+               :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
+                <i class="fas fa-shield-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                <span x-show="sidebarOpen" class="transition-opacity">Fraud Checker</span>
+            </a>
+            
+            <div x-data="{ open: false }" class="mt-2">
+                <button @click="open = !open" 
+                        class="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white rounded-md focus:outline-none"
+                        :class="{ 'justify-between': sidebarOpen, 'justify-center': !sidebarOpen }">
+                    <span class="flex items-center">
+                        <i class="fas fa-sms w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                        <span x-show="sidebarOpen" class="transition-opacity">SMS</span>
+                    </span>
+                    <i class="fas" :class="{ 'fa-chevron-down': !open, 'fa-chevron-up': open, 'hidden': !sidebarOpen }"></i>
                 </button>
+                <div x-show="open && sidebarOpen" class="pl-8 py-2">
+                    <a href="<?php echo APP_URL; ?>/admin/sms_credit.php"
+                       class="<?php echo is_active('/admin/sms_credit.php') ? 'text-white' : 'text-gray-400 hover:text-white'; ?> 
+                       block py-1 text-sm rounded-md transition-colors duration-200">SMS Credit</a>
+                    <a href="<?php echo APP_URL; ?>/admin/sms_history.php"
+                       class="<?php echo is_active('/admin/sms_history.php') ? 'text-white' : 'text-gray-400 hover:text-white'; ?> 
+                       block py-1 mt-1 text-sm rounded-md transition-colors duration-200">SMS History</a>
+                </div>
             </div>
-        </div>
-        <div x-show="isMobileMenuOpen" class="md:hidden mt-4">
-            <a href="<?php echo APP_URL; ?>/admin/index.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Dashboard</a>
-            <a href="<?php echo APP_URL; ?>/admin/users.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Users</a>
-            <a href="<?php echo APP_URL; ?>/admin/plans.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Plans</a>
-            <a href="<?php echo APP_URL; ?>/admin/fraud_checker.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Fraud Checker</a>
-            <a href="<?php echo APP_URL; ?>/admin/sms_credit.php" class="block py-2 px-4 text-sm hover:bg-gray-700">SMS Credit</a>
-            <a href="<?php echo APP_URL; ?>/admin/sms_history.php" class="block py-2 px-4 text-sm hover:bg-gray-700">SMS History</a>
-            <a href="<?php echo APP_URL; ?>/admin/logout.php" class="block py-2 px-4 text-sm hover:bg-gray-700">Logout</a>
-        </div>
-    </nav>
-    <div class="container mx-auto mt-4 p-4">
+
+        </nav>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300"
+         :class="{ 'lg:ml-64': sidebarOpen, 'lg:ml-20': !sidebarOpen }">
+        
+        <header class="flex items-center justify-between p-4 bg-white border-b">
+            <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="flex items-center">
+                <span class="text-gray-500 text-sm hidden sm:block">
+                    <?php echo "Welcome, " . htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?>
+                </span>
+                <a href="<?php echo APP_URL; ?>/admin/logout.php" class="ml-4 text-gray-500 hover:text-gray-700 text-sm">
+                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                </a>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
+            

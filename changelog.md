@@ -2,6 +2,101 @@
 
 ## Saturday, November 15, 2025
 
+### Fix: Update Admin Panel footer to match new layout structure
+*   **What:** Replaced the entire content of `views/layouts/admin_footer.php` to correctly close HTML tags.
+*   **Why:** To ensure proper HTML structure and rendering after the admin dashboard layout redesign, as the new `admin_header.php` introduced new opening tags that needed corresponding closing tags in the footer.
+*   **Where:**
+    *   Modified `views/layouts/admin_footer.php`.
+*   **How:**
+    *   Updated the content of `admin_footer.php` to include the necessary closing `</main>`, `</div>`, `</div>`, `</body>`, and `</html>` tags.
+
+### Feat: Implement dynamic push/overlay sidebar layout for Admin Panel
+*   **What:** Replaced the entire content of `views/layouts/admin_header.php` to introduce a fully responsive sidebar that pushes content on desktop and overlays on mobile.
+*   **Why:** To provide a more modern and flexible navigation experience for administrators, optimizing for both large and small screens by dynamically adjusting sidebar behavior (pushing content on desktop, overlaying on mobile) and width (expanded or collapsed).
+*   **Where:**
+    *   Modified `views/layouts/admin_header.php`.
+*   **How:**
+    *   Updated the `x-data` directive to initialize `sidebarOpen` based on `window.innerWidth` for desktop-first behavior.
+    *   Modified the `<aside>` element's classes to control width (`w-64` for open, `w-20` for collapsed) and transform behavior (`-translate-x-full` for closed mobile, `translate-x-0` for open mobile and desktop) using Alpine.js `:class` bindings.
+    *   Adjusted the main content area's left margin (`lg:ml-64` or `lg:ml-20`) dynamically based on `sidebarOpen` state to create the "push" effect on desktop.
+    *   Implemented conditional rendering (`x-show`) for sidebar elements like the logo and navigation text to adapt to collapsed state.
+    *   Ensured the mobile overlay (`x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black opacity-50 transition-opacity lg:hidden" x-cloak`) is present for proper mobile interaction.
+    *   Adjusted the `SMS` dropdown button to hide the chevron icon when the sidebar is collapsed (`'hidden': !sidebarOpen`).
+
+### Fix: Update User Dashboard footer to match new layout structure
+*   **What:** Replaced the entire content of `views/layouts/footer.php` to correctly close HTML tags.
+*   **Why:** To ensure proper HTML structure and rendering after the user dashboard layout redesign, as the new `header.php` introduced new opening tags that needed corresponding closing tags in the footer.
+*   **Where:**
+    *   Modified `views/layouts/footer.php`.
+*   **How:**
+    *   Updated the content of `footer.php` to include the necessary closing `</main>`, `</div>`, `</div>`, `</body>`, and `</html>` tags.
+
+### Feat: Implement dynamic push/overlay sidebar layout for User Dashboard
+*   **What:** Replaced the entire content of `views/layouts/header.php` to introduce a fully responsive sidebar that pushes content on desktop and overlays on mobile.
+*   **Why:** To provide a more modern and flexible navigation experience, optimizing for both large and small screens by dynamically adjusting sidebar behavior (pushing content on desktop, overlaying on mobile) and width (expanded or collapsed).
+*   **Where:**
+    *   Modified `views/layouts/header.php`.
+*   **How:**
+    *   Updated the `x-data` directive to initialize `sidebarOpen` based on `window.innerWidth` for desktop-first behavior.
+    *   Modified the `<aside>` element's classes to control width (`w-64` for open, `w-20` for collapsed) and transform behavior (`-translate-x-full` for closed mobile, `translate-x-0` for open mobile and desktop) using Alpine.js `:class` bindings.
+    *   Adjusted the main content area's left margin (`lg:ml-64` or `lg:ml-20`) dynamically based on `sidebarOpen` state to create the "push" effect on desktop.
+    *   Implemented conditional rendering (`x-show`) for sidebar elements like the logo and navigation text to adapt to collapsed state.
+    *   Ensured the mobile overlay (`x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black opacity-50 transition-opacity lg:hidden" x-cloak`) is present for proper mobile interaction.
+
+### Fix: Correct sidebar logic for Admin Panel layout
+*   **What:** Replaced the entire content of `views/layouts/admin_header.php` with corrected code to ensure proper sidebar behavior.
+*   **Why:** The previous implementation of the sidebar in `admin_header.php` did not correctly handle responsiveness, causing both the sidebar and its toggle button to be hidden on desktop. This fix ensures the sidebar is static and visible on desktop (lg:) while acting as a toggled overlay on mobile.
+*   **Where:**
+    *   Modified `views/layouts/admin_header.php`.
+*   **How:**
+    *   Added a fixed overlay `div` (`x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black opacity-50 transition-opacity lg:hidden" x-cloak`) for mobile to dim the content when the sidebar is open.
+    *   Modified the `<aside>` element's classes to include `lg:translate-x-0 lg:static lg:inset-0` to make the sidebar static on large screens.
+    *   Adjusted the main content area's classes to include `lg:ml-64` to account for the static sidebar width on large screens.
+    *   Ensured the sidebar toggle button is hidden on large screens (`lg:hidden`).
+
+### Fix: Correct sidebar logic for User Dashboard layout
+*   **What:** Replaced the entire content of `views/layouts/header.php` with corrected code to ensure proper sidebar behavior.
+*   **Why:** The previous implementation of the sidebar in `header.php` did not correctly handle responsiveness, causing the sidebar to behave inconsistently on different screen sizes. This fix ensures the sidebar is static and visible on desktop (lg:) while acting as a toggled overlay on mobile.
+*   **Where:**
+    *   Modified `views/layouts/header.php`.
+*   **How:**
+    *   Added a fixed overlay `div` (`x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black opacity-50 transition-opacity lg:hidden" x-cloak`) for mobile to dim the content when the sidebar is open.
+    *   Modified the `<aside>` element's classes to include `lg:translate-x-0 lg:static lg:inset-0` to make the sidebar static on large screens.
+    *   Adjusted the main content area's classes to include `lg:ml-64` to account for the static sidebar width on large screens.
+    *   Ensured the sidebar toggle button is hidden on large screens (`lg:hidden`).
+
+### Fix: Update Admin Panel footer for new sidebar layout
+*   **What:** Replaced the entire content of `views/layouts/admin_footer.php` to correctly close HTML tags.
+*   **Why:** To ensure proper HTML structure and rendering after the admin dashboard layout redesign, as the new `admin_header.php` introduced new opening tags that needed corresponding closing tags in the footer.
+*   **Where:**
+    *   Modified `views/layouts/admin_footer.php`.
+*   **How:**
+    *   Updated the content of `admin_footer.php` to include the necessary closing `</main>`, `</div>`, `</div>`, `</body>`, and `</html>` tags.
+
+### Feat: Redesign Admin Panel layout with a sidebar
+*   **What:** Replaced the entire content of `views/layouts/admin_header.php` to introduce a new responsive sidebar layout for the Admin Panel.
+*   **Why:** To improve the overall user experience and navigation for administrators by implementing a modern sidebar design using Alpine.js and Tailwind CSS, and preparing the main content area for a consistent look and feel.
+*   **Where:**
+    *   Modified `views/layouts/admin_header.php`.
+*   **How:**
+    *   Implemented a `div` with `x-data="{ sidebarOpen: false }"` to manage the sidebar's open/close state.
+    *   Created an `<aside>` element for the sidebar with responsive classes (`fixed`, `inset-y-0`, `left-0`, `z-30`, `w-64`, `px-2`, `py-4`, `overflow-y-auto`, `bg-gray-800`, `text-gray-100`, `transition-transform`, `duration-300`, `ease-in-out`, `transform`) and Alpine.js directives (`:class`, `x-show.transition`, `@click.away`, `x-cloak`).
+    *   Added navigation links within the sidebar, dynamically applying active states using `is_active()` function.
+    *   Created a header section with a button to toggle the sidebar on smaller screens and an admin greeting with a logout link.
+    *   Ensured that no backend logic was altered, focusing solely on the presentation layer.
+
+### Feat: Redesign User Dashboard layout with a sidebar
+*   **What:** Replaced the entire content of `views/layouts/header.php` to introduce a new responsive sidebar layout.
+*   **Why:** To improve the overall user experience and navigation by implementing a modern sidebar design using Alpine.js and Tailwind CSS, and preparing the main content area for a consistent look and feel.
+*   **Where:**
+    *   Modified `views/layouts/header.php`.
+*   **How:**
+    *   Implemented a `div` with `x-data="{ sidebarOpen: false }"` to manage the sidebar's open/close state.
+    *   Created an `<aside>` element for the sidebar with responsive classes (`fixed`, `inset-y-0`, `left-0`, `z-30`, `w-64`, `px-2`, `py-4`, `overflow-y-auto`, `bg-white`, `border-r`, `transition-transform`, `duration-300`, `ease-in-out`, `transform`) and Alpine.js directives (`:class`, `x-show.transition`, `@click.away`, `x-cloak`).
+    *   Added navigation links within the sidebar, dynamically applying active states using `is_active()` function.
+    *   Created a header section with a button to toggle the sidebar on smaller screens and a user greeting with a logout link.
+    *   Ensured that no backend logic was altered, focusing solely on the presentation layer.
+
 ### Refactor: Redesign user profile page for UI/UX and responsiveness
 *   **What:** Redesigned the user profile page (`views/dashboard/profile.php`) to improve its UI/UX and responsiveness.
 *   **Why:** To provide a more modern and user-friendly layout, especially on larger screens, by arranging the profile and password forms into a two-column layout.

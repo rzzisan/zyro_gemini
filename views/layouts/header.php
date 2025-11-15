@@ -10,62 +10,91 @@ ensure_logged_in();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="<?php echo APP_URL; ?>/public/css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body class="bg-gray-100" x-data="{ 'isMobileMenuOpen': false }">
-    <nav class="bg-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <a href="#" class="text-2xl font-bold text-gray-800">My SaaS</a>
-                    </div>
-                    <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="<?php echo APP_URL; ?>/views/dashboard/index.php" class="<?php echo is_active('/views/dashboard/index.php') ? 'text-gray-900 border-indigo-500' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Dashboard</a>
-                        <a href="<?php echo APP_URL; ?>/views/dashboard/websites.php" class="<?php echo is_active('/views/dashboard/websites.php') ? 'text-gray-900 border-indigo-500' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">My Websites</a>
-                        <a href="<?php echo APP_URL; ?>/views/dashboard/send_sms.php" class="<?php echo is_active('/views/dashboard/send_sms.php') ? 'text-gray-900 border-indigo-500' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Send SMS</a>
-                        <a href="<?php echo APP_URL; ?>/views/dashboard/fraud_checker.php" class="<?php echo is_active('/views/dashboard/fraud_checker.php') ? 'text-gray-900 border-indigo-500' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Fraud Checker</a>
-                        <a href="<?php echo APP_URL; ?>/views/dashboard/profile.php" class="<?php echo is_active('/views/dashboard/profile.php') ? 'text-gray-900 border-indigo-500' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Profile</a>
-                    </div>
-                </div>
-                <div class="hidden sm:ml-6 sm:flex sm:items-center">
-                    <span class="text-gray-500">
-                        Hello, <?php echo htmlspecialchars($_SESSION['user_name']); ?>
-                    </span>
-                    <a href="<?php echo APP_URL; ?>/logout.php" class="ml-4 text-gray-500 hover:text-gray-700">Logout</a>
-                </div>
-                <div class="-mr-2 flex items-center sm:hidden">
-                    <button @click="isMobileMenuOpen = !isMobileMenuOpen" type="button" class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-controls="mobile-menu" aria-expanded="false">
-                        <span class="sr-only">Open main menu</span>
-                        <svg :class="{'hidden': isMobileMenuOpen, 'block': !isMobileMenuOpen }" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                        <svg :class="{'hidden': !isMobileMenuOpen, 'block': isMobileMenuOpen }" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+<body class="bg-gray-100">
+
+<div x-data="{ sidebarOpen: window.innerWidth > 1024 }" class="flex h-screen bg-gray-100">
+    
+    <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black opacity-50 transition-opacity lg:hidden" x-cloak></div>
+
+    <aside
+        class="fixed inset-y-0 left-0 z-30 bg-white border-r transition-all duration-300 transform 
+               lg:static lg:inset-0 lg:translate-x-0"
+        :class="{
+            'w-64': sidebarOpen, 
+            'w-20': !sidebarOpen, 
+            'translate-x-0': sidebarOpen, 
+            '-translate-x-full': !sidebarOpen
+        }"
+        class="lg:translate-x-0"
+        x-cloak
+    >
+        <div class="flex items-center justify-center h-16" :class="{ 'justify-between': sidebarOpen, 'justify-center': !sidebarOpen }" class="px-4 py-2">
+            <a href="<?php echo APP_URL; ?>/views/dashboard/index.php" class="text-2xl font-bold text-gray-800" x-show="sidebarOpen">My SaaS</a>
+            <button @click="sidebarOpen = false" class="text-gray-600 lg:hidden" x-show="sidebarOpen">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <div class="sm:hidden" id="mobile-menu" x-show="isMobileMenuOpen">
-            <div class="pt-2 pb-3 space-y-1">
-                <a href="<?php echo APP_URL; ?>/views/dashboard/index.php" class="<?php echo is_active('/views/dashboard/index.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'; ?> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</a>
-                <a href="<?php echo APP_URL; ?>/views/dashboard/websites.php" class="<?php echo is_active('/views/dashboard/websites.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'; ?> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">My Websites</a>
-                <a href="<?php echo APP_URL; ?>/views/dashboard/send_sms.php" class="<?php echo is_active('/views/dashboard/send_sms.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'; ?> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Send SMS</a>
-                <a href="<?php echo APP_URL; ?>/views/dashboard/fraud_checker.php" class="<?php echo is_active('/views/dashboard/fraud_checker.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'; ?> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Fraud Checker</a>
-                <a href="<?php echo APP_URL; ?>/views/dashboard/profile.php" class="<?php echo is_active('/views/dashboard/profile.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'; ?> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Profile</a>
+
+        <nav class="mt-8">
+            <a href="<?php echo APP_URL; ?>/views/dashboard/index.php"
+               class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
+               <?php echo is_active('/views/dashboard/index.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
+               :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
+                <i class="fas fa-tachometer-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                <span x-show="sidebarOpen" class="transition-opacity">Dashboard</span>
+            </a>
+            <a href="<?php echo APP_URL; ?>/views/dashboard/websites.php"
+               class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
+               <?php echo is_active('/views/dashboard/websites.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
+               :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
+                <i class="fas fa-globe w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                <span x-show="sidebarOpen" class="transition-opacity">My Websites</span>
+            </a>
+            <a href="<?php echo APP_URL; ?>/views/dashboard/send_sms.php"
+               class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
+               <?php echo is_active('/views/dashboard/send_sms.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
+               :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
+                <i class="fas fa-paper-plane w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                <span x-show="sidebarOpen" class="transition-opacity">Send SMS</span>
+            </a>
+            <a href="<?php echo APP_URL; ?>/views/dashboard/fraud_checker.php"
+               class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
+               <?php echo is_active('/views/dashboard/fraud_checker.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
+               :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
+                <i class="fas fa-shield-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                <span x-show="sidebarOpen" class="transition-opacity">Fraud Checker</span>
+            </a>
+            <a href="<?php echo APP_URL; ?>/views/dashboard/profile.php"
+               class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
+               <?php echo is_active('/views/dashboard/profile.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
+               :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
+                <i class="fas fa-user-circle w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
+                <span x-show="sidebarOpen" class="transition-opacity">Profile</span>
+            </a>
+        </nav>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300"
+         :class="{ 'lg:ml-64': sidebarOpen, 'lg:ml-20': !sidebarOpen }">
+        
+        <header class="flex items-center justify-between p-4 bg-white border-b">
+            <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="flex items-center">
+                <span class="text-gray-500 text-sm hidden sm:block">
+                    Hello, <?php echo htmlspecialchars($_SESSION['user_name']); ?>
+                </span>
+                <a href="<?php echo APP_URL; ?>/logout.php" class="ml-4 text-gray-500 hover:text-gray-700 text-sm">
+                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                </a>
             </div>
-            <div class="pt-4 pb-3 border-t border-gray-200">
-                <div class="flex items-center px-4">
-                    <div class="ml-3">
-                        <div class="text-base font-medium text-gray-800"><?php echo htmlspecialchars($_SESSION['user_name']); ?></div>
-                    </div>
-                </div>
-                <div class="mt-3 space-y-1">
-                    <a href="<?php echo APP_URL; ?>/logout.php" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Logout</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-    <div class="container mx-auto mt-4 px-4 sm:px-6 lg:px-8">
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
+            
