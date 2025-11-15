@@ -2,6 +2,16 @@
 
 ## Saturday, November 15, 2025
 
+### Bug Fix: Resolve Blank Page on Profile Form Submission
+*   **What:** Fixed a critical "Headers already sent" error that occurred when submitting the profile update or password change forms, resulting in a blank page.
+*   **Why:** The `views/dashboard/profile.php` file was including the HTML header (`header.php`) before processing the POST request. Since the controller logic performs a `redirect()`, which modifies HTTP headers, it failed because output had already started.
+*   **Where:**
+    *   Rewrote `views/dashboard/profile.php`.
+*   **How:**
+    *   Restructured the file to move all PHP logic for handling POST requests to the very top, before any HTML output is generated.
+    *   The `require_once '../layouts/header.php';` statement is now called *after* the entire `if ($_SERVER['REQUEST_METHOD'] === 'POST')` block has executed.
+    *   This ensures that the `redirect()` function in the controller can execute successfully without conflicts, and the user is now correctly redirected back to the profile page with the appropriate success or error message.
+
 ### Feature: User Profile Management
 *   **What:** Added a new "Profile" page to the user dashboard, allowing users to update their name, email, and password.
 *   **Why:** To give users the ability to manage their own account details directly, improving usability and self-service capabilities.
