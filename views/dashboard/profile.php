@@ -1,4 +1,5 @@
 <?php
+// PHP logic remains at the top
 require_once '../../controllers/userController.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,7 +19,6 @@ $user_id = get_user_id();
 $userModel = new User(getDb());
 $user_profile = $userModel->find($user_id);
 
-// Store saved values for JS
 $savedDistrict = $user_profile['district'] ?? '';
 $savedUpazila = $user_profile['upazila'] ?? '';
 ?>
@@ -27,60 +27,71 @@ $savedUpazila = $user_profile['upazila'] ?? '';
 
 <?php display_message(); ?>
 
-<div class="bg-white shadow-md rounded-lg p-6">
-    <h2 class="text-xl font-bold text-gray-700 mb-4">Update Profile Details</h2>
-    <form method="POST" action="">
-        <input type="hidden" name="action" value="update_profile">
-        <div class="mb-4">
-            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
-            <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($user_profile['name']); ?>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-4">
-            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-            <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user_profile['email']); ?>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-4">
-            <label for="phone_number" class="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
-            <input type="text" name="phone_number" id="phone_number" value="<?php echo htmlspecialchars($user_profile['phone_number'] ?? ''); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-4">
-            <label for="district" class="block text-gray-700 text-sm font-bold mb-2">District</label>
-            <select name="district" id="district" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="">Select District</option>
-            </select>
-        </div>
-        <div class="mb-4">
-            <label for="upazila" class="block text-gray-700 text-sm font-bold mb-2">Upazila</label>
-            <select name="upazila" id="upazila" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="">Select Upazila</option>
-            </select>
-        </div>
-        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Update Profile
-        </button>
-    </form>
-</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-<div class="mt-6 bg-white shadow-md rounded-lg p-6">
-    <h2 class="text-xl font-bold text-gray-700 mb-4">Change Password</h2>
-    <form method="POST" action="">
-        <input type="hidden" name="action" value="change_password">
-        <div class="mb-4">
-            <label for="current_password" class="block text-gray-700 text-sm font-bold mb-2">Current Password</label>
-            <input type="password" name="current_password" id="current_password" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    <div class="lg:col-span-2">
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-bold text-gray-700 mb-4">Update Profile Details</h2>
+            <form method="POST" action="">
+                <input type="hidden" name="action" value="update_profile">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                        <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($user_profile['name']); ?>" required class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user_profile['email']); ?>" required class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input type="text" name="phone_number" id="phone_number" value="<?php echo htmlspecialchars($user_profile['phone_number'] ?? ''); ?>" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="district" class="block text-sm font-medium text-gray-700">District</label>
+                        <select name="district" id="district" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">Select District</option>
+                        </select>
+                    </div>
+                    <div class="mb-4 md:col-span-2">
+                        <label for="upazila" class="block text-sm font-medium text-gray-700">Upazila</label>
+                        <select name="upazila" id="upazila" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">Select Upazila</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Update Profile
+                </button>
+            </form>
         </div>
-        <div class="mb-4">
-            <label for="new_password" class="block text-gray-700 text-sm font-bold mb-2">New Password</label>
-            <input type="password" name="new_password" id="new_password" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+
+    <div class="lg:col-span-1">
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-bold text-gray-700 mb-4">Change Password</h2>
+            <form method="POST" action="">
+                <input type="hidden" name="action" value="change_password">
+                <div class="mb-4">
+                    <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                    <input type="password" name="current_password" id="current_password" required class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
+                    <input type="password" name="new_password" id="new_password" required class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label for="confirm_new_password" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                    <input type="password" name="confirm_new_password" id="confirm_new_password" required class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <button type="submit" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Change Password
+                </button>
+            </form>
         </div>
-        <div class="mb-4">
-            <label for="confirm_new_password" class="block text-gray-700 text-sm font-bold mb-2">Confirm New Password</label>
-            <input type="password" name="confirm_new_password" id="confirm_new_password" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Change Password
-        </button>
-    </form>
+    </div>
 </div>
 
 <script>
@@ -100,7 +111,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             fetch('../../content/bd-upazilas.json')
         ]);
         
-        // ফিক্স: .districts এবং .upazilas প্রপার্টি অ্যাক্সেস করা
         districts = (await districtsRes.json()).districts;
         upazilas = (await upazilasRes.json()).upazilas;
 
@@ -109,13 +119,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Populate districts
     districts.forEach(district => {
         const option = new Option(district.name, district.name);
         districtSelect.add(option);
     });
 
-    // Function to load upazilas based on district
     const loadUpazilas = (districtName) => {
         upazilaSelect.innerHTML = '<option value="">Select Upazila</option>';
         if (!districtName) return;
@@ -130,21 +138,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             upazilaSelect.add(option);
         });
 
-        // Set saved upazila if matches
         if (districtName === savedDistrict && savedUpazila) {
             upazilaSelect.value = savedUpazila;
         }
     };
 
-    // Set saved district
     if (savedDistrict) {
         districtSelect.value = savedDistrict;
     }
 
-    // Initial load of upazilas
     loadUpazilas(districtSelect.value);
 
-    // Add event listener
     districtSelect.addEventListener('change', () => {
         loadUpazilas(districtSelect.value);
     });

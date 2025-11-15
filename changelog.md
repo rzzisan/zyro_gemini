@@ -2,6 +2,27 @@
 
 ## Saturday, November 15, 2025
 
+### Refactor: Redesign user profile page for UI/UX and responsiveness
+*   **What:** Redesigned the user profile page (`views/dashboard/profile.php`) to improve its UI/UX and responsiveness.
+*   **Why:** To provide a more modern and user-friendly layout, especially on larger screens, by arranging the profile and password forms into a two-column layout.
+*   **Where:**
+    *   Modified `views/dashboard/profile.php`.
+*   **How:**
+    *   Implemented a `grid grid-cols-1 lg:grid-cols-3 gap-6` layout for the main content area.
+    *   The "Update Profile Details" form now occupies two columns (`lg:col-span-2`) and the "Change Password" form occupies one column (`lg:col-span-1`) on large screens.
+    *   The input fields within the "Update Profile Details" form were further organized into a `grid grid-cols-1 md:grid-cols-2 gap-4` for better spacing and alignment.
+    *   Updated styling of labels and input fields for consistency.
+
+### Refactor: Redesign admin edit user form for UI/UX
+*   **What:** Redesigned the main 'Edit User Details' form in `admin/edit_user.php` to use a responsive `md:grid-cols-2` layout.
+*   **Why:** To improve the UI/UX by making the form more compact and user-friendly, especially on desktop screens, without altering the backend logic or other forms on the page.
+*   **Where:**
+    *   Modified `admin/edit_user.php`.
+*   **How:**
+    *   Wrapped the input fields for name, email, phone number, role, district, upazila, and password within a `div` with `grid grid-cols-1 md:grid-cols-2 gap-4` classes.
+    *   Adjusted the `password` field to span two columns using `md:col-span-2` for better layout.
+    *   Updated the styling of labels and input fields to align with the new design.
+
 ### Fix: Correctly parse nested JSON for district/upazila in admin panel
 *   **What:** Modified `admin/edit_user.php` to correctly parse the nested JSON structure for districts and upazilas.
 *   **Why:** The previous JavaScript code was failing to load districts and upazilas because it was not correctly accessing the `.districts` and `.upazilas` properties of the fetched JSON responses.

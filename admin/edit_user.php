@@ -23,7 +23,6 @@ if (!$user_details) {
 $planModel = new Plan($db);
 $plans = $planModel->findAll();
 
-// Store saved values for JS
 $savedDistrict = $user_details['district'] ?? '';
 $savedUpazila = $user_details['upazila'] ?? '';
 ?>
@@ -43,49 +42,51 @@ if (isset($_SESSION['flash_message'])) {
         <input type="hidden" name="action" value="update_user">
         <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_details['id']); ?>">
         
-        <div class="mb-4">
-            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
-            <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user_details['name']); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-        </div>
-        
-        <div class="mb-4">
-            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user_details['email']); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-        </div>
-        
-        <div class="mb-4">
-            <label for="phone_number" class="block text-gray-700 text-sm font-bold mb-2">Phone Number:</label>
-            <input type="text" name="phone_number" id="phone_number" value="<?php echo htmlspecialchars($user_details['phone_number'] ?? ''); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        
-        <div class="mb-4">
-            <label for="district" class="block text-gray-700 text-sm font-bold mb-2">District:</label>
-            <select name="district" id="district" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="">Select District</option>
-            </select>
-        </div>
-        
-        <div class="mb-4">
-            <label for="upazila" class="block text-gray-700 text-sm font-bold mb-2">Upazila:</label>
-            <select name="upazila" id="upazila" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="">Select Upazila</option>
-            </select>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
+                <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user_details['name']); ?>" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+            </div>
+            
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
+                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user_details['email']); ?>" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+            </div>
+            
+            <div class="mb-4">
+                <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number:</label>
+                <input type="text" name="phone_number" id="phone_number" value="<?php echo htmlspecialchars($user_details['phone_number'] ?? ''); ?>" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            
+            <div class="mb-4">
+                <label for="role" class="block text-sm font-medium text-gray-700">Role:</label>
+                <select id="role" name="role" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="user" <?php echo ($user_details['role'] == 'user') ? 'selected' : ''; ?>>User</option>
+                    <option value="admin" <?php echo ($user_details['role'] == 'admin') ? 'selected' : ''; ?>>Admin</option>
+                </select>
+            </div>
 
-        <div class="mb-4">
-            <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Role:</label>
-            <select id="role" name="role" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="user" <?php echo ($user_details['role'] == 'user') ? 'selected' : ''; ?>>User</option>
-                <option value="admin" <?php echo ($user_details['role'] == 'admin') ? 'selected' : ''; ?>>Admin</option>
-            </select>
-        </div>
+            <div class="mb-4">
+                <label for="district" class="block text-sm font-medium text-gray-700">District:</label>
+                <select name="district" id="district" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">Select District</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label for="upazila" class="block text-sm font-medium text-gray-700">Upazila:</label>
+                <select name="upazila" id="upazila" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">Select Upazila</option>
+                </select>
+            </div>
 
-        <div class="mb-6">
-            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">New Password (leave blank to keep current):</label>
-            <input type="password" id="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter new password">
-        </div>
+            <div class="mb-6 md:col-span-2">
+                <label for="password" class="block text-sm font-medium text-gray-700">New Password (leave blank to keep current):</label>
+                <input type="password" id="password" name="password" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter new password">
+            </div>
         
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Update User Details</button>
+        </div> <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Update User Details</button>
     </form>
 </div>
 
@@ -99,8 +100,8 @@ if (isset($_SESSION['flash_message'])) {
             <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_details['id']); ?>">
             
             <div class="mb-4">
-                <label for="new_plan_id" class="block text-gray-700 text-sm font-bold mb-2">New Plan:</label>
-                <select id="new_plan_id" name="new_plan_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <label for="new_plan_id" class="block text-sm font-medium text-gray-700">New Plan:</label>
+                <select id="new_plan_id" name="new_plan_id" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                     <?php foreach ($plans as $plan): ?>
                         <option value="<?php echo $plan['id']; ?>" <?php echo ($plan['name'] == $user_details['plan_name']) ? 'selected' : ''; ?>>
                             <?php echo htmlspecialchars($plan['name']); ?>
@@ -122,8 +123,8 @@ if (isset($_SESSION['flash_message'])) {
             <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_details['id']); ?>">
             
             <div class="mb-4">
-                <label for="new_balance" class="block text-gray-700 text-sm font-bold mb-2">Set New Balance:</label>
-                <input type="number" id="new_balance" name="new_balance" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter new credit balance" required>
+                <label for="new_balance" class="block text-sm font-medium text-gray-700">Set New Balance:</label>
+                <input type="number" id="new_balance" name="new_balance" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter new credit balance" required>
             </div>
             
             <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Set Credits</button>
@@ -151,23 +152,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             fetch('../content/bd-districts.json'),
             fetch('../content/bd-upazilas.json')
         ]);
-
-        // ফিক্স: .districts এবং .upazilas প্রপার্টি অ্যাক্সেস করা
         districts = (await districtsRes.json()).districts;
         upazilas = (await upazilasRes.json()).upazilas;
-
     } catch (error) {
         console.error('Failed to load location data:', error);
         return;
     }
 
-    // Populate districts
     districts.forEach(district => {
         const option = new Option(district.name, district.name);
         districtSelect.add(option);
     });
 
-    // Function to load upazilas based on district
     const loadUpazilas = (districtName) => {
         upazilaSelect.innerHTML = '<option value="">Select Upazila</option>';
         if (!districtName) return;
@@ -182,21 +178,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             upazilaSelect.add(option);
         });
 
-        // Set saved upazila if matches
         if (districtName === savedDistrict && savedUpazila) {
             upazilaSelect.value = savedUpazila;
         }
     };
 
-    // Set saved district
     if (savedDistrict) {
         districtSelect.value = savedDistrict;
     }
 
-    // Initial load of upazilas
     loadUpazilas(districtSelect.value);
 
-    // Add event listener
     districtSelect.addEventListener('change', () => {
         loadUpazilas(districtSelect.value);
     });
