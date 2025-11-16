@@ -18,7 +18,12 @@ ensureAdmin();
 </head>
 <body class="bg-gray-100">
 
-<div x-data="{ sidebarOpen: window.innerWidth > 1024 }" class="flex h-screen bg-gray-100">
+<div x-data="{ sidebarOpen: window.innerWidth > 1024 }" class="flex h-screen bg-gray-100" @resize.window="sidebarOpen = window.innerWidth > 1024">
+
+    <!-- Hamburger Menu Button -->
+    <button @click.stop="sidebarOpen = !sidebarOpen" class="fixed top-4 left-4 z-40 text-gray-500 focus:outline-none lg:hidden">
+        <i class="fas fa-bars"></i>
+    </button>
 
     <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black opacity-50 transition-opacity lg:hidden" x-cloak></div>
 
@@ -33,8 +38,11 @@ ensureAdmin();
         }"
         x-cloak
     >
-        <div class="flex items-center justify-center h-16 px-4 py-2">
+        <div class="flex items-center justify-between h-16 px-4 py-2">
             <a href="<?php echo APP_URL; ?>/admin/index.php" class="text-2xl font-bold text-white" x-show="sidebarOpen">Admin Panel</a>
+            <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-300 focus:outline-none hidden lg:block" :class="{'lg:hidden': sidebarOpen}">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
 
         <nav class="mt-8">
@@ -99,7 +107,7 @@ ensureAdmin();
          :class="{ 'lg:ml-64': sidebarOpen, 'lg:ml-20': !sidebarOpen }">
         
         <header class="flex items-center justify-between p-4 bg-white border-b">
-            <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none">
+            <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none hidden lg:block">
                 <i class="fas fa-bars"></i>
             </button>
             

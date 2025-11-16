@@ -1,5 +1,19 @@
 # Changelog
 
+## Sunday, November 16, 2025
+
+### Fix: Admin Dashboard Hamburger Menu
+*   **What:** Fixed the hamburger menu functionality, positioning, and mobile visibility in the admin dashboard.
+*   **Why:** The hamburger menu was not working correctly, was misplaced, and was not visible on mobile devices.
+*   **Where:**
+    *   Modified `views/layouts/admin_header.php`.
+*   **How:**
+    *   Moved the hamburger button for mobile view to be a direct child of the main `div` and positioned it using `fixed top-4 left-4 z-40`.
+    *   Added the `lg:hidden` class to the mobile hamburger button so it only appears on smaller screens.
+    *   Added a new hamburger button inside the `<aside>` element that is only visible on large screens (`hidden lg:block`) to toggle the sidebar when it's in its collapsed state.
+    *   Modified the original hamburger button inside the `<header>` to be visible only on large screens (`hidden lg:block`).
+    *   Added `@resize.window="sidebarOpen = window.innerWidth > 1024"` to the main `div` to ensure the sidebar state is correct when the window is resized.
+
 ## Saturday, November 15, 2025
 
 ### Fix: Update Admin Panel footer to match new layout structure
