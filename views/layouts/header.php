@@ -10,7 +10,7 @@ ensure_logged_in();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <link rel="stylesheet" href="<?php echo APP_URL; ?>/public/css/app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
@@ -29,51 +29,52 @@ ensure_logged_in();
             'translate-x-0': sidebarOpen, 
             '-translate-x-full': !sidebarOpen
         }"
-        class="lg:translate-x-0"
         x-cloak
     >
-        <div class="flex items-center justify-center h-16" :class="{ 'justify-between': sidebarOpen, 'justify-center': !sidebarOpen }" class="px-4 py-2">
+        <div class="flex items-center justify-center h-16 px-4 py-2">
             <a href="<?php echo APP_URL; ?>/views/dashboard/index.php" class="text-2xl font-bold text-gray-800" x-show="sidebarOpen">My SaaS</a>
-            <button @click="sidebarOpen = false" class="text-gray-600 lg:hidden" x-show="sidebarOpen">
-                <i class="fas fa-times"></i>
-            </button>
         </div>
 
         <nav class="mt-8">
             <a href="<?php echo APP_URL; ?>/views/dashboard/index.php"
+               title="Dashboard"
                class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
                <?php echo is_active('/views/dashboard/index.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-tachometer-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen" class="transition-opacity">Dashboard</span>
+                <span x-show="sidebarOpen">Dashboard</span>
             </a>
             <a href="<?php echo APP_URL; ?>/views/dashboard/websites.php"
+               title="My Websites"
                class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
                <?php echo is_active('/views/dashboard/websites.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-globe w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen" class="transition-opacity">My Websites</span>
+                <span x-show="sidebarOpen">My Websites</span>
             </a>
             <a href="<?php echo APP_URL; ?>/views/dashboard/send_sms.php"
+               title="Send SMS"
                class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
                <?php echo is_active('/views/dashboard/send_sms.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-paper-plane w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen" class="transition-opacity">Send SMS</span>
+                <span x-show="sidebarOpen">Send SMS</span>
             </a>
             <a href="<?php echo APP_URL; ?>/views/dashboard/fraud_checker.php"
+               title="Fraud Checker"
                class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
                <?php echo is_active('/views/dashboard/fraud_checker.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-shield-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen" class="transition-opacity">Fraud Checker</span>
+                <span x-show="sidebarOpen">Fraud Checker</span>
             </a>
             <a href="<?php echo APP_URL; ?>/views/dashboard/profile.php"
+               title="Profile"
                class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
                <?php echo is_active('/views/dashboard/profile.php') ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-user-circle w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen" class="transition-opacity">Profile</span>
+                <span x-show="sidebarOpen">Profile</span>
             </a>
         </nav>
     </aside>

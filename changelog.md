@@ -10,6 +10,47 @@
 *   **How:**
     *   Updated the content of `admin_footer.php` to include the necessary closing `</main>`, `</div>`, `</div>`, `</body>`, and `</html>` tags.
 
+### Fix: Correct Admin Panel layout, fix content gap, and restore mobile toggle
+*   **What:** Replaced the entire content of `views/layouts/admin_header.php` with corrected code.
+*   **Why:** The previous implementation of the admin panel sidebar had two issues: a content gap on desktop when the sidebar was collapsed, and the mobile toggle button was hidden within the sidebar, making it inaccessible on small screens. This fix addresses both.
+*   **Where:**
+    *   Modified `views/layouts/admin_header.php`.
+*   **How:**
+    *   Moved the sidebar toggle button from inside the `<aside>` element to the `<header>` element, making it always visible.
+    *   Adjusted the `x-data` initialization for `sidebarOpen` to ensure the sidebar is open by default on large screens (`window.innerWidth > 1024`).
+    *   Ensured the main content area's left margin (`lg:ml-64` or `lg:ml-20`) correctly adjusts based on the `sidebarOpen` state, eliminating the content gap.
+    *   Updated the Alpine.js CDN link to a more stable version.
+
+### Fix: Correct User Dashboard layout, fix content gap, and restore mobile toggle
+*   **What:** Replaced the entire content of `views/layouts/header.php` with corrected code.
+*   **Why:** The previous implementation of the user dashboard sidebar had two issues: a content gap on desktop when the sidebar was collapsed, and the mobile toggle button was hidden within the sidebar, making it inaccessible on small screens. This fix addresses both.
+*   **Where:**
+    *   Modified `views/layouts/header.php`.
+*   **How:**
+    *   Moved the sidebar toggle button from inside the `<aside>` element to the `<header>` element, making it always visible.
+    *   Adjusted the `x-data` initialization for `sidebarOpen` to ensure the sidebar is open by default on large screens (`window.innerWidth > 1024`).
+    *   Ensured the main content area's left margin (`lg:ml-64` or `lg:ml-20`) correctly adjusts based on the `sidebarOpen` state, eliminating the content gap.
+    *   Updated the Alpine.js CDN link to a more stable version.
+
+### Fix: Update Admin Panel footer to match new layout structure
+*   **What:** Replaced the entire content of `views/layouts/admin_footer.php` to correctly close HTML tags.
+*   **Why:** To ensure proper HTML structure and rendering after the admin dashboard layout redesign, as the new `admin_header.php` introduced new opening tags that needed corresponding closing tags in the footer.
+*   **Where:**
+    *   Modified `views/layouts/admin_footer.php`.
+*   **How:**
+    *   Updated the content of `admin_footer.php` to include the necessary closing `</main>`, `</div>`, `</div>`, `</body>`, and `</html>` tags.
+*   **What:** Replaced the entire content of `views/layouts/admin_header.php` to introduce a fully responsive sidebar that pushes content on desktop and overlays on mobile.
+*   **Why:** To provide a more modern and flexible navigation experience for administrators, optimizing for both large and small screens by dynamically adjusting sidebar behavior (pushing content on desktop, overlaying on mobile) and width (expanded or collapsed).
+*   **Where:**
+    *   Modified `views/layouts/admin_header.php`.
+*   **How:**
+    *   Updated the `x-data` directive to initialize `sidebarOpen` based on `window.innerWidth` for desktop-first behavior.
+    *   Modified the `<aside>` element's classes to control width (`w-64` for open, `w-20` for collapsed) and transform behavior (`-translate-x-full` for closed mobile, `translate-x-0` for open mobile and desktop) using Alpine.js `:class` bindings.
+    *   Adjusted the main content area's left margin (`lg:ml-64` or `lg:ml-20`) dynamically based on `sidebarOpen` state to create the "push" effect on desktop.
+    *   Implemented conditional rendering (`x-show`) for sidebar elements like the logo and navigation text to adapt to collapsed state.
+    *   Ensured the mobile overlay (`x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black opacity-50 transition-opacity lg:hidden" x-cloak`) is present for proper mobile interaction.
+    *   Adjusted the `SMS` dropdown button to hide the chevron icon when the sidebar is collapsed (`'hidden': !sidebarOpen`).
+
 ### Feat: Implement dynamic push/overlay sidebar layout for Admin Panel
 *   **What:** Replaced the entire content of `views/layouts/admin_header.php` to introduce a fully responsive sidebar that pushes content on desktop and overlays on mobile.
 *   **Why:** To provide a more modern and flexible navigation experience for administrators, optimizing for both large and small screens by dynamically adjusting sidebar behavior (pushing content on desktop, overlaying on mobile) and width (expanded or collapsed).

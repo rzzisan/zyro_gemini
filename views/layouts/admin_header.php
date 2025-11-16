@@ -13,7 +13,7 @@ ensureAdmin();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body class="bg-gray-100">
@@ -31,53 +31,54 @@ ensureAdmin();
             'translate-x-0': sidebarOpen, 
             '-translate-x-full': !sidebarOpen
         }"
-        class="lg:translate-x-0"
         x-cloak
     >
-        <div class="flex items-center h-16" :class="{ 'justify-between': sidebarOpen, 'justify-center': !sidebarOpen }" class="px-4 py-2">
+        <div class="flex items-center justify-center h-16 px-4 py-2">
             <a href="<?php echo APP_URL; ?>/admin/index.php" class="text-2xl font-bold text-white" x-show="sidebarOpen">Admin Panel</a>
-            <button @click="sidebarOpen = false" class="text-gray-300 lg:hidden" x-show="sidebarOpen">
-                <i class="fas fa-times"></i>
-            </button>
         </div>
 
         <nav class="mt-8">
             <a href="<?php echo APP_URL; ?>/admin/index.php"
+               title="Dashboard"
                class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
                <?php echo is_active('/admin/index.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-tachometer-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen" class="transition-opacity">Dashboard</span>
+                <span x-show="sidebarOpen">Dashboard</span>
             </a>
             <a href="<?php echo APP_URL; ?>/admin/users.php"
+               title="Users"
                class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
                <?php echo is_active('/admin/users.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-users w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen" class="transition-opacity">Users</span>
+                <span x-show="sidebarOpen">Users</span>
             </a>
             <a href="<?php echo APP_URL; ?>/admin/plans.php"
+               title="Plans"
                class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
                <?php echo is_active('/admin/plans.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-clipboard-list w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen" class="transition-opacity">Plans</span>
+                <span x-show="sidebarOpen">Plans</span>
             </a>
             <a href="<?php echo APP_URL; ?>/admin/fraud_checker.php"
+               title="Fraud Checker"
                class="flex items-center px-4 py-3 mt-2 text-sm font-medium rounded-md transition-colors duration-200
                <?php echo is_active('/admin/fraud_checker.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-shield-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen" class="transition-opacity">Fraud Checker</span>
+                <span x-show="sidebarOpen">Fraud Checker</span>
             </a>
             
             <div x-data="{ open: false }" class="mt-2">
                 <button @click="open = !open" 
+                        title="SMS"
                         class="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white rounded-md focus:outline-none"
                         :class="{ 'justify-between': sidebarOpen, 'justify-center': !sidebarOpen }">
                     <span class="flex items-center">
                         <i class="fas fa-sms w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                        <span x-show="sidebarOpen" class="transition-opacity">SMS</span>
+                        <span x-show="sidebarOpen">SMS</span>
                     </span>
                     <i class="fas" :class="{ 'fa-chevron-down': !open, 'fa-chevron-up': open, 'hidden': !sidebarOpen }"></i>
                 </button>
