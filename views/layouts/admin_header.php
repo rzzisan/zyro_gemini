@@ -18,7 +18,7 @@ ensureAdmin();
 </head>
 <body class="bg-gray-100">
 
-<div x-data="{ sidebarOpen: window.innerWidth > 1024 }" class="flex h-screen bg-gray-100" @resize.window="sidebarOpen = window.innerWidth > 1024">
+<div x-data="{ sidebarOpen: window.innerWidth > 1024, smsOpen: false }" class="flex h-screen bg-gray-100" @resize.window="sidebarOpen = window.innerWidth > 1024">
 
     <!-- Hamburger Menu Button -->
     <button @click.stop="sidebarOpen = !sidebarOpen" class="fixed top-4 left-4 z-40 text-gray-500 focus:outline-none lg:hidden">
@@ -39,8 +39,8 @@ ensureAdmin();
         x-cloak
     >
         <div class="flex items-center justify-between h-16 px-4 py-2">
-            <a href="<?php echo APP_URL; ?>/admin/index.php" class="text-2xl font-bold text-white" x-show="sidebarOpen">Admin Panel</a>
-            <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-300 focus:outline-none hidden lg:block" :class="{'lg:hidden': sidebarOpen}">
+            <a href="<?php echo APP_URL; ?>/admin/index.php" class="text-2xl font-bold text-white whitespace-nowrap" x-show="sidebarOpen">Admin Panel</a>
+            <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-300 focus:outline-none" :class="{'lg:hidden': sidebarOpen}">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
@@ -52,7 +52,7 @@ ensureAdmin();
                <?php echo is_active('/admin/index.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-tachometer-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen">Dashboard</span>
+                <span x-show="sidebarOpen" class="whitespace-nowrap">Dashboard</span>
             </a>
             <a href="<?php echo APP_URL; ?>/admin/users.php"
                title="Users"
@@ -60,7 +60,7 @@ ensureAdmin();
                <?php echo is_active('/admin/users.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-users w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen">Users</span>
+                <span x-show="sidebarOpen" class="whitespace-nowrap">Users</span>
             </a>
             <a href="<?php echo APP_URL; ?>/admin/plans.php"
                title="Plans"
@@ -68,7 +68,7 @@ ensureAdmin();
                <?php echo is_active('/admin/plans.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-clipboard-list w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen">Plans</span>
+                <span x-show="sidebarOpen" class="whitespace-nowrap">Plans</span>
             </a>
             <a href="<?php echo APP_URL; ?>/admin/fraud_checker.php"
                title="Fraud Checker"
@@ -76,21 +76,21 @@ ensureAdmin();
                <?php echo is_active('/admin/fraud_checker.php') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'; ?>"
                :class="{ 'justify-start': sidebarOpen, 'justify-center': !sidebarOpen }">
                 <i class="fas fa-shield-alt w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                <span x-show="sidebarOpen">Fraud Checker</span>
+                <span x-show="sidebarOpen" class="whitespace-nowrap">Fraud Checker</span>
             </a>
             
-            <div x-data="{ open: false }" class="mt-2">
-                <button @click="open = !open" 
+            <div class="mt-2">
+                <button @click="smsOpen = !smsOpen" 
                         title="SMS"
                         class="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white rounded-md focus:outline-none"
                         :class="{ 'justify-between': sidebarOpen, 'justify-center': !sidebarOpen }">
                     <span class="flex items-center">
                         <i class="fas fa-sms w-6 text-center" :class="{ 'mr-3': sidebarOpen }"></i>
-                        <span x-show="sidebarOpen">SMS</span>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap">SMS</span>
                     </span>
-                    <i class="fas" :class="{ 'fa-chevron-down': !open, 'fa-chevron-up': open, 'hidden': !sidebarOpen }"></i>
+                    <i class="fas" :class="{ 'fa-chevron-down': !smsOpen, 'fa-chevron-up': smsOpen, 'hidden': !sidebarOpen }"></i>
                 </button>
-                <div x-show="open && sidebarOpen" class="pl-8 py-2">
+                <div x-show="smsOpen && sidebarOpen" class="pl-8 py-2">
                     <a href="<?php echo APP_URL; ?>/admin/sms_credit.php"
                        class="<?php echo is_active('/admin/sms_credit.php') ? 'text-white' : 'text-gray-400 hover:text-white'; ?> 
                        block py-1 text-sm rounded-md transition-colors duration-200">SMS Credit</a>
@@ -106,11 +106,11 @@ ensureAdmin();
     <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300">
         
         <header class="flex items-center justify-between p-4 bg-white border-b">
-            <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none hidden lg:block">
+            <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none">
                 <i class="fas fa-bars"></i>
             </button>
             
-            <div class="flex items-center">
+            <div class="flex items-center ml-auto">
                 <span class="text-gray-500 text-sm hidden sm:block">
                     <?php echo "Welcome, " . htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?>
                 </span>
