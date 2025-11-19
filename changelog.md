@@ -1,5 +1,39 @@
 # Changelog
 
+## Wednesday, November 19, 2025
+
+### Feat: Install and Configure Tailwind CSS
+*   **What:** Installed and configured Tailwind CSS for the project.
+*   **Why:** To enable the use of the Tailwind CSS framework for styling the application.
+*   **Where:**
+    *   `package.json`
+    *   `tailwind.config.js`
+    *   `public/css/input.css`
+*   **How:**
+    *   Installed `tailwindcss`, `postcss`, and `autoprefixer` as dev dependencies using `npm install -D tailwindcss postcss autoprefixer`.
+    *   Initialized the Tailwind CSS configuration file using `npx tailwindcss init`.
+    *   Updated the `content` array in `tailwind.config.js` to include all `*.php` files in the project.
+    *   Ensured that `public/css/input.css` contains the necessary Tailwind directives (`@tailwind base;`, `@tailwind components;`, `@tailwind utilities;`).
+    *   Ran the `npm run build` command to compile the CSS into `public/css/style.css`.
+
+## Tuesday, November 18, 2025
+
+### Fix: Project Styling
+*   **What:** Fixed the project's styling, which was not being applied correctly.
+*   **Why:** The project was attempting to use Tailwind CSS directives directly in the browser, which is not supported. A proper build process was needed to compile the Tailwind CSS into a usable stylesheet.
+*   **Where:**
+    *   Created `tailwind.config.js`.
+    *   Created `package.json`.
+    *   Modified `views/layouts/header.php`.
+    *   Modified `public/css/app.css`.
+*   **How:**
+    *   Created a `tailwind.config.js` file to configure Tailwind CSS.
+    *   Created a `package.json` file to manage dependencies and scripts.
+    *   Installed `tailwindcss` as a dev dependency.
+    *   Added a `build` script to `package.json` to compile `public/css/input.css` into `public/css/app.css`.
+    *   Ran the build script to generate the `app.css` file.
+    *   Removed the conflicting Tailwind CSS CDN script from `views/layouts/header.php`.
+
 ## Sunday, November 16, 2025
 
 ### Fix: Admin Dashboard Hamburger Menu
@@ -794,7 +828,7 @@
 ### Phone Number Formatting
 
 *   **What:** Implemented a robust phone number formatting function.
-*   **Why:** To ensure that all phone numbers are in the correct format (`8801XXXXXXXXX`) before being sent to the SMS gateway, regardless of the user's input format.
+*   **Why:** to ensure that all phone numbers are in the correct format (`8801XXXXXXXXX`) before being sent to the SMS gateway, regardless of the user's input format.
 *   **Where:**
     *   Created a new function `formatPhoneNumber()` in `core/functions.php`.
     *   Updated the `handleSendSmsRequest()` method in `controllers/smsController.php` to use the new `formatPhoneNumber()` function.

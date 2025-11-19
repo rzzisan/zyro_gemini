@@ -1,8 +1,3 @@
-## Instructions for Gemini
-- Always review the changelog (`changelog.md`) before starting any new task to understand recent changes and project context.
-- After finishing any task, update the changelog (`changelog.md`) with every detail about what was done, how it was done, and why it was done.
-- After every successful task, be sure to write down everything in changelog.md in such a way that you can thoroughly understand how you did something, why you did it, and what you did.
-- do not push from local to git without moy permision.
 ## Gemini Added Memories
 - I have completed the task of adding the admin SMS history page. I have created the necessary files, updated the models, and made the page responsive. I have also updated the changelog.
 - I have fixed the bug in the user's SMS history modal and updated the changelog.
@@ -12,3 +7,24 @@
 - I have modernized the design of the user SMS history page and updated the changelog.
 - I have completed the task of adding the admin SMS history page. I have created the necessary files, updated the models, and made the page responsive. I have also updated the changelog.
 - I have modified the admin SMS history page to make the truncated message clickable to view the full message, instead of using a 'View Full' button.
+- I have pushed all local changes to git with the commit message "last update 12 nov 2025 12 pm".
+- I have implemented a "Fraud Checker" feature. This feature allows users to check the delivery history of a phone number. It uses an external API to fetch the data and stores it in a local database. A cron job is created to update the data periodically. I have created the necessary files for the model, view, and controller, and also updated the user dashboard with a new menu item. I have also updated the changelog.
+- I have implemented a "Fraud Checker" feature. This feature allows users to check the delivery history of a phone number. It uses an external API to fetch the data and stores it in a local database. A cron job is created to update the data periodically. I have created the necessary files for the model, view, and controller, and also updated the user dashboard with a new menu item. I have also updated the changelog.
+- I have created a new menu named "Courier History" in the admin dashboard. This page displays all courier history from the database, with pagination options (50, 100, 500, 1000 rows per page) and a style similar to the SMS history page. I have also fixed a bug where the page was returning blank due to incorrect database connection handling.
+- I have pulled the latest updates from GitHub and discarded all local changes.
+- I have removed the "Courier History" and "Fraud Checker" features from the codebase and pushed the changes to the git repository.
+- I have updated the GEMINI.md file with instructions about reviewing the changelog before starting any new task and updating it after finishing a task. I have also committed and pushed these changes to the remote repository.
+- Do not push from local to git without moy permision.
+- I have implemented the 'Fraud Checker' feature. This feature allows users to check the delivery history of a phone number. It uses an external API to fetch the data and stores it in a local database. I have created the necessary files for the model, view, and controller, and also updated the user dashboard with a new menu item. I have also updated the changelog.
+- I have modernized the design of the user fraud checker page by removing the courier-specific table and adding a "Total Fraud Reports" summary card. I have also updated the changelog.
+- I have successfully modernized the Fraud Checker UI, added a "Total Fraud Reports" summary card, updated the changelog, and committed the changes to the git repository.
+- I have successfully pushed the changes to the remote git repository.
+- I have successfully implemented a dual-color circular progress bar for delivery and cancellation rates on the Fraud Checker page, updated the changelog, and committed the changes to the git repository.
+- I have redesigned the Fraud Checker UI to match the user's provided design, which includes a simplified left sidebar and icon-less summary cards. I have also updated the changelog.
+- I have redesigned the Fraud Checker UI to match the user's provided design, which includes a simplified left sidebar and icon-less summary cards. I have also updated the changelog.
+- I have redesigned the Fraud Checker UI to match the user's provided design, which includes a simplified left sidebar and icon-less summary cards. I have also updated the changelog.
+- I have successfully implemented the user fraud checker dashboard progress bar, updated the changelog, and pushed the changes to the git repository.
+- I have successfully added a numbering column to the admin fraud checker courier history page and updated the changelog.
+- I have pulled the latest updates from GitHub and discarded all local changes.
+- I have installed and configured Tailwind CSS for the project. I have updated the `tailwind.config.js` file, verified the build scripts in `package.json`, and replaced the Tailwind CSS CDN link with the local compiled Tailwind CSS file in `views/layouts/admin_header.php`. I have also updated the changelog.
+- I have replaced the existing CSS link with the new Tailwind CSS compiled file in `views/layouts/header.php`. I have also updated the changelog.
