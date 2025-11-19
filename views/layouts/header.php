@@ -78,8 +78,7 @@ ensure_logged_in();
         </nav>
     </aside>
 
-    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300"
-         :class="{ 'lg:ml-64': sidebarOpen, 'lg:ml-20': !sidebarOpen }">
+    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300">
         
         <header class="flex items-center justify-between p-4 bg-white border-b">
             <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none">

@@ -1,3 +1,7 @@
+[x-cloak] {
+  display: none !important;
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -719,20 +723,12 @@ video {
   margin-left: 0.5rem;
 }
 
-.ml-20 {
-  margin-left: 5rem;
-}
-
 .ml-3 {
   margin-left: 0.75rem;
 }
 
 .ml-4 {
   margin-left: 1rem;
-}
-
-.ml-64 {
-  margin-left: 16rem;
 }
 
 .mr-1 {
@@ -1928,14 +1924,6 @@ video {
 
   .lg\:col-span-2 {
     grid-column: span 2 / span 2;
-  }
-
-  .lg\:ml-20 {
-    margin-left: 5rem;
-  }
-
-  .lg\:ml-64 {
-    margin-left: 16rem;
   }
 
   .lg\:block {

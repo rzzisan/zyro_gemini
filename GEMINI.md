@@ -28,3 +28,4 @@
 - I have pulled the latest updates from GitHub and discarded all local changes.
 - I have installed and configured Tailwind CSS for the project. I have updated the `tailwind.config.js` file, verified the build scripts in `package.json`, and replaced the Tailwind CSS CDN link with the local compiled Tailwind CSS file in `views/layouts/admin_header.php`. I have also updated the changelog.
 - I have replaced the existing CSS link with the new Tailwind CSS compiled file in `views/layouts/header.php`. I have also updated the changelog.
+- I have fixed the sidebar layout and Alpine.js flickering issues. I removed `lg:ml-64` and `lg:ml-20` from the main content wrapper div in both `views/layouts/header.php` and `views/layouts/admin_header.php`. I also added `[x-cloak] { display: none !important; }` to `public/css/input.css` and re-ran the Tailwind CSS build. I have updated the changelog.
