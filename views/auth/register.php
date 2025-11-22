@@ -29,6 +29,22 @@ if (is_logged_in()) {
                     <input type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" name="email" required>
                 </div>
                 <div class="mb-4">
+                    <label for="phone_number" class="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
+                    <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="phone_number" name="phone_number" required>
+                </div>
+                <div class="mb-4">
+                    <label for="district" class="block text-gray-700 text-sm font-bold mb-2">District (Optional)</label>
+                    <select id="district" name="district" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="">Select District</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="upazila" class="block text-gray-700 text-sm font-bold mb-2">Upazila (Optional)</label>
+                    <select id="upazila" name="upazila" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="">Select Upazila</option>
+                    </select>
+                </div>
+                <div class="mb-4">
                     <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
                     <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" name="password" required>
                 </div>
@@ -47,5 +63,54 @@ if (is_logged_in()) {
             </form>
         </div>
     </div>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const districtSelect = document.getElementById('district');
+    const upazilaSelect = document.getElementById('upazila');
+
+    let districts = [];
+    let upazilas = [];
+
+    try {
+        const [districtsRes, upazilasRes] = await Promise.all([
+            fetch('../../content/bd-districts.json'),
+            fetch('../../content/bd-upazilas.json')
+        ]);
+        
+        districts = (await districtsRes.json()).districts;
+        upazilas = (await upazilasRes.json()).upazilas;
+
+    } catch (error) {
+        console.error('Failed to load location data:', error);
+        return;
+    }
+
+    districts.forEach(district => {
+        const option = new Option(district.name, district.name);
+        districtSelect.add(option);
+    });
+
+    const loadUpazilas = (districtName) => {
+        upazilaSelect.innerHTML = '<option value="">Select Upazila</option>';
+        if (!districtName) return;
+
+        const selectedDistrict = districts.find(d => d.name === districtName);
+        if (!selectedDistrict) return;
+
+        const filteredUpazilas = upazilas.filter(u => u.district_id === selectedDistrict.id);
+        
+        filteredUpazilas.forEach(upazila => {
+            const option = new Option(upazila.name, upazila.name);
+            upazilaSelect.add(option);
+        });
+    };
+
+    loadUpazilas(districtSelect.value);
+
+    districtSelect.addEventListener('change', () => {
+        loadUpazilas(districtSelect.value);
+    });
+});
+</script>
 </body>
 </html>

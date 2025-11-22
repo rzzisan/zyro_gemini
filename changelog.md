@@ -856,3 +856,17 @@
     *   Debugged and fixed an issue with the `ROOT_PATH` constant.
     *   Debugged and fixed an "Undefined array key" warning.
     *   Corrected the phone number formatting to meet the gateway's requirements.
+## Friday, November 22, 2025
+
+### Feature: Add new fields to user registration
+*   **What:** Implemented new fields (`phone_number`, `district`, `upazila`) in the user registration process.
+*   **Why:** To collect more comprehensive user information during registration, enhancing user profiles and enabling future location-based features.
+*   **Where:**
+    *   Modified `views/auth/register.php`.
+    *   Modified `models/User.php`.
+    *   Modified `controllers/authController.php`.
+*   **How:**
+    *   Added mandatory 'Phone Number' input field and optional 'District' and 'Upazila' dropdowns to `views/auth/register.php`.
+    *   Implemented JavaScript in `views/auth/register.php` to dynamically load and filter district and upazila data from `bd-districts.json` and `bd-upazilas.json`.
+    *   Updated the `createUser` method in `models/User.php` to accept `phone_number`, `district`, and `upazila` as parameters, and modified the SQL `INSERT` statement accordingly.
+    *   Modified the `register` case in `controllers/authController.php` to retrieve these new fields from the `$_POST` request, validate the `phone_number`, and pass all relevant data to the `createUser` method.

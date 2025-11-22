@@ -61,11 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'register':
             $name = $_POST['name'] ?? null;
             $email = $_POST['email'] ?? null;
+            $phone_number = $_POST['phone_number'] ?? null;
+            $district = $_POST['district'] ?? null;
+            $upazila = $_POST['upazila'] ?? null;
             $password = $_POST['password'] ?? null;
             $password_confirm = $_POST['password_confirm'] ?? null;
 
-            if (!$name || !$email || !$password || !$password_confirm) {
-                set_message('All fields are required.', 'danger');
+            if (!$name || !$email || !$phone_number || !$password || !$password_confirm) {
+                set_message('All required fields must be filled.', 'danger');
                 redirect('/views/auth/register.php');
             }
 
@@ -88,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 redirect('/views/auth/register.php');
             }
 
-            $user_id = $userModel->createUser($name, $email, $password);
+            $user_id = $userModel->createUser($name, $email, $password, $phone_number, $district, $upazila);
 
             $planModel = new Plan($db);
             $freePlan = $planModel->findByName('Free');
