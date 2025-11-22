@@ -1,5 +1,24 @@
 # Changelog
 
+## Saturday, November 23, 2025
+
+### Feat: Implement OTP Verification for User Registration
+* **What:** Added a mandatory OTP (One-Time Password) verification step to the user registration process.
+* **Why:** To verify the ownership of the provided phone number and prevent fake or unverified account registrations. User data is now committed to the database only after successful verification.
+* **Where:**
+    * `controllers/authController.php`
+    * `views/auth/verify_otp.php` (New File)
+    * `views/auth/register.php`
+    * `models/User.php`
+* **How:**
+    * **Registration Flow:** Modified `controllers/authController.php` to intercept the registration request. Instead of saving to the database immediately, user data is validated and stored temporarily in `$_SESSION['temp_registration']`.
+    * **OTP Generation:** A random 4-digit OTP is generated and sent to the user's phone using the `SmsController`.
+    * **Verification Page:** Created `views/auth/verify_otp.php`, a standalone page that displays the target phone number and an input for the code.
+    * **Auto-Submit & Timer:** Implemented JavaScript in the verification page to automatically submit the form upon entering 4 digits and added a 2-minute countdown timer for the "Resend OTP" button.
+    * **Finalization:** Added `verify_otp` logic in the controller to match the code. Upon success, the user is created in the database, subscribed to the free plan, and logged in.
+    * **Resend Logic:** Added `resend_otp` action to generate and send a new code if the previous one expires or is lost.
+    * **Data Fields:** Updated `views/auth/register.php` and `models/User.php` to include and handle `phone_number` (mandatory), `district`, and `upazila` fields.
+
 ## Wednesday, November 19, 2025
 
 ### Feat: Install and Configure Tailwind CSS
