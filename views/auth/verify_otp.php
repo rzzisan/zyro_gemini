@@ -27,7 +27,7 @@ $pageTitle = "Verify OTP";
 <body>
     <div class="bg-gray-100 flex items-center justify-center min-h-screen">
         <div class="bg-white shadow-md rounded-lg px-8 py-6 w-full max-w-md">
-            <h3 class="text-2xl font-bold text-center">Verify OTP</h3>
+            <h3 class="text-2xl font-bold text-center">Verify Your Phone Number</h3>
             <p class="text-center text-gray-600 mt-2">An OTP has been sent to <?php echo htmlspecialchars($phone_number); ?>.</p>
             <?php display_message(); ?>
             <form action="/controllers/authController.php" method="POST" class="mt-4" id="otp-form">
