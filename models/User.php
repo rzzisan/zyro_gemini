@@ -99,9 +99,8 @@ class User
         return $stmt->execute([$name, $email, $hashedPassword]);
     }
 
-    public function createUser($name, $email, $password, $phone_number = null, $district = null, $upazila = null, $role = 'user')
+    public function createUser($name, $email, $hashedPassword, $phone_number = null, $district = null, $upazila = null, $role = 'user')
     {
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         $stmt = $this->db->prepare("INSERT INTO users (name, email, password, phone_number, district, upazila, role) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$name, $email, $hashedPassword, $phone_number, $district, $upazila, $role]);
         return $this->db->lastInsertId();

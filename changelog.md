@@ -856,6 +856,27 @@
     *   Debugged and fixed an issue with the `ROOT_PATH` constant.
     *   Debugged and fixed an "Undefined array key" warning.
     *   Corrected the phone number formatting to meet the gateway's requirements.
+### Feat: Implement Full OTP Verification Flow for User Registration
+*   **What:** Implemented a complete, secure OTP (One-Time Password) verification flow for new user registrations, including OTP sending, verification, and resending capabilities with advanced UI features.
+*   **Why:** To enhance security by verifying the user's phone number, which prevents spam, ensures data accuracy, and improves the overall user experience during registration.
+*   **Where:**
+    *   Modified `controllers/authController.php`
+    *   Modified `models/User.php`
+    *   Created and rewrote `views/auth/verify_otp.php`
+*   **How:**
+    1.  **Backend Logic (`controllers/authController.php`):**
+        *   The `register` action was modified to save user data temporarily to `$_SESSION['temp_registration']` instead of directly to the database.
+        *   It now generates a 4-digit OTP, uses `formatPhoneNumber()` to validate the phone number, sends the OTP via `SmsController`, and redirects to the new verification page.
+        *   A new `verify_otp` action was added to validate the submitted OTP against the one in the session. It also checks for OTP expiry (5 minutes). If valid, it creates the user, assigns the 'Free' plan, logs the user in, and clears the temporary session data.
+        *   A new `resend_otp` action was added to generate a new OTP, update it in the session, and resend it to the user's phone.
+    2.  **Database Model (`models/User.php`):**
+        *   Fixed a critical bug in the `createUser` method that was causing passwords to be double-hashed, which would have prevented users from logging in. The method was updated to accept a pre-hashed password from the controller.
+    3.  **Frontend UI (`views/auth/verify_otp.php`):**
+        *   Created a new standalone page for OTP verification to prevent redirection issues caused by included headers.
+        *   The page now displays the user's phone number (e.g., "OTP sent to +8801xxxxxxxxx") for better user feedback.
+        *   Implemented an `oninput` event listener for **auto-submission** of the form as soon as the user enters the 4th digit of the OTP.
+        *   Added a **2-minute countdown timer** that visually updates every second. While the timer is active, the "Resend OTP" button is hidden. Once the countdown finishes, the button becomes visible, allowing the user to request a new OTP.
+
 ## Friday, November 22, 2025
 
 ### Feature: Add new fields to user registration

@@ -6,6 +6,7 @@ require_once ROOT_PATH . '/models/Plan.php';
 require_once ROOT_PATH . '/models/Subscription.php';
 require_once ROOT_PATH . '/models/SmsCredit.php';
 require_once ROOT_PATH . '/models/AuthToken.php';
+require_once ROOT_PATH . '/controllers/smsController.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     
@@ -91,9 +92,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 redirect('/views/auth/register.php');
             }
 
-            $user_id = $userModel->createUser($name, $email, $password, $phone_number, $district, $upazila);
+            $formatted_phone = formatPhoneNumber($phone_number);
+            if (!$formatted_phone) {
+                set_message('Invalid phone number format. Please use a valid Bangladeshi number.', 'danger');
+                redirect('/views/auth/register.php');
+            }
 
+            // Generate a random 4-digit OTP
+            $otp = rand(1000, 9999);
+
+            // Store user data and OTP temporarily in session until OTP verification
+            $tempUserData = [
+                'name' => $name,
+                'email' => $email,
+                'phone_number' => $formatted_phone,
+                'district' => $district,
+                'upazila' => $upazila,
+                'password' => password_hash($password, PASSWORD_DEFAULT), // Hash password before storing
+                'otp' => $otp,
+                'otp_timestamp' => time() // Store timestamp to check for OTP expiry
+            ];
+            $_SESSION['temp_registration'] = $tempUserData;
+
+            // Send OTP to the user's phone
+            SmsController::sendSms($formatted_phone, "Your OTP is: $otp");
+
+            set_message('OTP sent to your phone.', 'success');
+            redirect('/views/auth/verify_otp.php');
+            break;
+
+        case 'verify_otp':
+            $user_otp = $_POST['otp'] ?? null;
+
+            if (!isset($_SESSION['temp_registration'])) {
+                set_message('Session expired. Please register again.', 'danger');
+                redirect('/views/auth/register.php');
+            }
+
+            $temp_data = $_SESSION['temp_registration'];
+            $stored_otp = $temp_data['otp'];
+            $otp_timestamp = $temp_data['otp_timestamp'];
+
+            // OTP expiry time (e.g., 5 minutes)
+            $otp_expiry_time = 5 * 60; 
+
+            if ($user_otp != $stored_otp) {
+                set_message('Invalid OTP. Please try again.', 'danger');
+                redirect('/views/auth/verify_otp.php');
+            }
+
+            if ((time() - $otp_timestamp) > $otp_expiry_time) {
+                set_message('OTP has expired. Please register again.', 'danger');
+                unset($_SESSION['temp_registration']); // Clear expired data
+                redirect('/views/auth/register.php');
+            }
+
+            // OTP is valid and not expired, proceed with registration
+            $db = getDb();
+            $userModel = new User($db);
             $planModel = new Plan($db);
+
+            $user_id = $userModel->createUser(
+                $temp_data['name'],
+                $temp_data['email'],
+                $temp_data['password'], // Already hashed
+                $temp_data['phone_number'],
+                $temp_data['district'],
+                $temp_data['upazila']
+            );
+
             $freePlan = $planModel->findByName('Free');
 
             if ($freePlan) {
@@ -101,10 +168,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 (new SmsCredit($db))->create($user_id, $freePlan['sms_credit_bonus']);
             }
 
+            // Log in the user
             $_SESSION['user_id'] = $user_id;
-            $_SESSION['user_name'] = $name;
+            $_SESSION['user_name'] = $temp_data['name'];
 
+            // Clear temporary registration data
+            unset($_SESSION['temp_registration']);
+
+            set_message('Registration successful! Welcome.', 'success');
             redirect('/views/dashboard/index.php');
+            break;
+
+        case 'resend_otp':
+            if (!isset($_SESSION['temp_registration'])) {
+                set_message('Session expired. Please register again.', 'danger');
+                redirect('/views/auth/register.php');
+            }
+
+            $new_otp = rand(1000, 9999);
+            $_SESSION['temp_registration']['otp'] = $new_otp;
+            $_SESSION['temp_registration']['otp_timestamp'] = time(); // Reset timestamp
+
+            $phone = $_SESSION['temp_registration']['phone_number'];
+
+            SmsController::sendSms($phone, "Your new OTP is: $new_otp");
+
+            set_message('New OTP sent.', 'success');
+            redirect('/views/auth/verify_otp.php');
             break;
 
         case 'login':
