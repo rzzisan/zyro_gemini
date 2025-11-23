@@ -92,6 +92,14 @@ class User
         return $user ?: false;
     }
 
+    public function findByPhoneNumber($phoneNumber)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE phone_number = ?");
+        $stmt->execute([$phoneNumber]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $user ?: false;
+    }
+
     public function createAdmin($name, $email, $password)
     {
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);

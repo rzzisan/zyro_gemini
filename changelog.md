@@ -1,5 +1,38 @@
 # Changelog
 
+### Fix: Server-side Phone Number Uniqueness Validation
+*   **What:** Added server-side validation to the registration process to check for phone number uniqueness.
+*   **Why:** To provide a robust, secure check that prevents duplicate phone numbers from being registered, even if client-side validation is bypassed.
+*   **Where:**
+    *   Modified `controllers/authController.php`.
+*   **How:**
+    *   In the `register` case, before generating the OTP, the `findByPhoneNumber()` method is now called.
+    *   If the method returns a user, it indicates the phone number is already in use.
+    *   A flash message "Phone number already registered." is set, and the user is redirected back to the registration page.
+
+### Feat: Real-time Phone Number Validation on Registration
+*   **What:** Implemented real-time, client-side validation for the phone number field on the user registration page.
+*   **Why:** To provide immediate feedback to users if a phone number is already registered, improving the user experience and preventing form submission errors.
+*   **Where:**
+    *   Modified `views/auth/register.php`.
+*   **How:**
+    *   Added a `<span>` element with `id="phone-error"` to display validation messages for the phone number field.
+    *   Added an `input` event listener to the phone number field.
+    *   When the input value reaches 11 digits, a `fetch` request is sent to the `check_phone.php` endpoint.
+    *   If the API returns `{"exists": true}`, an error message is displayed, and the submit button is disabled to prevent the user from proceeding.
+    *   If the number is valid, any existing error message is cleared, and the submit button is enabled.
+
+### Feat: Implement Phone Number Uniqueness Check
+*   **What:** Implemented a server-side check to ensure that all user phone numbers are unique.
+*   **Why:** To prevent duplicate user accounts associated with the same phone number and maintain data integrity.
+*   **Where:**
+    *   Modified `models/User.php`.
+    *   Created `check_phone.php`.
+*   **How:**
+    *   Added a new `findByPhoneNumber($phoneNumber)` method to the `User` model, which queries the database to find a user by their phone number.
+    *   Created a new API endpoint at `check_phone.php` that takes a phone number as a GET parameter.
+    *   The endpoint uses the `findByPhoneNumber` method to check for the existence of the phone number and returns a JSON response (`{"exists": true}` or `{"exists": false}`).
+
 ### Fix: Add Phone Number Validation to Admin Create User
 *   **What:** Added validation for the `phone_number` field in the `create_user` case within `controllers/adminController.php`.
 *   **Why:** To ensure that the mandatory `phone_number` field is not empty when an administrator creates a new user, preventing incomplete user data.

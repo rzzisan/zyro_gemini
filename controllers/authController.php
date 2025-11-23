@@ -98,6 +98,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 redirect('/views/auth/register.php');
             }
 
+            $existing_phone = $userModel->findByPhoneNumber($formatted_phone);
+            if ($existing_phone) {
+                set_message('Phone number already registered.', 'danger');
+                redirect('/views/auth/register.php');
+            }
+
             // Generate a random 4-digit OTP
             $otp = rand(1000, 9999);
 

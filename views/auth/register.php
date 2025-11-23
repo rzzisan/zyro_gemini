@@ -31,6 +31,7 @@ if (is_logged_in()) {
                 <div class="mb-4">
                     <label for="phone_number" class="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
                     <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="phone_number" name="phone_number" required>
+                    <p id="phone-error" class="text-red-500 text-xs italic hidden"></p>
                 </div>
                 <div class="mb-4">
                     <label for="district" class="block text-gray-700 text-sm font-bold mb-2">District (Optional)</label>
@@ -53,7 +54,7 @@ if (is_logged_in()) {
                     <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password_confirm" name="password_confirm" required>
                 </div>
                 <div class="flex items-center justify-between">
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <button type="submit" id="submit-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                         Register
                     </button>
                     <p class="text-sm text-gray-600">
@@ -67,6 +68,9 @@ if (is_logged_in()) {
 document.addEventListener('DOMContentLoaded', async () => {
     const districtSelect = document.getElementById('district');
     const upazilaSelect = document.getElementById('upazila');
+    const phoneInput = document.getElementById('phone_number');
+    const phoneError = document.getElementById('phone-error');
+    const submitButton = document.getElementById('submit-button');
 
     let districts = [];
     let upazilas = [];
@@ -109,6 +113,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     districtSelect.addEventListener('change', () => {
         loadUpazilas(districtSelect.value);
+    });
+
+    phoneInput.addEventListener('input', async (e) => {
+        const phoneNumber = e.target.value;
+        
+        phoneError.textContent = '';
+        phoneError.classList.add('hidden');
+        submitButton.disabled = false;
+        submitButton.classList.remove('cursor-not-allowed');
+
+        if (phoneNumber.length === 11) {
+            try {
+                const response = await fetch(`../../check_phone.php?phone=${phoneNumber}`);
+                const data = await response.json();
+
+                if (data.exists) {
+                    phoneError.textContent = 'This phone number is already registered.';
+                    phoneError.classList.remove('hidden');
+                    submitButton.disabled = true;
+                    submitButton.classList.add('cursor-not-allowed');
+                }
+            } catch (error) {
+                console.error('Error checking phone number:', error);
+            }
+        }
     });
 });
 </script>
