@@ -31,7 +31,7 @@ ensure_logged_in();
         x-cloak
     >
         <div class="flex items-center justify-center h-16 px-4 py-2">
-            <a href="<?php echo APP_URL; ?>/views/dashboard/index.php" class="text-2xl font-bold text-gray-800" x-show="sidebarOpen">My SaaS</a>
+            <a href="<?php echo APP_URL; ?>/views/dashboard/index.php" class="text-2xl font-bold text-gray-800" x-show="sidebarOpen">Zyrotechbd</a>
         </div>
 
         <nav class="mt-8">

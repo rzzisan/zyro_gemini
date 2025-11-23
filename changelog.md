@@ -1,5 +1,32 @@
 # Changelog
 
+### Fix: Remove Debug Logging from Remember Me Guard
+*   **What:** Removed all `error_log` statements from `core/remember_me_guard.php`.
+*   **Why:** The debug logging was causing "Permission denied" warnings on the production server, and the "Remember Me" functionality is now confirmed to be working correctly.
+*   **Where:**
+    *   Modified `core/remember_me_guard.php`.
+*   **How:**
+    *   Deleted all lines containing `error_log(...)` from the `check_remember_me` function.
+
+### Fix: Remember Me Functionality for Admin Users
+*   **What:** Modified `core/remember_me_guard.php` to ensure admin users remain logged into the User Dashboard after closing the browser.
+*   **Why:** Previously, the "Remember Me" functionality only set `admin_id` for admins, but the User Dashboard requires `user_id`. This fix ensures both are set correctly.
+*   **Where:**
+    *   Modified `core/remember_me_guard.php`.
+*   **How:**
+    *   Ensured that `$_SESSION['user_id']` and `$_SESSION['user_name']` are always set when a user is authenticated via the "Remember Me" token.
+    *   Additionally, if the authenticated user has the 'admin' role, `$_SESSION['admin_id']`, `$_SESSION['admin_name']`, and `$_SESSION['is_admin']` are also set.
+    *   Updated debug logging file paths from `ROOT_PATH` to `__DIR__ . '/../../debug.log'` for consistency and reliability.
+
+### Feat: Add Debug Logging to Remember Me Guard
+*   **What:** Added extensive debug logging to `core/remember_me_guard.php`.
+*   **Why:** To help identify and troubleshoot issues with the "Remember Me" functionality by logging key steps and data points during the authentication process.
+*   **Where:**
+    *   Modified `core/remember_me_guard.php`.
+*   **How:**
+    *   Added `error_log` statements at various stages: when the cookie is found, when the token matches in the database, when the user is found, and when the token or user is not found.
+    *   Logs include timestamps, relevant data (e.g., user ID, email, role), and a clear description of the event.
+
 ## Saturday, November 23, 2025
 
 ### Feat: Implement OTP Verification for User Registration
