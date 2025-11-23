@@ -1,5 +1,25 @@
 # Changelog
 
+### Fix: Add Phone Number Validation to Admin Create User
+*   **What:** Added validation for the `phone_number` field in the `create_user` case within `controllers/adminController.php`.
+*   **Why:** To ensure that the mandatory `phone_number` field is not empty when an administrator creates a new user, preventing incomplete user data.
+*   **Where:**
+    *   Modified `controllers/adminController.php`.
+*   **How:**
+    *   Updated the `if` condition in the `create_user` case to include `!empty($_POST['phone_number'])`, making the phone number a required field for user creation.
+    *   Adjusted the flash message to reflect that the phone number is now a required field.
+
+### Feat: Add Contact and Location Fields to Create User Form
+*   **What:** Updated the "Add New User" page in the admin panel to include `phone_number`, `district`, and `upazila` fields.
+*   **Why:** To allow administrators to enter more complete user information, including contact and location details, directly upon user creation, aligning the "Add User" form with the "Edit User" form.
+*   **Where:**
+    *   Modified `admin/add_user.php`.
+    *   Modified `controllers/adminController.php`.
+*   **How:**
+    *   Added input fields for `phone_number`, and dropdowns for `district` and `upazila` to the `admin/add_user.php` form, organized within a responsive grid layout.
+    *   Included the JavaScript logic from `admin/edit_user.php` to dynamically populate the district and upazila dropdowns from JSON files.
+    *   Updated the `create_user` case in `controllers/adminController.php` to retrieve and pass the new `phone_number`, `district`, and `upazila` values to the `userModel->createUser()` method.
+
 ### Feat: Prevent Admin Self-Role Change
 *   **What:** Updated `admin/edit_user.php` to prevent an administrator from changing their own role.
 *   **Why:** To enhance security and prevent accidental lockouts or privilege escalations, an administrator should not be able to modify their own role.

@@ -122,7 +122,7 @@ Stores aggregated statistics and user-submitted fraud reports for phone numbers.
 - `total_delivered`: Total number of parcels successfully delivered.
 - `total_cancelled`: Total number of parcels cancelled.
 - `total_fraud_reports`: A count of fraud reports from an external source.
-- `user_reports`: (JSON) A JSON array of fraud reports submitted by users of this application. Each report contains `report_id`, `user_id`, `customer_name`, `complaint`, and `reported_at`.
+- `user_reports`: (JSON) A JSON array of fraud reports submitted by users of this application. Each report contains `report_id` (unique identifier for the report), `user_id`, `customer_name`, `complaint`, and `reported_at`.
 - `last_updated_at`: Timestamp of the last update to this record.
 
 ---

@@ -66,8 +66,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             break;
 
         case 'create_user':
-            if (!empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['plan_id'])) {
-                $user_id = $userModel->createUser($_POST['name'], $_POST['email'], $_POST['password'], $_POST['role']);
+            if (!empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['plan_id']) && !empty($_POST['phone_number'])) {
+                $user_id = $userModel->createUser(
+                    $_POST['name'], 
+                    $_POST['email'], 
+                    $_POST['password'], 
+                    $_POST['phone_number'],
+                    $_POST['district'] ?? null,
+                    $_POST['upazila'] ?? null,
+                    $_POST['role']
+                );
                 
                 $plan_id = $_POST['plan_id'];
                 $subscriptionModel->create($user_id, $plan_id);
@@ -78,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
                 $_SESSION['flash_message'] = 'User created successfully!';
             } else {
-                $_SESSION['flash_message'] = 'Failed to create user. Name, email, password, and plan are required.';
+                $_SESSION['flash_message'] = 'Failed to create user. Name, email, password, phone number, and plan are required.';
             }
             redirect('/admin/users.php');
             break;
