@@ -1,5 +1,17 @@
 # Changelog
 
+### Feat: Prevent Admin Self-Role Change
+*   **What:** Updated `admin/edit_user.php` to prevent an administrator from changing their own role.
+*   **Why:** To enhance security and prevent accidental lockouts or privilege escalations, an administrator should not be able to modify their own role.
+*   **Where:**
+    *   Modified `admin/edit_user.php`.
+*   **How:**
+    *   Identified the current admin by retrieving `$_SESSION['admin_id']`.
+    *   Created a boolean variable `$is_self_edit` to check if the user being edited is the same as the logged-in admin.
+    *   Disabled the role `<select>` dropdown and added a visual `bg-gray-100` class if `$is_self_edit` is true.
+    *   Added a hidden input field to submit the user's current role, ensuring the form submission does not fail when the dropdown is disabled.
+    *   Added a user-friendly message ("You cannot change your own role.") below the dropdown to inform the admin why it is disabled.
+
 ### Fix: Remove Debug Logging from Remember Me Guard
 *   **What:** Removed all `error_log` statements from `core/remember_me_guard.php`.
 *   **Why:** The debug logging was causing "Permission denied" warnings on the production server, and the "Remember Me" functionality is now confirmed to be working correctly.

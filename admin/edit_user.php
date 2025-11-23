@@ -12,6 +12,9 @@ if (!isset($_GET['id'])) {
 }
 
 $user_id = $_GET['id'];
+$admin_id = $_SESSION['admin_id'] ?? null;
+$is_self_edit = ($user_id == $admin_id);
+
 $userModel = new User($db);
 $user_details = $userModel->getUserDetails($user_id);
 
@@ -61,10 +64,18 @@ if (isset($_SESSION['flash_message'])) {
             
             <div class="mb-4">
                 <label for="role" class="block text-sm font-medium text-gray-700">Role:</label>
-                <select id="role" name="role" class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <select 
+                    id="role" 
+                    name="role" 
+                    class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 <?php echo $is_self_edit ? 'bg-gray-100 cursor-not-allowed' : ''; ?>"
+                    <?php echo $is_self_edit ? 'disabled' : ''; ?>>
                     <option value="user" <?php echo ($user_details['role'] == 'user') ? 'selected' : ''; ?>>User</option>
                     <option value="admin" <?php echo ($user_details['role'] == 'admin') ? 'selected' : ''; ?>>Admin</option>
                 </select>
+                <?php if ($is_self_edit): ?>
+                    <input type="hidden" name="role" value="<?php echo htmlspecialchars($user_details['role']); ?>">
+                    <p class="text-sm text-gray-500 mt-1">You cannot change your own role.</p>
+                <?php endif; ?>
             </div>
 
             <div class="mb-4">
