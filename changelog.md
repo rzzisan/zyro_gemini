@@ -1,5 +1,28 @@
 # Changelog
 
+### Feat: Real-time Email Validation on Registration
+*   **What:** Implemented real-time, client-side validation for the email field on the user registration page.
+*   **Why:** To provide immediate feedback to users if an email address is already registered, improving the user experience and preventing form submission errors.
+*   **Where:**
+    *   Modified `views/auth/register.php`.
+*   **How:**
+    *   Added a `<span>` element with `id="email-error"` to display validation messages for the email field.
+    *   Added an `input` event listener to the email field.
+    *   When the input value is a valid email format, a `fetch` request is sent to the `check_email.php` endpoint.
+    *   If the API returns `{"exists": true}`, an error message is displayed, and the submit button is disabled to prevent the user from proceeding.
+    *   If the email is valid, any existing error message is cleared, and the submit button is enabled.
+
+### Feat: Implement Real-time Email Uniqueness Check
+*   **What:** Created a new API endpoint to check for email uniqueness in real-time.
+*   **Why:** To provide immediate feedback to users during registration if an email address is already in use, improving user experience and preventing duplicate accounts.
+*   **Where:**
+    *   Created `check_email.php`.
+*   **How:**
+    *   Created a new file `check_email.php` that acts as a JSON API endpoint.
+    *   The endpoint receives an `email` via a GET request.
+    *   It uses the existing `findByEmail()` method in the `User` model to check if the email exists in the database.
+    *   It returns a JSON response: `{"exists": true}` if the email is found, and `{"exists": false}` otherwise.
+
 ### Fix: Server-side Phone Number Uniqueness Validation
 *   **What:** Added server-side validation to the registration process to check for phone number uniqueness.
 *   **Why:** To provide a robust, secure check that prevents duplicate phone numbers from being registered, even if client-side validation is bypassed.

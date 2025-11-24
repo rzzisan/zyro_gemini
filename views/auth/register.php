@@ -27,6 +27,7 @@ if (is_logged_in()) {
                 <div class="mb-4">
                     <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
                     <input type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" name="email" required>
+                    <p id="email-error" class="text-red-500 text-xs italic hidden"></p>
                 </div>
                 <div class="mb-4">
                     <label for="phone_number" class="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
@@ -70,6 +71,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const upazilaSelect = document.getElementById('upazila');
     const phoneInput = document.getElementById('phone_number');
     const phoneError = document.getElementById('phone-error');
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('email-error');
     const submitButton = document.getElementById('submit-button');
 
     let districts = [];
@@ -121,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         phoneError.textContent = '';
         phoneError.classList.add('hidden');
         submitButton.disabled = false;
-        submitButton.classList.remove('cursor-not-allowed');
+        submitButton.classList.remove('cursor-not-allowed', 'opacity-50');
 
         if (phoneNumber.length === 11) {
             try {
@@ -132,10 +135,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                     phoneError.textContent = 'This phone number is already registered.';
                     phoneError.classList.remove('hidden');
                     submitButton.disabled = true;
-                    submitButton.classList.add('cursor-not-allowed');
+                    submitButton.classList.add('cursor-not-allowed', 'opacity-50');
                 }
             } catch (error) {
                 console.error('Error checking phone number:', error);
+            }
+        }
+    });
+
+    emailInput.addEventListener('input', async (e) => {
+        const email = e.target.value;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        emailError.textContent = '';
+        emailError.classList.add('hidden');
+        submitButton.disabled = false;
+        submitButton.classList.remove('cursor-not-allowed', 'opacity-50');
+
+        if (emailRegex.test(email)) {
+            try {
+                const response = await fetch(`../../check_email.php?email=${encodeURIComponent(email)}`);
+                const data = await response.json();
+
+                if (data.exists) {
+                    emailError.textContent = 'Email already registered.';
+                    emailError.classList.remove('hidden');
+                    submitButton.disabled = true;
+                    submitButton.classList.add('cursor-not-allowed', 'opacity-50');
+                }
+            } catch (error) {
+                console.error('Error checking email:', error);
             }
         }
     });
