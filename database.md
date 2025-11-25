@@ -60,7 +60,7 @@ Logs all additions and deductions of SMS credits for auditing purposes.
 ## `sms_history` table
 Logs all SMS messages sent by users.
 - `id`: (Primary Key) Unique identifier for the SMS record.
-- `user_id`: (Foreign Key) References the `id` in the `users` table.
+- `user_id`: (Foreign Key) References the `id` in the `users` table. **(Nullable for system messages)**
 - `to_number`: The recipient's phone number.
 - `message`: The content of the SMS message.
 - `sms_count`: The number of SMS segments the message was split into.
