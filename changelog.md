@@ -1,5 +1,14 @@
 # Changelog
 
+### Improvement: Modernized Email Verification Notice
+*   **What:** Updated the styling of the email verification notice in the user dashboard.
+*   **Why:** To implement a more robust and standard "Warning" style design using Tailwind's yellow colors, ensuring better visibility and consistency with modern UI/UX practices.
+*   **Where:**
+    *   Modified `views/layouts/header.php`.
+*   **How:**
+    *   Replaced the existing email verification notice block with a new HTML structure that utilizes Tailwind CSS classes for a yellow-themed warning box, including an SVG icon and revised text styling.
+    *   Ensured the notice is only displayed for logged-in users whose email address is not yet verified.
+
 ### Fix: Email Verification UI and Logic
 *   **What:** Fixed the broken design of the email verification notice and ensured that flash messages are displayed correctly. The backend logic for resending verification emails was also improved.
 *   **Why:** To provide a clear and functional user interface for email verification, ensuring users are properly notified and can easily resend the verification link.

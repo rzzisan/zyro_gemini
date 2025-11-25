@@ -7,3 +7,4 @@
 .gemini/
 gha-creds-*.json
 /vendor
+/core/config.php

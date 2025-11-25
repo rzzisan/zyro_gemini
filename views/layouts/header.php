@@ -103,19 +103,30 @@ $user = $userModel->find($_SESSION['user_id']);
 
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
             <?php display_message(); ?>
-            <?php if (!empty($user) && empty($user['email_verified_at'])) : ?>
-                <div class="bg-orange-50 border-l-4 border-orange-500 text-orange-700 p-4 mb-6 shadow-sm rounded-r" role="alert">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-lg">Verify Your Email Address</p>
-                            <p class="text-sm mt-1">Your email address is not verified yet. Please check your inbox.</p>
+            <?php if (isset($_SESSION['user_id']) && empty($user['email_verified_at'])): ?>
+                <div class="mb-6 rounded-md bg-yellow-50 p-4 border border-yellow-200 shadow-sm">
+                    <div class="flex items-center justify-between flex-wrap gap-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-base font-semibold text-yellow-800">Verify your email address</h3>
+                                <div class="mt-1 text-sm text-yellow-700">
+                                    <p>Your email address is not verified yet. Please check your inbox for the verification link.</p>
+                                </div>
+                            </div>
                         </div>
-                        <form action="<?php echo APP_URL; ?>/controllers/authController.php" method="POST">
-                            <input type="hidden" name="action" value="resend_verification">
-                            <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded shadow transition duration-200">
-                                Resend Verification Link
-                            </button>
-                        </form>
+                        <div class="flex-shrink-0">
+                            <form action="<?php echo APP_URL; ?>/controllers/authController.php" method="POST">
+                                <input type="hidden" name="action" value="resend_verification">
+                                <button type="submit" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-4 py-2 rounded-md text-sm font-medium border border-yellow-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                                    Resend Verification Link
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             <?php endif; ?>
