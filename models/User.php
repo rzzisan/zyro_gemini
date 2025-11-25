@@ -147,14 +147,46 @@ class User
 
     public function updateProfile($id, $name, $email, $phone_number, $district, $upazila)
     {
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE email = ? AND id != ?");
-        $stmt->execute([$email, $id]);
-        if ($stmt->fetchColumn() > 0) {
-            return false; // Email already in use
+        // Fetch the current user data
+        $currentUser = $this->find($id);
+        if (!$currentUser) {
+            return false; // User not found
         }
 
-        $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, phone_number = ?, district = ?, upazila = ? WHERE id = ?");
-        return $stmt->execute([$name, $email, $phone_number, $district, $upazila, $id]);
+        // Check if the email is being changed
+        if ($email !== $currentUser['email']) {
+            // Check if the new email is already in use by another user
+            $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE email = ? AND id != ?");
+            $stmt->execute([$email, $id]);
+            if ($stmt->fetchColumn() > 0) {
+                return false; // Email already in use
+            }
+
+            // Update user and reset email verification status
+            $stmt = $this->db->prepare("UPDATE users SET name = ?, email = ?, phone_number = ?, district = ?, upazila = ?, email_verified_at = NULL, email_verification_token = NULL WHERE id = ?");
+            return $stmt->execute([$name, $email, $phone_number, $district, $upazila, $id]);
+        }
+
+        // If email is not changed, just update other fields
+        $stmt = $this->db->prepare("UPDATE users SET name = ?, phone_number = ?, district = ?, upazila = ? WHERE id = ?");
+        return $stmt->execute([$name, $phone_number, $district, $upazila, $id]);
+    }
+
+    public function setEmailVerificationToken($userId, $token) {
+        $stmt = $this->db->prepare("UPDATE users SET email_verification_token = ? WHERE id = ?");
+        return $stmt->execute([$token, $userId]);
+    }
+
+    public function verifyEmailByToken($token) {
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE email_verification_token = ?");
+        $stmt->execute([$token]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            $update = $this->db->prepare("UPDATE users SET email_verified_at = NOW(), email_verification_token = NULL WHERE id = ?");
+            return $update->execute([$user['id']]);
+        }
+        return false;
     }
 
     public function updatePassword($id, $hashedPassword)

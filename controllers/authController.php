@@ -7,6 +7,7 @@ require_once ROOT_PATH . '/models/Subscription.php';
 require_once ROOT_PATH . '/models/SmsCredit.php';
 require_once ROOT_PATH . '/models/AuthToken.php';
 require_once ROOT_PATH . '/controllers/smsController.php';
+require_once ROOT_PATH . '/controllers/EmailController.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     
@@ -243,6 +244,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 set_message('Invalid credentials.', 'danger');
                 redirect('/views/auth/login.php');
             }
+            break;
+
+        case 'resend_verification':
+            ensure_logged_in();
+            $user_id = get_user_id();
+            $db = getDb();
+            $userModel = new User($db);
+            $user = $userModel->find($user_id);
+
+            if ($user['email_verified_at']) {
+                set_message('Email already verified.', 'info');
+            } else {
+                $token = bin2hex(random_bytes(32));
+                $userModel->setEmailVerificationToken($user_id, $token);
+                
+                if (EmailController::sendVerificationEmail($user['email'], $token)) {
+                    set_message('Verification link sent to your email!', 'success');
+                } else {
+                    set_message('Failed to send email. Please try again.', 'danger');
+                }
+            }
+            redirect('/views/dashboard/index.php');
             break;
         
         default:

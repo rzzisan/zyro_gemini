@@ -1,5 +1,46 @@
 # Changelog
 
+### Fix: Email Verification UI and Logic
+*   **What:** Fixed the broken design of the email verification notice and ensured that flash messages are displayed correctly. The backend logic for resending verification emails was also improved.
+*   **Why:** To provide a clear and functional user interface for email verification, ensuring users are properly notified and can easily resend the verification link.
+*   **Where:**
+    *   `views/layouts/header.php`
+    *   `controllers/authController.php`
+    *   `verify_email.php`
+*   **How:**
+    *   **`views/layouts/header.php`**:
+        *   Added a call to `display_message()` at the top of the `<main>` tag to ensure all success, error, and info messages are rendered.
+        *   Replaced the old verification notice with a new, more visually appealing design using Tailwind CSS classes (`bg-orange-50`, `border-orange-500`, etc.) to make it more prominent.
+    *   **`controllers/authController.php`**:
+        *   Updated the `resend_verification` case to include a check to see if the user's email is already verified, preventing unnecessary emails.
+        *   Added more specific user feedback messages for success (`Verification link sent to your email!`) and failure (`Failed to send email.`).
+    *   **`verify_email.php`**:
+        *   Updated the success and error messages to be more user-friendly (`Email verified successfully!` and `Invalid or expired token.`).
+
+### Feat: Implement Email Verification System
+*   **What:** Implemented a complete email verification system to ensure that users have a valid and accessible email address.
+*   **Why:** To improve account security, reduce spam registrations, and ensure that users can receive important notifications.
+*   **Where:**
+    *   `core/config.php`
+    *   `controllers/EmailController.php` (New File)
+    *   `models/User.php`
+    *   `controllers/authController.php`
+    *   `verify_email.php` (New File)
+    *   `views/layouts/header.php`
+*   **How:**
+    1.  **Configuration:** Added dummy SMTP credentials to `core/config.php` to configure `PHPMailer`.
+    2.  **Email Sending:** Created `controllers/EmailController.php` with a `sendVerificationEmail` method that uses `PHPMailer` to send a verification link to the user.
+    3.  **Database & Model:**
+        *   Updated `models/User.php`:
+            *   The `updateProfile` method now resets a user's `email_verified_at` and `email_verification_token` status if they change their email address.
+            *   Added `setEmailVerificationToken()` to save a unique token to the user's record.
+            *   Added `verifyEmailByToken()` to find a user by their token, mark their email as verified, and clear the token.
+    4.  **Verification Flow:**
+        *   Created `verify_email.php` in the root directory to handle the verification link clicked by the user from their email. It validates the token and updates the user's status.
+    5.  **User Experience:**
+        *   Added a `resend_verification` case to `controllers/authController.php` to allow logged-in users to request a new verification link.
+        *   Modified `views/layouts/header.php` to display a prominent alert banner for users whose `email_verified_at` status is `NULL`. The banner includes a "Resend Verification Link" button that triggers the resend functionality.
+
 ### Feat: System-Generated SMS Logging
 *   **What:** Implemented a feature to log system-generated SMS messages (e.g., OTPs) into the database. These messages now appear in the Admin Panel's SMS History with the user name "System".
 *   **Why:** To provide administrators with a complete audit trail of all SMS messages sent by the system, improving transparency and making it easier to track and debug system-generated notifications.

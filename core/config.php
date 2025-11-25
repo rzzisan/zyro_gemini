@@ -23,3 +23,12 @@ define('SMS_GATEWAY_URL', 'http://118.67.213.114:3775/sendtext');
 define('SMS_GATEWAY_API_KEY', 'f59ff32f5d568c53');
 define('SMS_GATEWAY_SECRET_KEY', '1226beec');
 define('SMS_GATEWAY_SENDER_ID', 'Non masking_centurylinknetworkি');
+
+// SMTP Configuration
+define('SMTP_HOST', 'mail.centurylinknetworkbd.com');
+define('SMTP_USER', 'zyrotechbd@centurylinknetworkbd.com');
+define('SMTP_PASS', '*gIttZlW.5x?~B^d');
+define('SMTP_PORT', 465);
+define('SMTP_SECURE', 'ssl');
+define('FROM_EMAIL', 'zyrotechbd@centurylinknetworkbd.com');
+define('FROM_NAME', 'Zyrotechbd');

@@ -1,7 +1,13 @@
 <?php
 require_once __DIR__ . '/../../core/config.php';
 require_once __DIR__ . '/../../core/functions.php';
+require_once __DIR__ . '/../../models/User.php';
 ensure_logged_in();
+
+$db = getDb();
+$userModel = new User($db);
+$user = $userModel->find($_SESSION['user_id']);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -96,4 +102,21 @@ ensure_logged_in();
         </header>
 
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
+            <?php display_message(); ?>
+            <?php if (!empty($user) && empty($user['email_verified_at'])) : ?>
+                <div class="bg-orange-50 border-l-4 border-orange-500 text-orange-700 p-4 mb-6 shadow-sm rounded-r" role="alert">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-lg">Verify Your Email Address</p>
+                            <p class="text-sm mt-1">Your email address is not verified yet. Please check your inbox.</p>
+                        </div>
+                        <form action="<?php echo APP_URL; ?>/controllers/authController.php" method="POST">
+                            <input type="hidden" name="action" value="resend_verification">
+                            <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded shadow transition duration-200">
+                                Resend Verification Link
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <?php endif; ?>
             
