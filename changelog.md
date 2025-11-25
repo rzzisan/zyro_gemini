@@ -1,5 +1,21 @@
 # Changelog
 
+### Feat: System-Generated SMS Logging
+*   **What:** Implemented a feature to log system-generated SMS messages (e.g., OTPs) into the database. These messages now appear in the Admin Panel's SMS History with the user name "System".
+*   **Why:** To provide administrators with a complete audit trail of all SMS messages sent by the system, improving transparency and making it easier to track and debug system-generated notifications.
+*   **Where:**
+    *   Modified `models/SmsHistory.php`.
+    *   Modified `controllers/smsController.php`.
+    *   Modified `controllers/authController.php`.
+*   **How:**
+    *   **`models/SmsHistory.php`**:
+        *   Updated the `getSmsHistoryPaginated` method to use a `LEFT JOIN` on the `users` table, ensuring that messages with a `NULL` `user_id` are included.
+        *   Used `COALESCE(u.name, 'System')` to display "System" as the user name for these messages.
+    *   **`controllers/smsController.php`**:
+        *   Created a new `sendSystemSms($to, $message)` method that sends an SMS and then logs it to the `sms_history` table with a `NULL` `user_id` and `0` `credit_deducted`.
+    *   **`controllers/authController.php`**:
+        *   Replaced the existing `SmsController::sendSms` calls with the new `SmsController::sendSystemSms` method in both the `register` and `resend_otp` cases.
+
 ### Feat: Real-time Email Validation on Registration
 *   **What:** Implemented real-time, client-side validation for the email field on the user registration page.
 *   **Why:** To provide immediate feedback to users if an email address is already registered, improving the user experience and preventing form submission errors.

@@ -85,12 +85,16 @@ class SmsHistory {
     }
 
     public function getSmsHistoryPaginated($limit, $offset, $user_id = '', $search_term = '', $start_date = '', $end_date = '') {
-        $sql = "SELECT sh.*, u.name as user_name FROM sms_history sh JOIN users u ON sh.user_id = u.id WHERE 1=1";
+        $sql = "SELECT sh.*, COALESCE(u.name, 'System') as user_name FROM sms_history sh LEFT JOIN users u ON sh.user_id = u.id WHERE 1=1";
         $params = [];
 
         if (!empty($user_id)) {
-            $sql .= " AND sh.user_id = :user_id";
-            $params[':user_id'] = $user_id;
+            if ($user_id === 'system') {
+                $sql .= " AND sh.user_id IS NULL";
+            } else {
+                $sql .= " AND sh.user_id = :user_id";
+                $params[':user_id'] = $user_id;
+            }
         }
 
         if (!empty($search_term)) {
@@ -129,8 +133,12 @@ class SmsHistory {
         $params = [];
 
         if (!empty($user_id)) {
-            $sql .= " AND sh.user_id = :user_id";
-            $params[':user_id'] = $user_id;
+            if ($user_id === 'system') {
+                $sql .= " AND sh.user_id IS NULL";
+            } else {
+                $sql .= " AND sh.user_id = :user_id";
+                $params[':user_id'] = $user_id;
+            }
         }
 
         if (!empty($search_term)) {

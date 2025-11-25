@@ -18,7 +18,7 @@ define('APP_NAME', 'ZyroSaaS');
 
 // Third-party API keys
 define('PACKZY_API_URL', 'https://portal.packzy.com/api/v1/fraud_check/');
-define('FRAUD_CHECKER_CACHE_EXPIRATION', 3); // in days
+define('FRAUD_CHECKER_CACHE_EXPIRATION', 1); // in days
 define('SMS_GATEWAY_URL', 'http://118.67.213.114:3775/sendtext');
 define('SMS_GATEWAY_API_KEY', 'f59ff32f5d568c53');
 define('SMS_GATEWAY_SECRET_KEY', '1226beec');

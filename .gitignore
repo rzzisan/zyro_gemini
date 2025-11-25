@@ -3,3 +3,6 @@
 /node_modules
 /screenshoot
 
+
+.gemini/
+gha-creds-*.json

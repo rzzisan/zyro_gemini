@@ -34,6 +34,7 @@ $sms_history = $smsHistoryModel->getSmsHistoryPaginated($rows_per_page, $offset,
                 <label for="user_id" class="block text-sm font-medium text-gray-700">User</label>
                 <select name="user_id" id="user_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                     <option value="">All Users</option>
+                    <option value="system" <?php echo ($user_id === 'system') ? 'selected' : ''; ?>>System</option>
                     <?php foreach ($users as $user): ?>
                         <option value="<?php echo $user['id']; ?>" <?php echo ($user_id == $user['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($user['name']); ?></option>
                     <?php endforeach; ?>

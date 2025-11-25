@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $_SESSION['temp_registration'] = $tempUserData;
 
             // Send OTP to the user's phone
-            SmsController::sendSms($formatted_phone, "Your OTP is: $otp");
+            SmsController::sendSystemSms($formatted_phone, "Your OTP is: $otp");
 
             set_message('OTP sent to your phone.', 'success');
             redirect('/views/auth/verify_otp.php');
@@ -197,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
             $phone = $_SESSION['temp_registration']['phone_number'];
 
-            SmsController::sendSms($phone, "Your new OTP is: $new_otp");
+            SmsController::sendSystemSms($phone, "Your new OTP is: $new_otp");
 
             set_message('New OTP sent.', 'success');
             redirect('/views/auth/verify_otp.php');

@@ -6,6 +6,7 @@ require_once ROOT_PATH . '/models/SmsCredit.php';
 require_once ROOT_PATH . '/models/User.php';
 require_once ROOT_PATH . '/models/Settings.php';
 require_once ROOT_PATH . '/models/SmsCreditHistory.php';
+require_once ROOT_PATH . '/core/CreditService.php';
 require_once ROOT_PATH . '/models/SmsHistory.php';
 
 class SmsController {
@@ -43,6 +44,19 @@ class SmsController {
         return true;
     }
 
+    public static function sendSystemSms($to, $message) {
+        $sms_count = CreditService::calculateSmsCredits($message);
+
+        if (self::sendSms($to, $message)) {
+            $db = getDb();
+            $smsHistoryModel = new SmsHistory($db);
+            // Pass null as user_id for system messages
+            $smsHistoryModel->addSmsHistory(null, $to, $message, $sms_count, 0);
+            return true;
+        }
+        return false;
+    }
+
     public static function handleSendSmsRequest() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = get_user_id();
@@ -66,9 +80,7 @@ class SmsController {
 
             $user = $userModel->find($user_id);
 
-            $isUnicode = preg_match('/[^\x00-\x7F]/', $message);
-            $sms_limit = $isUnicode ? 70 : 160;
-            $sms_count = ceil(strlen($message) / $sms_limit);
+            $sms_count = CreditService::calculateSmsCredits($message);
 
             if ($user && isset($user['sms_balance']) && $user['sms_balance'] >= $sms_count) {
                 if (self::sendSms($to, $message)) {
@@ -96,5 +108,3 @@ class SmsController {
         }
     }
 }
-
-
