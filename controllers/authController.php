@@ -6,6 +6,7 @@ require_once ROOT_PATH . '/models/Plan.php';
 require_once ROOT_PATH . '/models/Subscription.php';
 require_once ROOT_PATH . '/models/SmsCredit.php';
 require_once ROOT_PATH . '/models/AuthToken.php';
+require_once ROOT_PATH . '/models/PasswordReset.php';
 require_once ROOT_PATH . '/controllers/smsController.php';
 require_once ROOT_PATH . '/controllers/EmailController.php';
 
@@ -266,6 +267,163 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 }
             }
             redirect('/views/dashboard/index.php');
+            break;
+
+        case 'find_user_for_reset':
+            $identity = $_POST['identity'] ?? null;
+
+            if (empty($identity)) {
+                set_message('Email or Phone Number is required.', 'danger');
+                redirect('/views/auth/forgot_password.php');
+            }
+
+            $db = getDb();
+            $userModel = new User($db);
+            $user = $userModel->findByIdentity($identity);
+
+            if ($user) {
+                $_SESSION['reset_user_id'] = $user['id'];
+                redirect('/views/auth/select_reset_method.php');
+            } else {
+                set_message('User not found with the provided Email or Phone Number.', 'danger');
+                redirect('/views/auth/forgot_password.php');
+            }
+            break;
+
+        case 'send_reset_otp':
+            if (!isset($_SESSION['reset_user_id'])) {
+                set_message('Session expired. Please try again.', 'danger');
+                redirect('/views/auth/forgot_password.php');
+            }
+
+            $reset_method = $_POST['reset_method'] ?? null;
+            if (!$reset_method || !in_array($reset_method, ['email', 'sms'])) {
+                set_message('Invalid reset method selected.', 'danger');
+                redirect('/views/auth/select_reset_method.php');
+            }
+
+            $userId = $_SESSION['reset_user_id'];
+            $db = getDb();
+            $userModel = new User($db);
+            $user = $userModel->find($userId);
+
+            if (!$user) {
+                set_message('User not found.', 'danger');
+                unset($_SESSION['reset_user_id']);
+                redirect('/views/auth/forgot_password.php');
+            }
+
+            $otp = rand(100000, 999999); // 6-digit OTP
+            $passwordResetModel = new PasswordReset($db);
+            
+            // Delete any existing OTPs for this user before creating a new one
+            $passwordResetModel->deleteUserOtps($userId);
+            $passwordResetModel->create($userId, $otp);
+
+            $sent = false;
+            if ($reset_method === 'email') {
+                if ($user['email']) {
+                    $subject = "Password Reset OTP";
+                    $body = "<div style='font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;'>
+                                <div style='max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+                                    <h2 style='color: #333;'>Password Reset Request</h2>
+                                    <p style='color: #555;'>Your One-Time Password (OTP) for password reset is:</p>
+                                    <h1 style='color: #3b82f6; letter-spacing: 5px;'>$otp</h1>
+                                    <p style='color: #999; font-size: 12px; margin-top: 20px;'>This OTP is valid for 15 minutes.</p>
+                                </div>
+                            </div>";
+                    $sent = EmailController::sendEmail($user['email'], $subject, $body);
+                } else {
+                    set_message('User does not have an email address.', 'danger');
+                    redirect('/views/auth/select_reset_method.php');
+                }
+            } elseif ($reset_method === 'sms') {
+                if ($user['phone_number']) {
+                    $formattedPhone = formatPhoneNumber($user['phone_number']);
+                    $message = "Your Password Reset OTP is: $otp. Valid for 15 minutes.";
+                    $sent = SmsController::sendSystemSms($formattedPhone, $message);
+                } else {
+                    set_message('User does not have a phone number.', 'danger');
+                    redirect('/views/auth/select_reset_method.php');
+                }
+            }
+
+            if ($sent) {
+                set_message('OTP sent successfully. Please check your ' . ($reset_method === 'email' ? 'email' : 'phone') . '.', 'success');
+                redirect('/views/auth/verify_reset_otp.php');
+            } else {
+                set_message('Failed to send OTP. Please try again later.', 'danger');
+                redirect('/views/auth/select_reset_method.php');
+            }
+            break;
+
+        case 'verify_otp_reset':
+            if (!isset($_SESSION['reset_user_id'])) {
+                set_message('Session expired. Please start over.', 'danger');
+                redirect('/views/auth/forgot_password.php');
+            }
+
+            $otp = $_POST['otp'] ?? null;
+            if (!$otp) {
+                set_message('Please enter the OTP.', 'danger');
+                redirect('/views/auth/verify_reset_otp.php');
+            }
+
+            $userId = $_SESSION['reset_user_id'];
+            $db = getDb();
+            $passwordResetModel = new PasswordReset($db);
+            $record = $passwordResetModel->verify($userId, $otp);
+
+            if ($record) {
+                $_SESSION['otp_verified'] = true;
+                redirect('/views/auth/new_password.php');
+            } else {
+                set_message('Invalid or expired OTP.', 'danger');
+                redirect('/views/auth/verify_reset_otp.php');
+            }
+            break;
+
+        case 'update_password':
+            if (!isset($_SESSION['otp_verified']) || !$_SESSION['otp_verified'] || !isset($_SESSION['reset_user_id'])) {
+                set_message('Unauthorized access.', 'danger');
+                redirect('/views/auth/login.php');
+            }
+
+            $new_password = $_POST['new_password'] ?? null;
+            $confirm_password = $_POST['confirm_password'] ?? null;
+
+            if (!$new_password || !$confirm_password) {
+                set_message('Both password fields are required.', 'danger');
+                redirect('/views/auth/new_password.php');
+            }
+
+            if ($new_password !== $confirm_password) {
+                set_message('Passwords do not match.', 'danger');
+                redirect('/views/auth/new_password.php');
+            }
+
+            if (strlen($new_password) < 6) {
+                set_message('Password must be at least 6 characters long.', 'danger');
+                redirect('/views/auth/new_password.php');
+            }
+
+            $userId = $_SESSION['reset_user_id'];
+            $hashedPassword = password_hash($new_password, PASSWORD_BCRYPT);
+
+            $db = getDb();
+            $userModel = new User($db);
+            $passwordResetModel = new PasswordReset($db);
+
+            if ($userModel->updatePassword($userId, $hashedPassword)) {
+                $passwordResetModel->deleteUserOtps($userId);
+                unset($_SESSION['reset_user_id']);
+                unset($_SESSION['otp_verified']);
+                set_message('Password reset successfully. Please login with your new password.', 'success');
+                redirect('/views/auth/login.php');
+            } else {
+                set_message('Failed to reset password. Please try again.', 'danger');
+                redirect('/views/auth/new_password.php');
+            }
             break;
         
         default:

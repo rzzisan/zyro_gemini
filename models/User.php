@@ -100,6 +100,13 @@ class User
         return $user ?: false;
     }
 
+    public function findByIdentity($identity)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ? OR phone_number = ?");
+        $stmt->execute([$identity, $identity]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function createAdmin($name, $email, $password)
     {
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);

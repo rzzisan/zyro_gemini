@@ -1,5 +1,43 @@
 # Changelog
 
+### Feat: Complete Forgot Password Implementation
+*   **What:** Implemented a full "Forgot Password" feature, including database schema, backend logic for OTP generation and verification, UI for user identity input, OTP method selection, OTP verification, and new password setting.
+*   **Why:** To allow users to securely regain access to their accounts if they forget their password, improving user experience and account management.
+*   **Where:**
+    *   `password_resets.sql` (New File)
+    *   `models/PasswordReset.php` (New File)
+    *   `models/User.php`
+    *   `views/auth/forgot_password.php` (New File)
+    *   `views/auth/select_reset_method.php` (New File)
+    *   `views/auth/verify_reset_otp.php` (New File)
+    *   `views/auth/new_password.php` (New File)
+    *   `views/auth/login.php`
+    *   `controllers/authController.php`
+    *   `controllers/EmailController.php`
+*   **How:**
+    1.  **Database Schema:** Created `password_resets.sql` for the `password_resets` table, including `user_id` (BIGINT UNSIGNED), `otp`, `created_at`, and `expires_at`.
+    2.  **PasswordReset Model:** Created `models/PasswordReset.php` with `create()`, `verify()`, and `deleteUserOtps()` methods for managing OTPs.
+    3.  **User Model Enhancement:** Added `findByIdentity($identity)` to `models/User.php` to allow searching by email or phone number.
+    4.  **Forgot Password Initiation UI:** Created `views/auth/forgot_password.php` for users to enter their email or phone number.
+    5.  **OTP Method Selection UI:** Created `views/auth/select_reset_method.php` to allow users to choose between email or SMS for OTP delivery, including masking sensitive contact information.
+    6.  **OTP Sending Logic:**
+        *   Added `find_user_for_reset` and `send_reset_otp` cases to `controllers/authController.php`.
+        *   `send_reset_otp` generates a 6-digit OTP, stores it using the `PasswordReset` model, and sends it via `EmailController::sendEmail()` or `SmsController::sendSystemSms()`.
+        *   `EmailController.php` was updated with a generic `sendEmail` method.
+    7.  **OTP Verification UI:** Created `views/auth/verify_reset_otp.php` for users to enter the received OTP.
+    8.  **New Password UI:** Created `views/auth/new_password.php` for users to set their new password after successful OTP verification.
+    9.  **Password Update Logic:**
+        *   Added `verify_otp_reset` and `update_password` cases to `controllers/authController.php`.
+        *   `verify_otp_reset` validates the OTP and sets a session flag.
+        *   `update_password` validates the new password, updates the user's password using `User::updatePassword()`, clears old OTPs, and logs the user out from the reset flow.
+    10. **UI Linking:** Updated `views/auth/login.php` to include a "Forgot password?" link to `forgot_password.php`.
+    11. **Bug Fixes and Refinements:**
+        *   Corrected SMS formatting in `controllers/authController.php` by using `formatPhoneNumber()`.
+        *   Refined OTP verification and creation in `models/PasswordReset.php` to use SQL's `NOW()` and `DATE_ADD(NOW(), INTERVAL 15 MINUTE)` for accurate time comparisons and expiration.
+        *   Fixed a database error by changing `password_resets.user_id` to `BIGINT UNSIGNED` to match `users.id`.
+
+## Wednesday, November 26, 2025
+
 ### Improvement: Modernized Email Verification Notice
 *   **What:** Updated the styling of the email verification notice in the user dashboard.
 *   **Why:** To implement a more robust and standard "Warning" style design using Tailwind's yellow colors, ensuring better visibility and consistency with modern UI/UX practices.

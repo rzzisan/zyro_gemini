@@ -56,4 +56,35 @@ class EmailController {
             return false;
         }
     }
+
+    public static function sendEmail($to, $subject, $body) {
+        $mail = new PHPMailer(true);
+        $logFile = ROOT_PATH . '/email_debug.log';
+
+        try {
+            $mail->isSMTP();
+            $mail->Host       = SMTP_HOST;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = SMTP_USER;
+            $mail->Password   = SMTP_PASS;
+            $mail->SMTPSecure = SMTP_SECURE;
+            $mail->Port       = SMTP_PORT;
+            $mail->Timeout  = 10;
+            $mail->Timelimit = 10;
+
+            $mail->setFrom(FROM_EMAIL, FROM_NAME);
+            $mail->addAddress($to);
+
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = $body;
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            $errorMessage = date('Y-m-d H:i:s') . " [ERROR] " . $mail->ErrorInfo . "\n";
+            file_put_contents($logFile, $errorMessage, FILE_APPEND);
+            return false;
+        }
+    }
 }

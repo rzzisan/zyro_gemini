@@ -33,7 +33,7 @@ if (is_logged_in()) {
                         <input type="checkbox" name="remember_me" id="remember_me" class="mr-2">
                         <span class="text-sm text-gray-700">Remember me</span>
                     </label>
-                    <a href="#" class="text-sm text-blue-500 hover:text-blue-800">Forgot password?</a>
+                    <a href="forgot_password.php" class="text-sm text-blue-500 hover:text-blue-800">Forgot password?</a>
                 </div>
                 <div class="flex items-center justify-between">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
