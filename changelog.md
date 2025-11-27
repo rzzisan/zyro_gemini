@@ -2,6 +2,11 @@
 
 ## Thursday, November 27, 2025
 
+### Fix: Server Configuration Compatibility (Part 2)
+*   **What:** Replaced `DirectoryMatch` with `RewriteRule` in `.htaccess`.
+*   **Why:** To resolve an "Internal Server Error" (500). The `DirectoryMatch` directive is not allowed in `.htaccess` files on standard Apache configurations, causing the server to crash.
+*   **Where:** `.htaccess`.
+
 ### Fix: Server Configuration Compatibility
 *   **What:** Updated `.htaccess` to use Apache 2.4 compatible syntax (`Require all denied`) instead of the deprecated 2.2 syntax (`Order allow,deny`).
 *   **Why:** To resolve an "Internal Server Error" (500) caused by the server lacking the backward-compatibility module for old access control directives.
