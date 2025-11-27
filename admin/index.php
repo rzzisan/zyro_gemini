@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 require_once __DIR__ . '/../core/config.php'; // Defines ROOT_PATH
 require_once ROOT_PATH . '/views/layouts/admin_header.php';

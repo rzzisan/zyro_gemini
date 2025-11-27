@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
 
             // Generate a random 4-digit OTP
-            $otp = rand(1000, 9999);
+            $otp = random_int(1000, 9999);
 
             // Store user data and OTP temporarily in session until OTP verification
             $tempUserData = [
@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 redirect('/views/auth/register.php');
             }
 
-            $new_otp = rand(1000, 9999);
+            $new_otp = random_int(1000, 9999);
             $_SESSION['temp_registration']['otp'] = $new_otp;
             $_SESSION['temp_registration']['otp_timestamp'] = time(); // Reset timestamp
 
@@ -315,7 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 redirect('/views/auth/forgot_password.php');
             }
 
-            $otp = rand(100000, 999999); // 6-digit OTP
+            $otp = random_int(100000, 999999); // 6-digit OTP
             $passwordResetModel = new PasswordReset($db);
             
             // Delete any existing OTPs for this user before creating a new one

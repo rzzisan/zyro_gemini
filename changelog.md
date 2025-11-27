@@ -2,6 +2,19 @@
 
 ## Thursday, November 27, 2025
 
+### Security: Critical Fixes (Audit Remediation)
+*   **What:** Remedied critical security vulnerabilities identified in a security audit.
+*   **Why:** To secure the application against potential attacks involving credential exposure, weak cryptography, and information leakage.
+*   **Where:**
+    *   `core/config.php`
+    *   `.env` (New File)
+    *   `controllers/authController.php`
+    *   `admin/index.php`, `admin/sms_credit.php`
+*   **How:**
+    *   **Credential Management:** Moved all hardcoded secrets (DB credentials, API keys, SMTP settings) from `core/config.php` to a new `.env` file (added to `.gitignore`). Updated `core/config.php` to load these values using `getenv()`.
+    *   **Cryptographic Strength:** Replaced insecure `rand()` usage with `random_int()` for OTP generation in `controllers/authController.php`.
+    *   **Production Safety:** Removed `ini_set('display_errors', 1)` from admin dashboard files to prevent exposing sensitive error details in production.
+
 ### Security: XSS Prevention
 *   **What:** Implemented strict input sanitization and verified output escaping to prevent Cross-Site Scripting (XSS) attacks.
 *   **Why:** To ensure that no malicious scripts can be stored in the database or executed in the user's browser.

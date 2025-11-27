@@ -1,4 +1,3 @@
-
 /examplecode
 /node_modules
 /screenshoot
@@ -7,4 +6,4 @@
 .gemini/
 gha-creds-*.json
 /vendor
-/core/config.php
+.env
