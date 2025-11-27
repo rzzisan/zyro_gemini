@@ -2,6 +2,11 @@
 
 ## Thursday, November 27, 2025
 
+### Fix: Server Configuration Compatibility
+*   **What:** Updated `.htaccess` to use Apache 2.4 compatible syntax (`Require all denied`) instead of the deprecated 2.2 syntax (`Order allow,deny`).
+*   **Why:** To resolve an "Internal Server Error" (500) caused by the server lacking the backward-compatibility module for old access control directives.
+*   **Where:** `.htaccess`.
+
 ### Security: Implemented CSRF Protection and Server Hardening
 *   **What:** Conducted a comprehensive security audit and implemented critical fixes to secure the application.
 *   **Why:** To protect against Cross-Site Request Forgery (CSRF) attacks, prevent source code exposure, and harden the server configuration.
