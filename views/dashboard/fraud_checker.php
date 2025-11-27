@@ -15,7 +15,7 @@
     <!-- Right Column -->
     <main class="w-full lg:w-3/4">
         <div class="flex justify-end mb-4">
-            <a href="<?php echo APP_URL; ?>/views/dashboard/my_fraud_reports.php" class="bg-red-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+            <a href="my_fraud_reports.php" class="bg-red-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
                 My Fraud Report List
             </a>
         </div>
@@ -174,7 +174,7 @@
             const formData = new FormData();
             formData.append('phone_number', phoneNumber);
 
-            fetch('<?php echo APP_URL; ?>/fraud_checker.php', {
+            fetch('../../fraud_checker.php', {
                 method: 'POST',
                 body: formData
             })
@@ -266,7 +266,7 @@
             const formData = new FormData(reportFraudForm);
             formData.append('phone_number', currentPhoneNumber);
 
-            fetch('<?php echo APP_URL; ?>/report_fraud.php', {
+            fetch('../../report_fraud.php', {
                 method: 'POST',
                 body: formData
             })

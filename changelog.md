@@ -1,5 +1,16 @@
 # Changelog
 
+## Thursday, November 27, 2025
+
+### Fix: Fraud Checker Search Functionality
+*   **What:** Updated the AJAX request URL in `views/dashboard/fraud_checker.php` to use a relative path instead of the absolute `APP_URL`.
+*   **Why:** To resolve an issue where search requests were failing (or hitting the wrong server) when the local environment's URL differed from the hardcoded `APP_URL` in the configuration file. This ensures the search functionality works correctly across different environments (e.g., local dev vs. production).
+*   **Where:**
+    *   Modified `views/dashboard/fraud_checker.php`.
+*   **How:**
+    *   Replaced `<?php echo APP_URL; ?>/fraud_checker.php` with `../../fraud_checker.php` in the `fetch` call.
+    *   Also updated the `report_fraud.php` fetch call and the `my_fraud_reports.php` link to use relative paths for consistency.
+
 ### Feat: Complete Forgot Password Implementation
 *   **What:** Implemented a full "Forgot Password" feature, including database schema, backend logic for OTP generation and verification, UI for user identity input, OTP method selection, OTP verification, and new password setting.
 *   **Why:** To allow users to securely regain access to their accounts if they forget their password, improving user experience and account management.
