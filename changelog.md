@@ -2,6 +2,16 @@
 
 ## Thursday, November 27, 2025
 
+### Fix: Fraud Checker Robustness and Error Handling
+*   **What:** Improved `fraud_checker.php` to handle external API failures gracefully.
+*   **Why:** To prevent the "no results" issue when the external API is blocked (HTTP 429) or fails. The system now falls back to showing cached data (if available) even if it's expired, ensuring users still see relevant history.
+*   **Where:**
+    *   Modified `fraud_checker.php`.
+*   **How:**
+    *   Disabled `display_errors` to prevent PHP warnings from corrupting the JSON response.
+    *   Implemented a fallback logic: if the API call fails, the system checks for existing data in the local database and returns it with a warning message ("Showing cached data...").
+    *   Added a timeout to the cURL request to prevent long hangs.
+
 ### Fix: Fraud Checker Search Functionality
 *   **What:** Updated the AJAX request URL in `views/dashboard/fraud_checker.php` to use a relative path instead of the absolute `APP_URL`.
 *   **Why:** To resolve an issue where search requests were failing (or hitting the wrong server) when the local environment's URL differed from the hardcoded `APP_URL` in the configuration file. This ensures the search functionality works correctly across different environments (e.g., local dev vs. production).

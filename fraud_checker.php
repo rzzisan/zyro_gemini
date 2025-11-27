@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/core/config.php';
@@ -49,20 +49,19 @@ if (isset($_POST['phone_number'])) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $apiUrl);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Add timeout
             
             $apiResult = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $curlError = curl_error($ch);
             curl_close($ch);
 
-            if ($curlError) {
-                $response['message'] = 'Failed to fetch data from API: ' . $curlError;
-            } elseif ($httpCode == 200) {
+            $apiSuccess = false;
+
+            if (!$curlError && $httpCode == 200) {
                 $apiData = json_decode($apiResult, true);
 
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    $response['message'] = 'Invalid JSON response from API.';
-                } elseif (isset($apiData['total_parcels']) && isset($apiData['total_delivered']) && isset($apiData['total_cancelled'])) {
+                if (json_last_error() === JSON_ERROR_NONE && isset($apiData['total_parcels']) && isset($apiData['total_delivered']) && isset($apiData['total_cancelled'])) {
                     $dataToSave = [
                         'courier_name' => 'SteadFast',
                         'phone_number' => $phoneNumber,
@@ -73,12 +72,55 @@ if (isset($_POST['phone_number'])) {
                     ];
 
                     $courierStats->upsert($dataToSave);
-                    $response = ['success' => true, 'data' => $dataToSave];
-                } else {
-                    $response['message'] = 'Invalid API response format.';
+                    
+                    // Re-fetch to get fresh data with correct structure if needed, or just use dataToSave
+                    // Adding user reports logic for consistency
+                    $stats = $courierStats->findByPhoneNumber($phoneNumber); // Fetch the upserted record
+                    $apiSuccess = true;
                 }
+            }
+
+            if ($apiSuccess) {
+                // Process fresh stats (same logic as cached)
+                $userReports = [];
+                if (!empty($stats['user_reports'])) {
+                    $decodedReports = json_decode($stats['user_reports'], true);
+                    if (is_array($decodedReports)) {
+                        $userReports = $decodedReports;
+                    }
+                }
+                $stats['total_fraud_reports'] += count($userReports);
+                $stats['user_reports_data'] = $userReports;
+
+                $response = ['success' => true, 'data' => $stats];
             } else {
-                $response['message'] = 'Failed to fetch data from API. HTTP code: ' . $httpCode;
+                // API Failed. Check if we have old stats to fallback to.
+                if ($stats) {
+                    $userReports = [];
+                    if (!empty($stats['user_reports'])) {
+                        $decodedReports = json_decode($stats['user_reports'], true);
+                        if (is_array($decodedReports)) {
+                            $userReports = $decodedReports;
+                        }
+                    }
+                    $stats['total_fraud_reports'] += count($userReports);
+                    $stats['user_reports_data'] = $userReports;
+                    
+                    $response = [
+                        'success' => true, 
+                        'data' => $stats, 
+                        'message' => 'Showing cached data (Live check failed: ' . ($curlError ?: "HTTP $httpCode") . ')'
+                    ];
+                } else {
+                    // No cache, and API failed.
+                    if ($curlError) {
+                        $response['message'] = 'Failed to fetch data from API: ' . $curlError;
+                    } elseif ($httpCode != 200) {
+                        $response['message'] = 'Failed to fetch data from API. HTTP code: ' . $httpCode;
+                    } else {
+                         $response['message'] = 'Invalid API response format.';
+                    }
+                }
             }
         }
     } catch (Exception $e) {
