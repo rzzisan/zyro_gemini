@@ -61,11 +61,11 @@ class SmsController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             verify_csrf_token($_POST['csrf_token'] ?? '');
             $user_id = get_user_id();
-            $to = $_POST['to'];
-            $message = $_POST['message'];
+            $to = sanitize_input($_POST['to']);
+            $message = sanitize_input($_POST['message']);
 
             // Validate and format the phone number
-            $to = formatPhoneNumber($_POST['to']);
+            $to = formatPhoneNumber($to);
 
             if (!$to) {
                 header('Location: ' . APP_URL . '/views/dashboard/send_sms.php?error=Invalid phone number format');

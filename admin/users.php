@@ -46,9 +46,10 @@ $users = $userModel->findAll();
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <a href="edit_user.php?id=<?php echo $user['id']; ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
                             <a href="add_website.php?user_id=<?php echo $user['id']; ?>" class="text-green-600 hover:text-green-900 mr-4">Add Website</a>
-                            <form method="POST" action="<?php echo APP_URL; ?>/controllers/adminController.php" class="inline-block">
+                            <form method="POST" action="<?php echo APP_URL; ?>/controllers/adminController.php" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                 <input type="hidden" name="action" value="delete_user">
-                                <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                                <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user['id']); ?>">
+                                <?php csrf_field(); ?>
                                 <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
                             </form>
                         </td>
@@ -77,11 +78,12 @@ $users = $userModel->findAll();
                         Registered: <?php echo htmlspecialchars($user['created_at']); ?>
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <a href="edit_user.php?id=<?php echo $user['id']; ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
-                        <a href="add_website.php?user_id=<?php echo $user['id']; ?>" class="text-green-600 hover:text-green-900 mr-4">Add Website</a>
-                        <form method="POST" action="<?php echo APP_URL; ?>/controllers/adminController.php" class="inline-block">
+                        <a href="edit_user.php?id=<?php echo htmlspecialchars($user['id']); ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
+                        <a href="add_website.php?user_id=<?php echo htmlspecialchars($user['id']); ?>" class="text-green-600 hover:text-green-900 mr-4">Add Website</a>
+                        <form method="POST" action="<?php echo APP_URL; ?>/controllers/adminController.php" onsubmit="return confirm('Are you sure you want to delete this user?');" class="inline-block">
                             <input type="hidden" name="action" value="delete_user">
-                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                            <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user['id']); ?>">
+                            <?php csrf_field(); ?>
                             <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
                         </form>
                     </div>

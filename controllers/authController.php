@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     switch ($_POST['action']) {
         case 'admin_login':
-            $email = $_POST['email'] ?? null;
+            $email = sanitize_input($_POST['email'] ?? null);
             $password = $_POST['password'] ?? null;
             $remember_me = isset($_POST['remember_me']);
 
@@ -64,11 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             break;
         
         case 'register':
-            $name = $_POST['name'] ?? null;
-            $email = $_POST['email'] ?? null;
-            $phone_number = $_POST['phone_number'] ?? null;
-            $district = $_POST['district'] ?? null;
-            $upazila = $_POST['upazila'] ?? null;
+            $name = sanitize_input($_POST['name'] ?? null);
+            $email = sanitize_input($_POST['email'] ?? null);
+            $phone_number = sanitize_input($_POST['phone_number'] ?? null);
+            $district = sanitize_input($_POST['district'] ?? null);
+            $upazila = sanitize_input($_POST['upazila'] ?? null);
             $password = $_POST['password'] ?? null;
             $password_confirm = $_POST['password_confirm'] ?? null;
 
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             break;
 
         case 'verify_otp':
-            $user_otp = $_POST['otp'] ?? null;
+            $user_otp = sanitize_input($_POST['otp'] ?? null);
 
             if (!isset($_SESSION['temp_registration'])) {
                 set_message('Session expired. Please register again.', 'danger');
@@ -208,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             break;
 
         case 'login':
-            $email = $_POST['email'] ?? null;
+            $email = sanitize_input($_POST['email'] ?? null);
             $password = $_POST['password'] ?? null;
             $remember_me = isset($_POST['remember_me']);
 
@@ -272,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             break;
 
         case 'find_user_for_reset':
-            $identity = $_POST['identity'] ?? null;
+            $identity = sanitize_input($_POST['identity'] ?? null);
 
             if (empty($identity)) {
                 set_message('Email or Phone Number is required.', 'danger');
@@ -298,7 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 redirect('/views/auth/forgot_password.php');
             }
 
-            $reset_method = $_POST['reset_method'] ?? null;
+            $reset_method = sanitize_input($_POST['reset_method'] ?? null);
             if (!$reset_method || !in_array($reset_method, ['email', 'sms'])) {
                 set_message('Invalid reset method selected.', 'danger');
                 redirect('/views/auth/select_reset_method.php');
@@ -365,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 redirect('/views/auth/forgot_password.php');
             }
 
-            $otp = $_POST['otp'] ?? null;
+            $otp = sanitize_input($_POST['otp'] ?? null);
             if (!$otp) {
                 set_message('Please enter the OTP.', 'danger');
                 redirect('/views/auth/verify_reset_otp.php');

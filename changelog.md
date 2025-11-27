@@ -2,6 +2,17 @@
 
 ## Thursday, November 27, 2025
 
+### Security: XSS Prevention
+*   **What:** Implemented strict input sanitization and verified output escaping to prevent Cross-Site Scripting (XSS) attacks.
+*   **Why:** To ensure that no malicious scripts can be stored in the database or executed in the user's browser.
+*   **Where:**
+    *   `core/functions.php`: Added `sanitize_input()` function.
+    *   **Controllers:** Updated `authController.php`, `adminController.php`, `smsController.php`, and `report_fraud.php`, `edit_my_report.php`, `delete_my_report.php` to use `sanitize_input()` for all user-provided data.
+    *   **Views:** Audited `admin/users.php` and other views to ensure `htmlspecialchars()` is used correctly for all dynamic output.
+*   **How:**
+    *   Input: All POST data is now processed through `trim()` and `strip_tags()` before being used.
+    *   Output: Verified that `htmlspecialchars()` is applied to data before rendering in HTML.
+
 ### Fix: Server Configuration Compatibility (Part 2)
 *   **What:** Replaced `DirectoryMatch` with `RewriteRule` in `.htaccess`.
 *   **Why:** To resolve an "Internal Server Error" (500). The `DirectoryMatch` directive is not allowed in `.htaccess` files on standard Apache configurations, causing the server to crash.

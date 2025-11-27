@@ -37,7 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'create_plan':
             // Basic validation
             if (!empty($_POST['name']) && isset($_POST['price'])) {
-                $planModel->create($_POST);
+                $planData = $_POST;
+                $planData['name'] = sanitize_input($_POST['name']);
+                // Price, limits are likely numbers, but sanitizing won't hurt
+                $planModel->create($planData);
                 $_SESSION['flash_message'] = 'Plan created successfully!';
             } else {
                 $_SESSION['flash_message'] = 'Failed to create plan. Name and price are required.';
@@ -48,7 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'update_plan':
             $plan_id = $_POST['plan_id'] ?? null;
             if ($plan_id && !empty($_POST['name']) && isset($_POST['price'])) {
-                $planModel->update($plan_id, $_POST);
+                $planData = $_POST;
+                $planData['name'] = sanitize_input($_POST['name']);
+                $planModel->update($plan_id, $planData);
                 $_SESSION['flash_message'] = 'Plan updated successfully!';
             } else {
                 $_SESSION['flash_message'] = 'Failed to update plan. Invalid data provided.';
@@ -70,13 +75,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'create_user':
             if (!empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['plan_id']) && !empty($_POST['phone_number'])) {
                 $user_id = $userModel->createUser(
-                    $_POST['name'], 
-                    $_POST['email'], 
+                    sanitize_input($_POST['name']), 
+                    sanitize_input($_POST['email']), 
                     $_POST['password'], 
-                    $_POST['phone_number'],
-                    $_POST['district'] ?? null,
-                    $_POST['upazila'] ?? null,
-                    $_POST['role']
+                    sanitize_input($_POST['phone_number']),
+                    sanitize_input($_POST['district'] ?? null),
+                    sanitize_input($_POST['upazila'] ?? null),
+                    sanitize_input($_POST['role'])
                 );
                 
                 $plan_id = $_POST['plan_id'];
@@ -97,13 +102,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $user_id = $_POST['user_id'] ?? null;
             if ($user_id && !empty($_POST['name']) && !empty($_POST['email'])) {
                 $data = [
-                    'name' => $_POST['name'],
-                    'email' => $_POST['email'],
-                    'role' => $_POST['role'],
+                    'name' => sanitize_input($_POST['name']),
+                    'email' => sanitize_input($_POST['email']),
+                    'role' => sanitize_input($_POST['role']),
                     'password' => $_POST['password'] ?? '',
-                    'phone_number' => $_POST['phone_number'] ?? null,
-                    'district' => $_POST['district'] ?? null,
-                    'upazila' => $_POST['upazila'] ?? null
+                    'phone_number' => sanitize_input($_POST['phone_number'] ?? null),
+                    'district' => sanitize_input($_POST['district'] ?? null),
+                    'upazila' => sanitize_input($_POST['upazila'] ?? null)
                 ];
                 $userModel->update($user_id, $data);
                 $_SESSION['flash_message'] = 'User updated successfully!';
@@ -135,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         case 'add_website':
             $user_id = $_POST['user_id'] ?? null;
-            $domain = $_POST['domain'] ?? null;
+            $domain = sanitize_input($_POST['domain'] ?? null);
             if ($user_id && $domain) {
                 $websiteModel->create($user_id, $domain);
                 $_SESSION['flash_message'] = 'Website added successfully!';

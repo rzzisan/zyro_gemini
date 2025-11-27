@@ -122,3 +122,10 @@ function csrf_field() {
     $token = generate_csrf_token();
     echo '<input type="hidden" name="csrf_token" value="' . $token . '">';
 }
+
+function sanitize_input($data) {
+    if (is_array($data)) {
+        return array_map('sanitize_input', $data);
+    }
+    return trim(strip_tags($data));
+}

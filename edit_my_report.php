@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/core/config.php';
 require_once __DIR__ . '/core/db.php';
+require_once __DIR__ . '/core/functions.php';
 require_once __DIR__ . '/models/CourierStats.php';
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -33,10 +34,10 @@ if (!isset($_SESSION['csrf_token']) || $csrf_token !== $_SESSION['csrf_token']) 
     exit();
 }
 
-$phoneNumber = isset($_POST['phone_number']) ? trim($_POST['phone_number']) : '';
-$reportId = isset($_POST['report_id']) ? trim($_POST['report_id']) : '';
-$customerName = isset($_POST['customer_name']) ? trim($_POST['customer_name']) : '';
-$complaint = isset($_POST['complaint']) ? trim($_POST['complaint']) : '';
+$phoneNumber = sanitize_input($_POST['phone_number'] ?? '');
+$reportId = sanitize_input($_POST['report_id'] ?? '');
+$customerName = sanitize_input($_POST['customer_name'] ?? '');
+$complaint = sanitize_input($_POST['complaint'] ?? '');
 
 if (empty($phoneNumber) || empty($reportId) || empty($customerName) || empty($complaint)) {
     echo json_encode(['success' => false, 'message' => 'All fields are required.']);
