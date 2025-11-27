@@ -44,6 +44,7 @@ if (isset($_SESSION['flash_message'])) {
     <form action="<?php echo APP_URL; ?>/controllers/adminController.php" method="POST">
         <input type="hidden" name="action" value="update_user">
         <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_details['id']); ?>">
+        <?php csrf_field(); ?>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             
@@ -109,6 +110,7 @@ if (isset($_SESSION['flash_message'])) {
         <form action="<?php echo APP_URL; ?>/controllers/adminController.php" method="POST">
             <input type="hidden" name="action" value="update_subscription">
             <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_details['id']); ?>">
+            <?php csrf_field(); ?>
             
             <div class="mb-4">
                 <label for="new_plan_id" class="block text-sm font-medium text-gray-700">New Plan:</label>
@@ -132,6 +134,7 @@ if (isset($_SESSION['flash_message'])) {
         <form action="<?php echo APP_URL; ?>/controllers/adminController.php" method="POST">
             <input type="hidden" name="action" value="set_credits">
             <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_details['id']); ?>">
+            <?php csrf_field(); ?>
             
             <div class="mb-4">
                 <label for="new_balance" class="block text-sm font-medium text-gray-700">Set New Balance:</label>

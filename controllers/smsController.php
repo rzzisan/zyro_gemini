@@ -59,6 +59,7 @@ class SmsController {
 
     public static function handleSendSmsRequest() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            verify_csrf_token($_POST['csrf_token'] ?? '');
             $user_id = get_user_id();
             $to = $_POST['to'];
             $message = $_POST['message'];

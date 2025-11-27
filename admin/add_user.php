@@ -12,6 +12,7 @@ $plans = $planModel->findAll();
 <div class="bg-white shadow-md rounded-lg p-6">
     <form action="<?php echo APP_URL; ?>/controllers/adminController.php" method="POST">
         <input type="hidden" name="action" value="create_user">
+        <?php csrf_field(); ?>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="mb-4">

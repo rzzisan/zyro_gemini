@@ -2,6 +2,8 @@
 
 <div class="p-4 lg:p-8">
     <h1 class="text-2xl font-bold mb-6">My Fraud Reports</h1>
+    <!-- CSRF Token for JS -->
+    <input type="hidden" id="csrf_token" value="<?php echo generate_csrf_token(); ?>">
     <div class="bg-white p-6 rounded-lg shadow-md">
         <table class="w-full" id="reports-table">
             <thead>
@@ -59,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingSpinner.style.display = 'block';
         tableBody.innerHTML = '';
 
-        fetch('<?php echo APP_URL; ?>/get_my_reports.php')
+        fetch('../../get_my_reports.php')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -114,8 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const formData = new FormData();
                 formData.append('phone_number', phone);
                 formData.append('report_id', reportId);
+                formData.append('csrf_token', document.getElementById('csrf_token').value);
 
-                fetch('<?php echo APP_URL; ?>/delete_my_report.php', {
+                fetch('../../delete_my_report.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -139,8 +142,9 @@ document.addEventListener('DOMContentLoaded', function() {
     editForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(editForm);
+        formData.append('csrf_token', document.getElementById('csrf_token').value);
         
-        fetch('<?php echo APP_URL; ?>/edit_my_report.php', {
+        fetch('../../edit_my_report.php', {
             method: 'POST',
             body: formData
         })

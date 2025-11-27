@@ -12,6 +12,8 @@ require_once ROOT_PATH . '/controllers/EmailController.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     
+    verify_csrf_token($_POST['csrf_token'] ?? '');
+
     switch ($_POST['action']) {
         case 'admin_login':
             $email = $_POST['email'] ?? null;

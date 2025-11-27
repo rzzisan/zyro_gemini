@@ -8,6 +8,7 @@ require_once '../models/ApiToken.php';
 ensure_logged_in();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    verify_csrf_token($_POST['csrf_token'] ?? '');
     $db = getDb();
     $user_id = get_user_id();
 

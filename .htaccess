@@ -1,0 +1,22 @@
+# Block access to git directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^\.git - [F,L]
+</IfModule>
+
+# Block access to sensitive files
+<FilesMatch "^\.env|composer\.json|composer\.lock|package\.json|package-lock\.json|\.gitignore|GEMINI\.md|changelog\.md">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block access to core directory directly (optional, but good practice if only index.php should be entry)
+# But we have direct PHP file access in this app architecture (e.g. verify_email.php), so we'll be careful.
+# Ideally, we should block access to /core/
+<DirectoryMatch "^core/">
+    Order allow,deny
+    Deny from all
+</DirectoryMatch>
+
+# Prevent directory listing
+Options -Indexes

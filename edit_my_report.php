@@ -27,6 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
+$csrf_token = $_POST['csrf_token'] ?? '';
+if (!isset($_SESSION['csrf_token']) || $csrf_token !== $_SESSION['csrf_token']) {
+    echo json_encode(['success' => false, 'message' => 'Invalid CSRF token.']);
+    exit();
+}
+
 $phoneNumber = isset($_POST['phone_number']) ? trim($_POST['phone_number']) : '';
 $reportId = isset($_POST['report_id']) ? trim($_POST['report_id']) : '';
 $customerName = isset($_POST['customer_name']) ? trim($_POST['customer_name']) : '';

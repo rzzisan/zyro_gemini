@@ -19,6 +19,9 @@
                 My Fraud Report List
             </a>
         </div>
+        <!-- CSRF Token for JS -->
+        <input type="hidden" id="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+        
         <form id="fraud-checker-form" class="flex items-center mb-6">
             <input type="text" id="phone_number" name="phone_number" class="w-full border rounded-l-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="মোবাইল নম্বর দিন! যেমনঃ 01303352482">
             <button type="submit" id="search-button" class="bg-green-500 text-white font-bold px-6 py-3 rounded-r-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -173,6 +176,7 @@
 
             const formData = new FormData();
             formData.append('phone_number', phoneNumber);
+            formData.append('csrf_token', document.getElementById('csrf_token').value);
 
             fetch('../../fraud_checker.php', {
                 method: 'POST',
@@ -265,6 +269,7 @@
 
             const formData = new FormData(reportFraudForm);
             formData.append('phone_number', currentPhoneNumber);
+            formData.append('csrf_token', document.getElementById('csrf_token').value);
 
             fetch('../../report_fraud.php', {
                 method: 'POST',

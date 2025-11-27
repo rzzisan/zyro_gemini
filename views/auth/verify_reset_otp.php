@@ -22,6 +22,7 @@ if (!isset($_SESSION['reset_user_id'])) {
             <?php display_message(); ?>
             <form action="../../controllers/authController.php" method="POST">
                 <input type="hidden" name="action" value="verify_otp_reset">
+                <?php csrf_field(); ?>
                 <div class="mb-6">
                     <label for="otp" class="block text-gray-700 text-sm font-bold mb-2">Enter 6-digit OTP</label>
                     <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center text-2xl tracking-widest" id="otp" name="otp" maxlength="6" required placeholder="123456">

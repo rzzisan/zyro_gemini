@@ -32,6 +32,7 @@ $pageTitle = "Verify OTP";
             <?php display_message(); ?>
             <form action="/controllers/authController.php" method="POST" class="mt-4" id="otp-form">
                 <input type="hidden" name="action" value="verify_otp">
+                <?php csrf_field(); ?>
                 <div>
                     <label for="otp" class="block text-sm font-medium text-gray-700">OTP</label>
                     <input type="text" name="otp" id="otp" placeholder="Enter 4-digit OTP"
@@ -51,6 +52,7 @@ $pageTitle = "Verify OTP";
                 <span id="timer-text">Resend OTP in <span id="timer">02:00</span></span>
                 <form action="/controllers/authController.php" method="POST" id="resend-form" class="inline" style="display:none;">
                     <input type="hidden" name="action" value="resend_otp">
+                    <?php csrf_field(); ?>
                     <button type="submit" id="resend-btn" class="text-sm text-blue-600 hover:underline">Resend OTP</button>
                 </form>
             </div>

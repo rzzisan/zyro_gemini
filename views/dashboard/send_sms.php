@@ -31,6 +31,7 @@ $user = $userModel->find($user_id);
     </div>
     <form action="<?php echo APP_URL; ?>/send_sms.php" method="POST">
         <input type="hidden" name="action" value="send_sms">
+        <?php csrf_field(); ?>
         <div class="mb-4">
             <label for="to" class="block text-gray-700 text-sm font-bold mb-2">To:</label>
             <input type="text" name="to" id="to" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>

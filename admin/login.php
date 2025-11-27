@@ -20,6 +20,7 @@ if (isAdmin()) {
         <div class="bg-white shadow-md rounded-lg px-8 py-6">
             <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Admin Login</h2>
             <form action="<?php echo APP_URL; ?>/controllers/authController.php" method="POST">
+                <?php csrf_field(); ?>
                 <div class="mb-4">
                     <label for="email" class="sr-only">Email</label>
                     <input type="email" name="email" id="email" placeholder="Email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>

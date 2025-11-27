@@ -21,6 +21,7 @@ if (isset($_SESSION['flash_message'])) {
     <h2 class="text-xl font-semibold text-gray-700 mb-4">Create New Plan</h2>
     <form action="<?php echo APP_URL; ?>/controllers/adminController.php" method="POST">
         <input type="hidden" name="action" value="create_plan">
+        <?php csrf_field(); ?>
         <div class="mb-4">
             <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Plan Name:</label>
             <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
@@ -75,6 +76,7 @@ if (isset($_SESSION['flash_message'])) {
                                 <form method="POST" action="<?php echo APP_URL; ?>/controllers/adminController.php" onsubmit="return confirm('Are you sure you want to delete this plan?');" class="inline-block">
                                     <input type="hidden" name="action" value="delete_plan">
                                     <input type="hidden" name="plan_id" value="<?php echo htmlspecialchars($plan['id']); ?>">
+                                    <?php csrf_field(); ?>
                                     <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
                                 </form>
                             </td>
@@ -100,6 +102,7 @@ if (isset($_SESSION['flash_message'])) {
                             <form method="POST" action="<?php echo APP_URL; ?>/controllers/adminController.php" onsubmit="return confirm('Are you sure you want to delete this plan?');" class="inline-block">
                                 <input type="hidden" name="action" value="delete_plan">
                                 <input type="hidden" name="plan_id" value="<?php echo htmlspecialchars($plan['id']); ?>">
+                                <?php csrf_field(); ?>
                                 <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
                             </form>
                         </div>

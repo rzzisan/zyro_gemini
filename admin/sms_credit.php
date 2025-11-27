@@ -57,6 +57,7 @@ $total_credits_remaining = $total_credits_given - $total_credits_spent;
     <h2 class="text-xl font-semibold text-gray-700 mb-4">Set New Master Balance</h2>
     <form action="<?php echo APP_URL; ?>/controllers/adminController.php" method="POST">
         <input type="hidden" name="action" value="set_master_balance">
+        <?php csrf_field(); ?>
         <div class="mb-4">
             <label for="master_balance" class="block text-gray-700 text-sm font-bold mb-2">Master Balance:</label>
             <input type="number" name="master_balance" id="master_balance" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>

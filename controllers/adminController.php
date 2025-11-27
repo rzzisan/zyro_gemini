@@ -22,6 +22,8 @@ $smsCreditHistoryModel = new SmsCreditHistory($db);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     
+    verify_csrf_token($_POST['csrf_token'] ?? '');
+
     switch ($_POST['action']) {
         case 'set_master_balance':
             if (isset($_POST['master_balance'])) {

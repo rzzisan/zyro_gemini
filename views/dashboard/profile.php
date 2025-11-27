@@ -34,6 +34,7 @@ $savedUpazila = $user_profile['upazila'] ?? '';
             <h2 class="text-xl font-bold text-gray-700 mb-4">Update Profile Details</h2>
             <form method="POST" action="">
                 <input type="hidden" name="action" value="update_profile">
+                <?php csrf_field(); ?>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="mb-4">
@@ -74,6 +75,7 @@ $savedUpazila = $user_profile['upazila'] ?? '';
             <h2 class="text-xl font-bold text-gray-700 mb-4">Change Password</h2>
             <form method="POST" action="">
                 <input type="hidden" name="action" value="change_password">
+                <?php csrf_field(); ?>
                 <div class="mb-4">
                     <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
                     <input type="password" name="current_password" id="current_password" required class="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">

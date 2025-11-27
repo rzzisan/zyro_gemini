@@ -12,6 +12,7 @@ $users = $userModel->findAll();
 <div class="bg-white shadow-md rounded-lg p-6">
     <form action="<?php echo APP_URL; ?>/controllers/adminController.php" method="POST">
         <input type="hidden" name="action" value="add_website">
+        <?php csrf_field(); ?>
 
         <div class="mb-4">
             <label for="user_id" class="block text-gray-700 text-sm font-bold mb-2">User:</label>

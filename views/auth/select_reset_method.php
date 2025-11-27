@@ -69,6 +69,7 @@ $maskedPhone = $user['phone_number'] ? maskPhoneNumber($user['phone_number']) : 
             <?php display_message(); ?>
             <form action="../../controllers/authController.php" method="POST">
                 <input type="hidden" name="action" value="send_reset_otp">
+                <?php csrf_field(); ?>
                 <div class="mb-4">
                     <p class="block text-gray-700 text-sm font-bold mb-2">How would you like to receive the reset code?</p>
                     <?php if ($user['email']): ?>

@@ -2,6 +2,27 @@
 
 ## Thursday, November 27, 2025
 
+### Security: Implemented CSRF Protection and Server Hardening
+*   **What:** Conducted a comprehensive security audit and implemented critical fixes to secure the application.
+*   **Why:** To protect against Cross-Site Request Forgery (CSRF) attacks, prevent source code exposure, and harden the server configuration.
+*   **Where:**
+    *   `core/functions.php`: Added CSRF helper functions (`generate_csrf_token`, `verify_csrf_token`, `csrf_field`).
+    *   `.htaccess` (New File): Created to block access to sensitive files (`.git`, `.env`, `composer.json`, etc.).
+    *   **Views (Forms):** Updated all forms to include the hidden CSRF token field:
+        *   `views/auth/login.php`, `register.php`, `forgot_password.php`, `verify_otp.php`, `verify_reset_otp.php`, `new_password.php`, `select_reset_method.php`.
+        *   `admin/login.php`, `add_user.php`, `edit_user.php`, `add_website.php`, `sms_credit.php`, `plans.php`.
+        *   `views/dashboard/send_sms.php`, `profile.php`.
+        *   `views/dashboard/fraud_checker.php`, `my_fraud_reports.php` (AJAX forms).
+    *   **Controllers:** Updated all controllers to verify the CSRF token before processing POST requests:
+        *   `controllers/authController.php`
+        *   `controllers/adminController.php`
+        *   `controllers/smsController.php`
+        *   `controllers/websiteController.php`
+        *   `fraud_checker.php`, `report_fraud.php`, `edit_my_report.php`, `delete_my_report.php`.
+*   **How:**
+    *   **CSRF:** Generated a unique token per session. Injected this token into all forms. Verified the token on the server-side for every state-changing request (POST).
+    *   **Server Security:** Configured Apache via `.htaccess` to deny access to dotfiles and other sensitive system files.
+
 ### Fix: Fraud Checker Robustness and Error Handling
 *   **What:** Improved `fraud_checker.php` to handle external API failures gracefully.
 *   **Why:** To prevent the "no results" issue when the external API is blocked (HTTP 429) or fails. The system now falls back to showing cached data (if available) even if it's expired, ensuring users still see relevant history.

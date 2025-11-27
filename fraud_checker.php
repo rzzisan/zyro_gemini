@@ -14,6 +14,12 @@ header('Content-Type: application/json');
 $response = ['success' => false, 'message' => 'An error occurred.'];
 
 if (isset($_POST['phone_number'])) {
+    $csrf_token = $_POST['csrf_token'] ?? '';
+    if (!isset($_SESSION['csrf_token']) || $csrf_token !== $_SESSION['csrf_token']) {
+        echo json_encode(['success' => false, 'message' => 'Invalid CSRF token.']);
+        exit;
+    }
+
     $phoneNumber = $_POST['phone_number'];
 
     // Validate phone number format (01xxxxxxxxx)
