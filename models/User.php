@@ -27,7 +27,7 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findAll($limit = 10, $offset = 0)
+    public function findAll($limit = 10, $offset = 0, $search = '')
     {
         $sql = "SELECT 
                     u.id, 
@@ -35,6 +35,7 @@ class User
                     u.email, 
                     u.role,
                     u.created_at,
+                    u.phone_number,
                     p.name as plan_name,
                     p.daily_courier_limit,
                     sc.balance as sms_balance,
@@ -43,21 +44,44 @@ class User
                 LEFT JOIN subscriptions s ON u.id = s.user_id
                 LEFT JOIN plans p ON s.plan_id = p.id
                 LEFT JOIN sms_credits sc ON u.id = sc.user_id
-                LEFT JOIN websites w ON u.id = w.user_id
-                GROUP BY u.id, u.name, u.email, u.role, u.created_at, p.name, p.daily_courier_limit, sc.balance
+                LEFT JOIN websites w ON u.id = w.user_id";
+
+        if (!empty($search)) {
+            $sql .= " WHERE u.name LIKE :search OR u.email LIKE :search OR u.phone_number LIKE :search";
+        }
+
+        $sql .= " GROUP BY u.id, u.name, u.email, u.role, u.created_at, u.phone_number, p.name, p.daily_courier_limit, sc.balance
                 ORDER BY u.id ASC 
                 LIMIT :limit OFFSET :offset";
         
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        
+        if (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmt->bindValue(':search', $searchTerm, PDO::PARAM_STR);
+        }
+        
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getUserCount()
+    public function getUserCount($search = '')
     {
-        $stmt = $this->db->query("SELECT COUNT(*) FROM users");
+        $sql = "SELECT COUNT(*) FROM users u";
+        if (!empty($search)) {
+            $sql .= " WHERE u.name LIKE :search OR u.email LIKE :search OR u.phone_number LIKE :search";
+        }
+        
+        $stmt = $this->db->prepare($sql);
+        
+        if (!empty($search)) {
+            $searchTerm = "%$search%";
+            $stmt->bindValue(':search', $searchTerm, PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
         return $stmt->fetchColumn();
     }
 

@@ -1,5 +1,49 @@
 # Changelog
 
+## Sunday, November 30, 2025
+
+### Feat: Enhanced User Management (Search, Filter, Pagination)
+*   **What:** Upgraded the User Management page in the admin panel with advanced search capabilities, pagination, and improved data display.
+*   **Why:** To improve usability and performance for administrators managing a growing list of users, allowing them to quickly find specific users and navigate through large datasets efficiently.
+*   **Where:**
+    *   Modified `models/User.php`.
+    *   Modified `admin/users.php`.
+*   **How:**
+    *   **Backend:** Updated `models/User.php` to:
+        *   Modify `findAll` to accept `$search` parameter and support `LIKE` queries on name, email, and phone number.
+        *   Update SQL query to include `phone_number` in the result set.
+        *   Update `getUserCount` to support counting filtered results.
+    *   **Frontend:** Updated `admin/users.php` to:
+        *   Add a search form with fields for keyword search and "Rows per page" selection.
+        *   Implement pagination logic to handle large lists of users.
+        *   Add a "Phone Number" column to the users table and mobile card view.
+        *   Display pagination controls (Previous, Page X of Y, Next) at the bottom of the list.
+
+### Feat: AJAX Live Search and Pagination for User Management
+*   **What:** Enhanced the Admin User Management page to support real-time searching and dynamic pagination using AJAX, and refined the search and filter bar UI.
+*   **Why:** To provide a smoother, faster user experience by updating the user list instantly as the administrator types or navigates, without reloading the entire page. The UI was also adjusted to a cleaner, detached DataTables-style layout, addressing visual inconsistencies.
+*   **Where:**
+    *   Modified `admin/users.php`.
+*   **How:**
+    *   **Backend:** Implemented logic to detect AJAX requests (`ajax=1`) and return a JSON response containing the HTML for the user table rows, mobile card view, and pagination controls, instead of the full page layout.
+    *   **Frontend:**
+        *   Added a debounced event listener to the search input (300ms delay) to trigger searches without flooding the server.
+        *   Added change listeners to the "Rows per page" dropdown.
+        *   Implemented event delegation for pagination links to intercept clicks and fetch data asynchronously.
+        *   Used `history.pushState` to update the URL with current search and page parameters, preserving the state for browser navigation.
+        *   **UI Fix:** The search and filter bar was detached from the main table card, removing its `bg-white p-4 rounded-t-lg shadow-sm border-b border-gray-200` styling, and the table's wrapper div was adjusted to `rounded-lg` for a complete visual separation.
+
+### Fix: DataTables-style Layout for Admin User Management Filter Bar
+*   **What:** Corrected the layout of the search and pagination filter bar on the Admin User Management page (`admin/users.php`) to strictly adhere to the DataTables design pattern.
+*   **Why:** The previous redesign attempt resulted in a centered, stacked layout, which was not the intended "Show entries" on the far left and "Search" on the far right alignment. This fix ensures the proper visual structure.
+*   **Where:**
+    *   Modified `admin/users.php`.
+*   **How:**
+    *   Updated the form container to use `w-full flex flex-col sm:flex-row justify-between items-center mb-4 gap-4`.
+    *   Structured the "Show entries" section into a `div` on the left with `flex items-center gap-2`.
+    *   Structured the "Search" section into a `div` on the right with `flex items-center gap-2`.
+    *   Applied precise Tailwind CSS classes (`border`, `rounded`, `px`, `py`, `text-sm`, `focus:outline-none`, `focus:border-indigo-500`, `shadow-sm`) to `select` and `input` elements for a consistent, compact, and responsive design, mimicking the DataTables aesthetic.
+
 ## Thursday, November 27, 2025
 
 ### Security: Critical Fixes (Audit Remediation)

@@ -31,3 +31,4 @@
 - I have fixed the sidebar layout and Alpine.js flickering issues. I removed `lg:ml-64` and `lg:ml-20` from the main content wrapper div in both `views/layouts/header.php` and `views/layouts/admin_header.php`. I also added `[x-cloak] { display: none !important; }` to `public/css/input.css` and re-ran the Tailwind CSS build. I have updated the changelog.
 - I have fixed layout and functionality issues in `views/layouts/admin_header.php`. I moved the `smsOpen` state to the main `x-data` attribute, added `ml-auto` to the logout button's container, made the desktop sidebar toggle always visible and functional, and added `whitespace-nowrap` to the sidebar link text. I have also updated the changelog.
 - I have reset the project to the latest remote commit "feat: Implement and finalize Forgot Password feature", discarding all local changes including the fraud checker fix.
+- I have committed all local changes, including core/config.php, and ensured it is tracked by git.
