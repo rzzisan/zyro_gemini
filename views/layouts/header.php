@@ -104,7 +104,7 @@ $user = $userModel->find($_SESSION['user_id']);
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
             <?php display_message(); ?>
             <?php if (isset($_SESSION['user_id']) && empty($user['email_verified_at'])): ?>
-                <div class="mb-6 rounded-md bg-yellow-50 p-4 border border-yellow-200 shadow-sm">
+                <div class="mb-6 rounded-md bg-yellow-100 p-4 border border-yellow-200 shadow-sm">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
