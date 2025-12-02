@@ -2,6 +2,17 @@
 
 ## Tuesday, December 2, 2025
 
+### Feat: Filter Users by Plan in Admin Panel
+*   **What:** Added a "Filter by Plan" dropdown to the Admin User Management page.
+*   **Why:** To allow administrators to easily view users subscribed to specific plans (e.g., Free, Basic, Pro).
+*   **Where:**
+    *   Modified `models/User.php` to support filtering by `plan_id`.
+    *   Modified `admin/users.php` to include the filter UI and handle the filtering logic.
+*   **How:**
+    *   Updated `User::findAll` and `User::getUserCount` to accept an optional `$planId` parameter.
+    *   Updated `admin/users.php` to fetch all plans using the `Plan` model and display them in a select dropdown.
+    *   Updated the JavaScript `fetchData` function and the PHP AJAX handler to pass the selected `plan_id` to the backend.
+
 ### Fix: Invalid CSRF Token on Resend Verification Link
 *   **What:** Fixed an "Invalid CSRF token" error when clicking the "Resend Verification Link" button in the user dashboard.
 *   **Why:** The form for resending the verification link was missing the required CSRF token field, causing the server's security check to fail.

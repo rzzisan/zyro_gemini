@@ -27,7 +27,7 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findAll($limit = 10, $offset = 0, $search = '')
+    public function findAll($limit = 10, $offset = 0, $search = '', $planId = null)
     {
         $sql = "SELECT 
                     u.id, 
@@ -46,8 +46,21 @@ class User
                 LEFT JOIN sms_credits sc ON u.id = sc.user_id
                 LEFT JOIN websites w ON u.id = w.user_id";
 
+        $whereClauses = [];
+        $params = [];
+
         if (!empty($search)) {
-            $sql .= " WHERE u.name LIKE :search OR u.email LIKE :search OR u.phone_number LIKE :search";
+            $whereClauses[] = "(u.name LIKE :search OR u.email LIKE :search OR u.phone_number LIKE :search)";
+            $params[':search'] = "%$search%";
+        }
+
+        if (!empty($planId) && $planId !== 'all') {
+            $whereClauses[] = "p.id = :planId";
+            $params[':planId'] = $planId;
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
         }
 
         $sql .= " GROUP BY u.id, u.name, u.email, u.role, u.created_at, u.phone_number, p.name, p.daily_courier_limit, sc.balance
@@ -58,27 +71,43 @@ class User
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         
-        if (!empty($search)) {
-            $searchTerm = "%$search%";
-            $stmt->bindValue(':search', $searchTerm, PDO::PARAM_STR);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
         }
         
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getUserCount($search = '')
+    public function getUserCount($search = '', $planId = null)
     {
         $sql = "SELECT COUNT(*) FROM users u";
+        
+        if (!empty($planId) && $planId !== 'all') {
+            $sql .= " LEFT JOIN subscriptions s ON u.id = s.user_id LEFT JOIN plans p ON s.plan_id = p.id";
+        }
+
+        $whereClauses = [];
+        $params = [];
+
         if (!empty($search)) {
-            $sql .= " WHERE u.name LIKE :search OR u.email LIKE :search OR u.phone_number LIKE :search";
+            $whereClauses[] = "(u.name LIKE :search OR u.email LIKE :search OR u.phone_number LIKE :search)";
+            $params[':search'] = "%$search%";
+        }
+
+        if (!empty($planId) && $planId !== 'all') {
+            $whereClauses[] = "p.id = :planId";
+            $params[':planId'] = $planId;
+        }
+
+        if (!empty($whereClauses)) {
+            $sql .= " WHERE " . implode(' AND ', $whereClauses);
         }
         
         $stmt = $this->db->prepare($sql);
         
-        if (!empty($search)) {
-            $searchTerm = "%$search%";
-            $stmt->bindValue(':search', $searchTerm, PDO::PARAM_STR);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
         }
         
         $stmt->execute();

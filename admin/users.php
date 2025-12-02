@@ -2,12 +2,17 @@
 require_once __DIR__ . '/../core/config.php';
 require_once ROOT_PATH . '/core/functions.php';
 require_once ROOT_PATH . '/models/User.php';
+require_once ROOT_PATH . '/models/Plan.php';
 
 // Ensure admin access
 ensureAdmin();
 
 $db = getDb();
 $userModel = new User($db);
+$planModel = new Plan($db);
+
+// Fetch all plans for the filter dropdown
+$plans = $planModel->findAll();
 
 // --- Helper Function to Render Table Rows ---
 function renderUserRows($users) {
@@ -52,6 +57,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === '1') {
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
     $rows_per_page = isset($_GET['rows_per_page']) ? $_GET['rows_per_page'] : 25;
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+    $planId = isset($_GET['plan_id']) ? $_GET['plan_id'] : '';
 
     if ($rows_per_page === 'all') {
         $limit = 1000000;
@@ -63,8 +69,8 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === '1') {
     }
 
     // Fetch data
-    $users = $userModel->findAll($limit, $offset, $search);
-    $total_users = $userModel->getUserCount($search);
+    $users = $userModel->findAll($limit, $offset, $search, $planId);
+    $total_users = $userModel->getUserCount($search, $planId);
     $total_pages = ($rows_per_page === 'all') ? 1 : ceil($total_users / $limit);
 
     // Generate HTML for Table Rows
@@ -124,6 +130,7 @@ require_once __DIR__ . '/../views/layouts/admin_header.php';
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $rows_per_page = isset($_GET['rows_per_page']) ? $_GET['rows_per_page'] : 25;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$planId = isset($_GET['plan_id']) ? $_GET['plan_id'] : '';
 
 if ($rows_per_page === 'all') {
     $limit = 1000000;
@@ -133,8 +140,8 @@ if ($rows_per_page === 'all') {
     $offset = ($page - 1) * $limit;
 }
 
-$users = $userModel->findAll($limit, $offset, $search);
-$total_users = $userModel->getUserCount($search);
+$users = $userModel->findAll($limit, $offset, $search, $planId);
+$total_users = $userModel->getUserCount($search, $planId);
 $total_pages = ($rows_per_page === 'all') ? 1 : ceil($total_users / $limit);
 ?>
 
@@ -159,10 +166,25 @@ $total_pages = ($rows_per_page === 'all') ? 1 : ceil($total_users / $limit);
     </div>
 
     <div class="flex items-center text-gray-700 text-sm w-full sm:w-auto">
-        <label for="search" class="mr-2 font-medium">Search:</label>
-        <input type="text" name="search" id="search" value="<?php echo htmlspecialchars($search); ?>" 
-               class="form-input border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:border-indigo-500 shadow-sm w-full sm:w-64"
-               placeholder="Name, Email, or Phone..." autocomplete="off">
+        <!-- Plan Filter -->
+        <div class="mr-4 flex items-center">
+            <label for="plan_id" class="mr-2 font-medium">Plan:</label>
+            <select name="plan_id" id="plan_id" onchange="fetchData(1)" class="form-select border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:border-indigo-500 shadow-sm">
+                <option value="all">All Plans</option>
+                <?php foreach ($plans as $plan): ?>
+                    <option value="<?php echo $plan['id']; ?>" <?php echo $planId == $plan['id'] ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($plan['name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="flex items-center">
+            <label for="search" class="mr-2 font-medium">Search:</label>
+            <input type="text" name="search" id="search" value="<?php echo htmlspecialchars($search); ?>" 
+                   class="form-input border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:border-indigo-500 shadow-sm w-full sm:w-64"
+                   placeholder="Name, Email, or Phone..." autocomplete="off">
+        </div>
     </div>
 </form>
 
@@ -263,16 +285,18 @@ $total_pages = ($rows_per_page === 'all') ? 1 : ceil($total_users / $limit);
     function fetchData(page) {
         const search = document.getElementById('search').value;
         const rowsPerPage = document.getElementById('rows_per_page').value;
+        const planId = document.getElementById('plan_id').value;
 
         // Update URL without reloading (optional, but good for UX)
         const url = new URL(window.location.href);
         url.searchParams.set('page', page);
         url.searchParams.set('rows_per_page', rowsPerPage);
         url.searchParams.set('search', search);
+        url.searchParams.set('plan_id', planId);
         window.history.pushState({}, '', url);
 
         // Fetch Data via AJAX
-        fetch(`<?php echo APP_URL; ?>/admin/users.php?ajax=1&page=${page}&rows_per_page=${rowsPerPage}&search=${encodeURIComponent(search)}`)
+        fetch(`<?php echo APP_URL; ?>/admin/users.php?ajax=1&page=${page}&rows_per_page=${rowsPerPage}&search=${encodeURIComponent(search)}&plan_id=${planId}`)
             .then(response => response.json())
             .then(data => {
                 // Update Table Rows
