@@ -121,6 +121,7 @@ $user = $userModel->find($_SESSION['user_id']);
                         </div>
                         <div class="flex-shrink-0">
                             <form action="<?php echo APP_URL; ?>/controllers/authController.php" method="POST">
+                                <?php csrf_field(); ?>
                                 <input type="hidden" name="action" value="resend_verification">
                                 <button type="submit" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-4 py-2 rounded-md text-sm font-medium border border-yellow-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
                                     Resend Verification Link

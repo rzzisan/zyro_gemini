@@ -1,5 +1,15 @@
 # Changelog
 
+## Tuesday, December 2, 2025
+
+### Fix: Invalid CSRF Token on Resend Verification Link
+*   **What:** Fixed an "Invalid CSRF token" error when clicking the "Resend Verification Link" button in the user dashboard.
+*   **Why:** The form for resending the verification link was missing the required CSRF token field, causing the server's security check to fail.
+*   **Where:**
+    *   Modified `views/layouts/header.php`.
+*   **How:**
+    *   Added the `<?php csrf_field(); ?>` helper function inside the `resend_verification` form to inject the valid CSRF token.
+
 ## Sunday, November 30, 2025
 
 ### Feat: Enhanced User Management (Search, Filter, Pagination)
